@@ -1,13 +1,5 @@
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { HomePage } from "@/features/home";
 
 export default function Home() {
-
-  return (
-    <div >
-      hello world !
-
-      <AnimatedThemeToggler />
-
-    </div >
-  );
+  return <HomePage />;
 }
