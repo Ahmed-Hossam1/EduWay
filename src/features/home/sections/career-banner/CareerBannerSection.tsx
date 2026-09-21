@@ -2,12 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Play, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HeroFloatingCard2Images } from "../../data";
 
 export function CareerBannerSection() {
   return (
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-[32px] overflow-hidden bg-gradient-to-br from-[#120d29] via-[#1a113a] to-[#110c26] text-white p-8 sm:p-12 lg:p-16 border border-primary/20 shadow-2xl">
+        <div className="relative rounded-[32px] overflow-hidden bg-linear-to-br from-[#120d29] via-[#1a113a] to-[#110c26] text-white p-8 sm:p-12 lg:p-16 border border-primary/20 shadow-2xl">
           {/* Subtle Background Glows */}
           <div className="absolute top-0 right-1/4 size-96 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-10 size-80 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -55,27 +56,18 @@ export function CareerBannerSection() {
               {/* Social Proof */}
               <div className="flex items-center gap-3 pt-2">
                 <div className="flex -space-x-2">
-                  <Image
-                    src="/images/avatars/avatar-1.svg"
-                    alt="Learner"
-                    width={32}
-                    height={32}
-                    className="rounded-full ring-2 ring-[#1a113a]"
-                  />
-                  <Image
-                    src="/images/avatars/avatar-2.svg"
-                    alt="Learner"
-                    width={32}
-                    height={32}
-                    className="rounded-full ring-2 ring-[#1a113a]"
-                  />
-                  <Image
-                    src="/images/avatars/avatar-3.svg"
-                    alt="Learner"
-                    width={32}
-                    height={32}
-                    className="rounded-full ring-2 ring-[#1a113a]"
-                  />
+                  {
+                    HeroFloatingCard2Images.map((image, idx) => (
+                      <Image
+                        key={idx}
+                        src={image.src}
+                        alt={image.alt}
+                        width={image.width}
+                        height={image.height}
+                        className={image.className}
+                      />
+                    ))
+                  }
                 </div>
                 <p className="text-xs text-gray-300 font-medium">
                   Join <span className="text-white font-bold">10,000+</span> learners
@@ -87,7 +79,7 @@ export function CareerBannerSection() {
             {/* Right Visual */}
             <div className="lg:col-span-5 relative flex items-center justify-center">
               {/* Central Glowing Circle Background */}
-              <div className="relative size-64 sm:size-72 lg:size-80 rounded-full bg-gradient-to-tr from-primary/40 to-purple-400/20 p-2 shadow-2xl">
+              <div className="relative size-64 sm:size-72 lg:size-80 rounded-full bg-linear-to-tr from-primary/40 to-purple-400/20 p-2 shadow-2xl">
                 <div className="relative size-full rounded-full overflow-hidden border-2 border-white/20">
                   <Image
                     src="/images/career-woman.jpg"
@@ -116,8 +108,8 @@ export function CareerBannerSection() {
                   <TrendingUp className="size-4" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold leading-tight">Track</p>
-                  <p className="text-[10px] text-gray-500 font-medium">Your Progress</p>
+                  <p className="text-5 font-bold leading-tight">Track</p>
+                  <p className="text-5 text-gray-500 font-medium">Your Progress</p>
                 </div>
               </div>
 

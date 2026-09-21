@@ -1,64 +1,41 @@
+import { Marquee } from "@/components/ui/marquee"
+import Image from "next/image"
+
+// Logos sourced from /public/companies logo/
+const imageLogos = [
+  { src: "/companies logo/cisco_logo.svg", alt: "Cisco", width: 150, height: 40 },
+  { src: "/companies logo/citi_logo.svg", alt: "Citi", width: 150, height: 40 },
+  { src: "/companies logo/ericsson_logo.svg", alt: "Ericsson", width: 150, height: 40 },
+  { src: "/companies logo/procter_gamble_logo.svg", alt: "P&G", width: 150, height: 40 },
+  { src: "/companies logo/samsung_logo.svg", alt: "Samsung", width: 150, height: 40 },
+  { src: "/companies logo/volkswagen_logo.svg", alt: "Volkswagen", width: 150, height: 40 },
+]
+
+function LogoCard({ src, alt, width, height }: { src: string; alt: string; width: number; height: number }) {
+  return (
+    <div className="group mx-3 flex h-16 w-44 shrink-0 items-center justify-center rounded-2xl border border-border/50 bg-background/60 px-6 backdrop-blur-sm transition-all duration-300 hover:border-border hover:bg-background hover:shadow-md dark:bg-muted/30 dark:hover:bg-muted/60">
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className="h-7 w-auto object-contain opacity-50 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0 dark:invert"
+      />
+    </div>
+  )
+}
+
 export function CompanyLogos() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 lg:gap-14 opacity-70 dark:opacity-60 transition-all">
-      {/* Google */}
-      <span className="font-semibold text-lg tracking-tight hover:text-foreground transition-colors">
-        Google
-      </span>
-
-      {/* Microsoft */}
-      <div className="flex items-center gap-2 hover:text-foreground transition-colors">
-        <div className="grid grid-cols-2 gap-0.5">
-          <span className="size-2 bg-current opacity-90" />
-          <span className="size-2 bg-current opacity-90" />
-          <span className="size-2 bg-current opacity-90" />
-          <span className="size-2 bg-current opacity-90" />
-        </div>
-        <span className="font-semibold text-base tracking-tight">Microsoft</span>
-      </div>
-
-      {/* Amazon */}
-      <div className="flex items-baseline gap-1 hover:text-foreground transition-colors">
-        <span className="font-bold text-lg tracking-tight">amazon</span>
-      </div>
-
-      {/* IBM */}
-      <span className="font-black text-lg tracking-widest hover:text-foreground transition-colors">
-        IBM
-      </span>
-
-      {/* Meta */}
-      <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-        <svg className="size-5" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 7.2c-2.4 0-4.3 1.6-5.3 3.6-1-2-2.9-3.6-5.3-3.6-3.3 0-5.4 2.8-5.4 6.8 0 4.6 2.6 7.6 6 7.6 2.2 0 4-1.2 5.1-3 1.1 1.8 2.9 3 5.1 3 3.4 0 6-3 6-7.6 0-4-2.1-6.8-5.4-6.8zm-7.6 12c-2.1 0-3.6-2-3.6-5.2 0-3 1.3-4.8 3.3-4.8 1.8 0 3.3 1.6 3.9 3.8-.5 3.5-1.9 6.2-3.6 6.2zm8 0c-1.7 0-3.1-2.7-3.6-6.2.6-2.2 2.1-3.8 3.9-3.8 2 0 3.3 1.8 3.3 4.8 0 3.2-1.5 5.2-3.6 5.2z"/>
-        </svg>
-        <span className="font-semibold text-base tracking-tight">Meta</span>
-      </div>
-
-      {/* Spotify */}
-      <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-        <svg className="size-5" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="10" stroke="none" fill="currentColor" />
-          <path d="M7 9c3-1 7-1 10 1M7.5 12c2.5-.8 6-.8 8.5.8M8 15c2-.5 4.5-.5 6.5.5" stroke="var(--background)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        </svg>
-        <span className="font-semibold text-base tracking-tight">Spotify</span>
-      </div>
-
-      {/* Adobe */}
-      <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
-        <span className="font-black text-sm px-1.5 py-0.5 bg-foreground text-background rounded-xs">A</span>
-        <span className="font-semibold text-base tracking-tight">Adobe</span>
-      </div>
-
-      {/* Tesla */}
-      <span className="font-mono font-bold text-base tracking-widest hover:text-foreground transition-colors">
-        TESLA
-      </span>
-
-      {/* Samsung */}
-      <span className="font-extrabold text-sm tracking-[0.2em] px-2.5 py-0.5 border border-current rounded-full hover:text-foreground transition-colors">
-        SAMSUNG
-      </span>
+    <div className="relative flex w-full items-center overflow-hidden py-2">
+      <Marquee pauseOnHover className="[--duration:25s]" repeat={6}>
+        {imageLogos.map((logo, idx) => (
+          <LogoCard key={idx} {...logo} />
+        ))}
+      </Marquee>
+      {/* Fade edges */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-32 bg-linear-to-r from-background to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-32 bg-linear-to-l from-background to-transparent" />
     </div>
-  );
+  )
 }

@@ -51,7 +51,7 @@ export function HeroVisual() {
         </div>
         <div>
           <p className="text-sm font-bold text-foreground leading-tight">500+</p>
-          <p className="text-[11px] text-muted-foreground">Online Courses</p>
+          <p className="text-6 text-muted-foreground">Online Courses</p>
         </div>
       </div>
 

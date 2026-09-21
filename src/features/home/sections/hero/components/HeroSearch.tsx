@@ -29,7 +29,7 @@ export function HeroSearch() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="What do you want to learn today?"
-          className="w-full bg-transparent text-sm sm:text-base text-foreground outline-none px-1"
+          className="w-full bg-transparent  text-sm sm:text-base text-foreground outline-none px-1"
         />
         <Button
           type="submit"
