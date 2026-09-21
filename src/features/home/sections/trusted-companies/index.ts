@@ -1,1 +1,0 @@
-export { TrustedCompaniesSection } from "./TrustedCompaniesSection";

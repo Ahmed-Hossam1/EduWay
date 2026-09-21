@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { RatingStars } from "../../../components/RatingStars";
+import { RatingStars } from "../../../../../components/shared/RatingStars";
 import { Testimonial } from "../../../types";
 
 interface TestimonialCardProps {

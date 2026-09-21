@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Search, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { Logo } from "../../components/Logo";
-import { navItems } from "../../data";
+import { Logo } from "./Logo";
+import { navItems } from "../../features/home/data";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,8 +24,8 @@ export function Navbar() {
               key={item.label}
               href={item.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${item.isActive
-                  ? "text-primary font-semibold"
-                  : "text-muted-foreground"
+                ? "text-primary font-semibold"
+                : "text-muted-foreground"
                 }`}
             >
               {item.label}
@@ -44,7 +44,7 @@ export function Navbar() {
             <Search className="size-4" />
           </Button>
 
-          <AnimatedThemeToggler />
+          <AnimatedThemeToggler className="cursor-pointer" />
 
           <Link href="/login">
             <Button

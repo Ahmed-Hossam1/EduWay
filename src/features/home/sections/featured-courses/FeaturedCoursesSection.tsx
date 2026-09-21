@@ -1,4 +1,4 @@
-import { SectionHeading } from "../../components/SectionHeading";
+import { SectionHeading } from "../../../../components/shared/SectionHeading";
 import { CourseCard } from "./components/CourseCard";
 import { featuredCourses } from "../../data";
 

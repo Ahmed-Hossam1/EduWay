@@ -1,4 +1,4 @@
-import { SectionHeading } from "../../components/SectionHeading";
+import { SectionHeading } from "../../../../components/shared/SectionHeading";
 import { TestimonialCard } from "./components/TestimonialCard";
 import { testimonials } from "../../data";
 

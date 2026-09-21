@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Logo } from "../../components/Logo";
-import { footerColumns } from "../../data";
+import { Logo } from "./Logo";
+import { footerColumns } from "../../features/home/data";
 
 export function Footer() {
   const [email, setEmail] = useState("");
@@ -152,7 +152,9 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p>© 2026 EduWay. All rights reserved.</p>
+          <p>© 2026 EduWay. All rights reserved. <span className="font-medium">create by <span><Link className="text-primary underline" href={"https://my-new-portfolio-rho-gules.vercel.app/"}>Ahmed Hossam</Link></span></span>
+          </p>
+
           <p className="font-medium">Learn Today. Build Tomorrow.</p>
         </div>
       </div>

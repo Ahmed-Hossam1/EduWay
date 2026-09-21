@@ -1,13 +1,14 @@
-import { Navbar } from "./sections/navbar";
-import { HeroSection } from "./sections/hero";
-import { TrustedCompaniesSection } from "./sections/trusted-companies";
-import { LearningPathSection } from "./sections/learning-path";
-import { FeaturedCoursesSection } from "./sections/featured-courses";
-import { CareerBannerSection } from "./sections/career-banner";
+
+import { Footer } from "@/components/shared/Footer";
+import { TrustedCompaniesSection } from "./sections/trusted-companies/TrustedCompaniesSection";
+import { Navbar } from "@/components/shared/Navbar";
+import { HeroSection } from "./sections/hero/HeroSection";
+import { LearningPathSection } from "./sections/learning-path/LearningPathSection";
+import { FeaturedCoursesSection } from "./sections/featured-courses/FeaturedCoursesSection";
+import { CareerBannerSection } from "./sections/career-banner/CareerBannerSection";
 import { StatisticsSection } from "./sections/statistics";
-import { TestimonialsSection } from "./sections/testimonials";
-import { CTASection } from "./sections/cta";
-import { Footer } from "./sections/footer";
+import { TestimonialsSection } from "./sections/testimonials/TestimonialsSection";
+import { CTASection } from "./sections/cta/CTASection";
 
 export function HomePage() {
   return (

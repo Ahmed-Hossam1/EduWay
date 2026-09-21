@@ -13,7 +13,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { RatingStars } from "../../../components/RatingStars";
+import { RatingStars } from "../../../../../components/shared/RatingStars";
 import { Course } from "../../../types";
 import { Button } from "@/components/ui/button";
 
