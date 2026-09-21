@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { heroPopularTopics } from "../../../data";
+import Input from "@/components/ui/input";
 
 export function HeroSearch() {
   const [query, setQuery] = useState("");
@@ -24,12 +25,14 @@ export function HeroSearch() {
         <div className="pl-3.5 pr-2 text-muted-foreground">
           <Search className="size-5" />
         </div>
-        <input
+        <Input
           type="text"
+          variant={"ghost"}
+          fullWidth
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="What do you want to learn today?"
-          className="w-full bg-transparent  text-sm sm:text-base text-foreground outline-none px-1"
+          className=" focus-within:ring-0!"
         />
         <Button
           type="submit"
