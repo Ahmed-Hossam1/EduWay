@@ -1,0 +1,19 @@
+import { AppleIcon, GithubIcon, GoogleIcon } from "../SocialIcons";
+
+export const socialProviders = [
+    {
+        name: "Google",
+        icon: GoogleIcon,
+        ariaLabel: "Sign in with Google",
+    },
+    {
+        name: "GitHub",
+        icon: GithubIcon,
+        ariaLabel: "Sign in with GitHub",
+    },
+    {
+        name: "Apple",
+        icon: AppleIcon,
+        ariaLabel: "Sign in with Apple",
+    },
+];
