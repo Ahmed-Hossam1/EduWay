@@ -1,14 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { FacebookIcon, GoogleIcon } from "./SocialIcons";
+import { AppleIcon, GithubIcon, GoogleIcon } from "./SocialIcons";
 
 function SocialLogin() {
     return (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-2.5">
             <Button
                 type="button"
                 variant="outline"
                 size="default"
-                className="h-10 rounded-xl gap-2 text-xs font-semibold"
+                className="h-10 gap-2 rounded-xl text-xs font-medium"
+                aria-label="Continue with Google"
             >
                 <GoogleIcon />
                 <span>Google</span>
@@ -18,12 +19,25 @@ function SocialLogin() {
                 type="button"
                 variant="outline"
                 size="default"
-                className="h-10 rounded-xl gap-2 text-xs font-semibold"
+                className="h-10 gap-2 rounded-xl text-xs font-medium"
+                aria-label="Continue with GitHub"
             >
-                <FacebookIcon />
-                <span>Facebook</span>
+                <GithubIcon />
+                <span>GitHub</span>
+            </Button>
+
+            <Button
+                type="button"
+                variant="outline"
+                size="default"
+                className="h-10 gap-2 rounded-xl text-xs font-medium"
+                aria-label="Continue with Apple"
+            >
+                <AppleIcon />
+                <span>Apple</span>
             </Button>
         </div>
     );
 }
-export default SocialLogin
+
+export default SocialLogin;
