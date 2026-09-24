@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { socialProviders } from "../data";
+import { supabase } from "@/lib/supabase/client";
+import { Provider } from "@supabase/supabase-js";
 
 
 export default function SocialLogin() {
@@ -10,6 +12,11 @@ export default function SocialLogin() {
                 return (
                     <Button
                         key={provider.name}
+                        onClick={() => supabase.auth.signInWithOAuth(
+                            {
+                                provider: provider.name as Provider,
+                            }
+                        )}
                         type="button"
                         variant="outline"
                         size="default"

@@ -1,5 +1,5 @@
 "use client"
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
@@ -9,14 +9,41 @@ import { useForm } from "react-hook-form";
 import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthTabs, SocialLogin } from "@/app/(auth)/shared/components";
+import { loginService } from "@/services/auth/login/login";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema)
     })
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const onSubmit = (data: LoginSchemaType) => {
-        console.log(data)
+
+    const onSubmit = async (data: LoginSchemaType) => {
+        try {
+            setIsLoading(true)
+            // login service 
+            const { user } = await loginService(data)
+            console.log(user)
+            toast.success("login successful")
+            setTimeout(() => {
+                location.href = "/"
+            }, 400)
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(error)
+                if (error.message === "Invalid login credentials") {
+
+                    toast.error("Invalid login credentials ")
+                }
+                else
+                    toast.error("failed to login")
+            }
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -82,14 +109,23 @@ function LoginForm() {
                 <Button
                     onClick={handleSubmit(onSubmit)}
                     variant="default"
+                    disabled={isLoading}
                     size="lg"
                     className="mt-2 h-11 w-full rounded-xl font-semibold"
                 >
-                    Sign In
-                    <ArrowRight className="size-4" />
+                    {isLoading ?
+                        <>
+                            <span>Signing in...</span>
+                            <Spinner className="size-4" />
+                        </>
+                        :
+                        <>
+                            <span>sign in</span>
+                            < ArrowRight className="size-4" />
+                        </>
+                    }
                 </Button>
             </form>
-
             {/* Divider */}
             <div className="relative my-6 flex items-center justify-center">
                 <div className="absolute inset-x-0 border-t border-border" />

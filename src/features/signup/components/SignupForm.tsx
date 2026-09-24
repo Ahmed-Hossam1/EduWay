@@ -1,19 +1,21 @@
 "use client";
 
-import { ArrowRight, EyeOff } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import Input from "@/components/ui/input";
-import RoleSelector from "./RoleSelector";
 import { AuthTabs, SocialLogin } from "@/app/(auth)/shared/components";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import Input from "@/components/ui/input";
+import { signupService } from "@/services/auth/signup/signupService";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, EyeOff, Loader } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { signupInputs } from "../data/AuthInputConfig";
 import { signupSchema, signupSchemaType } from "../schema/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { supabase } from "@/lib/supabase/client";
-import { useState } from "react";
 import { AuthRole } from "../types";
+import RoleSelector from "./RoleSelector";
+import { Spinner } from "@/components/ui/spinner";
 
 
 function SignupForm() {
@@ -22,24 +24,28 @@ function SignupForm() {
         resolver: zodResolver(signupSchema),
 
     });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const onSubmit = async (data: signupSchemaType) => {
-        const { data: authData, error } = await supabase.auth.signUp({
-            email: data.email,
-            password: data.password,
-            options: {
-                data: {
-                    first_name: data.firstName,
-                    last_name: data.lastName,
-                    role: selectedRole
-                }
-            }
+        try {
+            setIsLoading(true)
+            // sign up service
+            await signupService(data, selectedRole)
+            toast.success("Account created successfully")
+            setTimeout(() => {
+                location.href = "/login"
+            }, 400)
 
-        });
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(authData);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(error)
+                if (error.message === "User already registered")
+                    toast.error("failed to create account User already registered")
+                else
+                    toast.error("failed to create account")
+            }
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -60,7 +66,7 @@ function SignupForm() {
             <AuthTabs activeTab="signup" />
 
             {/* Form */}
-            <form className="mt-6 space-y-4" >
+            <form className="mt-6 space-y-4">
                 {/* Data-driven inputs */}
                 <div className="grid grid-cols-2 gap-3">
                     {signupInputs.map((input) => {
@@ -127,12 +133,22 @@ function SignupForm() {
                     variant="default"
                     size="lg"
                     className="mt-2 h-11 w-full rounded-xl font-semibold"
+                    disabled={isLoading}
                 >
-                    Create Account
-                    <ArrowRight className="size-4" />
+                    {isLoading ?
+                        <>
+                            <span>Creating account...</span>
+                            <Spinner className="size-4" />
+
+                        </>
+                        :
+                        <>
+                            <span>Create Account</span>
+                            <ArrowRight className="size-4" />
+                        </>
+                    }
                 </Button>
             </form>
-
             {/* Divider */}
             <div className="relative my-6 flex items-center justify-center">
                 <div className="absolute inset-x-0 border-t border-border" />
