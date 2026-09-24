@@ -9,12 +9,17 @@ import { AuthTabs, SocialLogin } from "../../shared";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { signupInputs } from "../data/AuthInputConfig";
+import { signupSchema, signupSchemaType } from "../schema/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function SignupForm() {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
+        resolver: zodResolver(signupSchema),
 
-    const onSubmit = (data) => {
-        console.log(data); // هتلاقي البيانات كلها هنا
+    });
+
+    const onSubmit = (data: signupSchemaType) => {
+        console.log(data);
     };
 
     return (
@@ -61,6 +66,7 @@ function SignupForm() {
                                     fullWidth
                                     aria-label={input.placeholder}
                                     autoComplete={input.autoComplete}
+                                    errorText={errors[input.name]?.message}
                                 />
                             </div>
                         );

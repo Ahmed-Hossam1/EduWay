@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
+import { LoaderCircle } from "lucide-react";
 import * as React from "react";
 
 const containerVariants = cva(
@@ -58,6 +59,7 @@ export interface InputProps
   errorText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  isValidating?: boolean;
   className?: string;
 }
 
@@ -77,6 +79,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       errorText,
       leftIcon,
       rightIcon,
+      isValidating,
       className,
       id,
       ...props
@@ -124,14 +127,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             disabled={Disabled || undefined}
+            aria-busy={isValidating || undefined}
             className="w-full bg-transparent outline-none h-full border-none p-0 text-inherit placeholder:text-muted-foreground/60 disabled:cursor-not-allowed"
             {...props}
           />
 
-          {rightIcon && (
-            <div className="text-muted-foreground flex items-center justify-center shrink-0">
-              {rightIcon}
-            </div>
+          {isValidating ? (
+            <LoaderCircle className="size-4 shrink-0 animate-spin text-muted-foreground" />
+          ) : (
+            rightIcon && (
+              <div className="flex shrink-0 items-center justify-center text-muted-foreground">
+                {rightIcon}
+              </div>
+            )
           )}
         </div>
 

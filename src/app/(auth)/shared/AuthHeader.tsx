@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Logo } from "@/components/shared/Logo";
 
 export default function AuthHeader() {
     return (
@@ -8,7 +9,7 @@ export default function AuthHeader() {
                 href="/"
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground lg:hidden"
             >
-                ← EduWay
+                <Logo />
             </Link>
             {/* Desktop spacer: Logo is displayed inside the hero section */}
             <div className="hidden lg:block" />

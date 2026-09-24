@@ -1,7 +1,7 @@
 import { LucideIcon } from "lucide-react";
 
-export interface AuthInputConfig {
-    name: string;
+export interface AuthInputConfig<T extends string = string> {
+    name: T;
     type: "text" | "email" | "password";
     placeholder?: string;
     icon: LucideIcon;

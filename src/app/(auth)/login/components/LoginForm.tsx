@@ -8,13 +8,18 @@ import SocialLogin from "../../shared/SocialLogin";
 import { AuthTabs } from "../../shared";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
+import { loginSchema, LoginSchemaType } from "../../schema/loginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function LoginForm() {
-    const { handleSubmit, register } = useForm()
+    const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
+        resolver: zodResolver(loginSchema)
+    })
 
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: LoginSchemaType) => {
         console.log(data)
     }
+
     return (
         <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-7 shadow-lg sm:max-w-md sm:p-9">
             {/* Header */}
@@ -48,8 +53,9 @@ function LoginForm() {
                             Size="md"
                             rounded="lg"
                             fullWidth
-                            aria-label={input.placeholder}
                             autoComplete={input.autoComplete}
+                            errorText={errors[input.name]?.message}
+                            aria-label={input.placeholder}
                         />
                     );
                 })}
