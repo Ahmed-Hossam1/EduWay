@@ -6,26 +6,15 @@ import { cn } from "@/lib/utils";
 import { AuthRole } from "../types";
 import { roles } from "../data/RoleOption";
 
-
-
-
-
 interface RoleSelectorProps {
-    selectedRole?: AuthRole;
-    onSelectRole?: (role: AuthRole) => void;
+    selectedRole: AuthRole;
+    onSelectRole: (role: AuthRole) => void;
 }
 
 export default function RoleSelector({
-    selectedRole: controlledRole,
+    selectedRole,
     onSelectRole,
 }: RoleSelectorProps) {
-    const [internalRole, setInternalRole] = useState<AuthRole>("student");
-    const activeRole = controlledRole ?? internalRole;
-
-    const handleSelect = (id: AuthRole) => {
-        setInternalRole(id);
-        onSelectRole?.(id);
-    };
 
     return (
         <div className="space-y-2.5">
@@ -35,12 +24,12 @@ export default function RoleSelector({
             <div className="grid grid-cols-2 gap-3">
                 {roles.map((role) => {
                     const Icon = role.icon;
-                    const isActive = role.id === activeRole;
+                    const isActive = role.id === selectedRole;
                     return (
                         <button
                             key={role.id}
                             type="button"
-                            onClick={() => handleSelect(role.id)}
+                            onClick={() => onSelectRole(role.id)}
                             aria-pressed={isActive}
                             className={cn(
                                 "flex flex-col items-center gap-1.5 rounded-xl border px-4 py-3.5 text-center transition-all cursor-pointer",

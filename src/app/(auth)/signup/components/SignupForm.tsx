@@ -11,15 +11,35 @@ import { useForm } from "react-hook-form";
 import { signupInputs } from "../data/AuthInputConfig";
 import { signupSchema, signupSchemaType } from "../schema/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { supabase } from "@/lib/supabase/client";
+import { useState } from "react";
+import { AuthRole } from "../types";
 
 function SignupForm() {
+    const [selectedRole, setSelectedRole] = useState<AuthRole>("student")
     const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
         resolver: zodResolver(signupSchema),
 
     });
 
-    const onSubmit = (data: signupSchemaType) => {
-        console.log(data);
+    const onSubmit = async (data: signupSchemaType) => {
+        const { data: authData, error } = await supabase.auth.signUp({
+            email: data.email,
+            password: data.password,
+            options: {
+                data: {
+                    first_name: data.firstName,
+                    last_name: data.lastName,
+                    role: selectedRole
+                }
+            }
+
+        });
+        if (error) {
+            console.log(error);
+        } else {
+            console.log(authData);
+        }
     };
 
     return (
@@ -74,7 +94,7 @@ function SignupForm() {
                 </div>
 
                 {/* Role selector (Student / Teacher only) */}
-                <RoleSelector />
+                <RoleSelector selectedRole={selectedRole} onSelectRole={setSelectedRole} />
 
                 {/* Terms and Privacy */}
                 <label
