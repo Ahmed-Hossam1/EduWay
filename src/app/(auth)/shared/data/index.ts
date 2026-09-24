@@ -1,4 +1,4 @@
-import { AppleIcon, GithubIcon, GoogleIcon } from "../SocialIcons";
+import { AppleIcon, GithubIcon, GoogleIcon } from "../components/SocialIcons";
 
 export const socialProviders = [
     {

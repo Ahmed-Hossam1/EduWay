@@ -1,10 +1,7 @@
 "use client";
-
-import { useState } from "react";
-import { GraduationCap, School } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AuthRole } from "../types";
 import { roles } from "../data/RoleOption";
+import { AuthRole } from "../types";
 
 interface RoleSelectorProps {
     selectedRole: AuthRole;

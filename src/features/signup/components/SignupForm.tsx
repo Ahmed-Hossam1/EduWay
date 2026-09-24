@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import RoleSelector from "./RoleSelector";
-import { AuthTabs, SocialLogin } from "../../shared";
+import { AuthTabs, SocialLogin } from "@/app/(auth)/shared/components";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { signupInputs } from "../data/AuthInputConfig";
@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase/client";
 import { useState } from "react";
 import { AuthRole } from "../types";
+
 
 function SignupForm() {
     const [selectedRole, setSelectedRole] = useState<AuthRole>("student")
@@ -59,7 +60,7 @@ function SignupForm() {
             <AuthTabs activeTab="signup" />
 
             {/* Form */}
-            <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            <form className="mt-6 space-y-4" >
                 {/* Data-driven inputs */}
                 <div className="grid grid-cols-2 gap-3">
                     {signupInputs.map((input) => {
@@ -122,7 +123,7 @@ function SignupForm() {
 
                 {/* Primary CTA */}
                 <Button
-                    type="submit"
+                    onClick={handleSubmit(onSubmit)}
                     variant="default"
                     size="lg"
                     className="mt-2 h-11 w-full rounded-xl font-semibold"

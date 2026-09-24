@@ -3,13 +3,12 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
-import { loginInputs } from "@/app/(auth)/login/data/login-inputs";
-import SocialLogin from "../../shared/SocialLogin";
-import { AuthTabs } from "../../shared";
+import { loginInputs } from "../data/login-inputs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
-import { loginSchema, LoginSchemaType } from "../../schema/loginSchema";
+import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AuthTabs, SocialLogin } from "@/app/(auth)/shared/components";
 
 function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
@@ -38,7 +37,7 @@ function LoginForm() {
             <AuthTabs activeTab="login" />
 
             {/* Form */}
-            <form className="mt-6 space-y-4" noValidate>
+            <form className="mt-6 space-y-4" >
                 {loginInputs.map((input) => {
                     const IconComponent = input.icon;
                     return (

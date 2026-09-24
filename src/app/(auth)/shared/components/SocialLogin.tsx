@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { socialProviders } from "./data";
+import { socialProviders } from "../data";
 
 
 export default function SocialLogin() {

@@ -1,6 +1,6 @@
-import { AuthHeader } from "../shared";
-import SignUpHero from "./components/SignUpHero";
-import SignupForm from "./components/SignupForm";
+import SignUpHero from "@/features/signup/components/SignUpHero";
+import SignupForm from "@/features/signup/components/SignupForm";
+import { AuthHeader } from "../shared/components";
 
 export const metadata = {
     title: "Sign Up",
