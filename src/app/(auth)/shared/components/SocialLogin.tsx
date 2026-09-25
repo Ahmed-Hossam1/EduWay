@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { socialProviders } from "../data";
 import { supabase } from "@/lib/supabase/client";
 import { Provider } from "@supabase/supabase-js";
+import { socialProviders } from "../data";
 
 
 export default function SocialLogin() {
     return (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
             {socialProviders.map((provider) => {
                 const IconComponent = provider.icon;
                 return (

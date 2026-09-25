@@ -1,4 +1,4 @@
-import { AppleIcon, GithubIcon, GoogleIcon } from "../components/SocialIcons";
+import { GithubIcon, GoogleIcon } from "../components/SocialIcons";
 
 export const socialProviders = [
     {
@@ -11,9 +11,5 @@ export const socialProviders = [
         icon: GithubIcon,
         ariaLabel: "Sign in with GitHub",
     },
-    {
-        name: "Apple",
-        icon: AppleIcon,
-        ariaLabel: "Sign in with Apple",
-    },
+
 ];
