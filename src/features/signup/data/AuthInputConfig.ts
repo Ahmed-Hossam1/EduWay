@@ -9,7 +9,6 @@ export const signupInputs: AuthInputConfig<keyof signupSchemaType>[] = [
         type: "text",
         placeholder: "First name",
         icon: User,
-        autoComplete: "given-name",
         halfWidth: true,
     },
     {
@@ -18,7 +17,6 @@ export const signupInputs: AuthInputConfig<keyof signupSchemaType>[] = [
         type: "text",
         placeholder: "Last name",
         icon: User,
-        autoComplete: "family-name",
         halfWidth: true,
     },
     {
@@ -27,7 +25,6 @@ export const signupInputs: AuthInputConfig<keyof signupSchemaType>[] = [
         type: "email",
         placeholder: "Email address",
         icon: Mail,
-        autoComplete: "email",
         halfWidth: false,
     },
     {
@@ -36,8 +33,6 @@ export const signupInputs: AuthInputConfig<keyof signupSchemaType>[] = [
         type: "password",
         placeholder: "Password",
         icon: Lock,
-        autoComplete: "new-password",
-        hasTogglePassword: true,
         halfWidth: false,
     },
     {
@@ -46,8 +41,6 @@ export const signupInputs: AuthInputConfig<keyof signupSchemaType>[] = [
         type: "password",
         placeholder: "Confirm password",
         icon: Lock,
-        autoComplete: "new-password",
-        hasTogglePassword: true,
         halfWidth: false,
     },
 ];

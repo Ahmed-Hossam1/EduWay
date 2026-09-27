@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    // baseURL: 'localhost:3000',
+    // No baseURL needed — relative paths work for same-origin Next.js API routes
     headers: {
         'Content-Type': 'application/json'
     }

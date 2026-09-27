@@ -6,8 +6,6 @@ export interface AuthInputConfig<T extends string = string> {
     placeholder?: string;
     icon: LucideIcon;
     id?: string;
-    autoComplete?: string;
     halfWidth?: boolean;
-    hasTogglePassword?: boolean;
 }
 

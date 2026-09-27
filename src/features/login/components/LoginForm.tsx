@@ -20,17 +20,15 @@ function LoginForm() {
     })
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-
     const onSubmit = async (data: LoginSchemaType) => {
         try {
             setIsLoading(true)
             // login service 
             const { user } = await loginService(data)
-            console.log(user)
             toast.success("login successful")
-            setTimeout(() => {
-                location.href = "/"
-            }, 400)
+            // setTimeout(() => {
+            //     location.href = "/"
+            // }, 400)
         } catch (error) {
             if (error instanceof Error) {
                 console.error(error)
@@ -45,7 +43,6 @@ function LoginForm() {
             setIsLoading(false)
         }
     }
-
     return (
         <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-7 shadow-lg sm:max-w-md sm:p-9">
             {/* Header */}
@@ -79,7 +76,6 @@ function LoginForm() {
                             Size="md"
                             rounded="lg"
                             fullWidth
-                            autoComplete={input.autoComplete}
                             errorText={errors[input.name]?.message}
                             aria-label={input.placeholder}
                         />

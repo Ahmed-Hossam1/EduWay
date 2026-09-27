@@ -1,12 +1,13 @@
 "use client";
+import type { AxiosError } from "axios";
 
 import { AuthTabs, SocialLogin } from "@/app/(auth)/shared/components";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
-import { signupService } from "@/services/auth/signup/signupService";
+import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, EyeOff, Loader } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,37 +16,46 @@ import { signupInputs } from "../data/AuthInputConfig";
 import { signupSchema, signupSchemaType } from "../schema/schema";
 import { AuthRole } from "../types";
 import RoleSelector from "./RoleSelector";
-import { Spinner } from "@/components/ui/spinner";
+import { axiosInstance } from "@/lib/axiosInstance";
 
 
 function SignupForm() {
-    const [selectedRole, setSelectedRole] = useState<AuthRole>("student")
-    const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
+    const [selectedRole, setSelectedRole] = useState<AuthRole>("student");
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<signupSchemaType>({
         resolver: zodResolver(signupSchema),
-
+        defaultValues: { selectedRole: "student" },
     });
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    const handleRoleSelect = (role: AuthRole) => {
+        setSelectedRole(role);
+        setValue("selectedRole", role, { shouldValidate: true });
+    };
+
     const onSubmit = async (data: signupSchemaType) => {
         try {
-            setIsLoading(true)
-            // sign up service
-            await signupService(data, selectedRole)
-            toast.success("Account created successfully")
-            setTimeout(() => {
-                location.href = "/login"
-            }, 400)
+            setIsLoading(true);
 
+            const request = await axiosInstance.post("/api/signup", data);
+
+            const response = request.data;
+            toast.success("Account created successfully");
+
+            console.log(response);
+
+            // setTimeout(() => {
+            //     location.href = response.next;
+            // }, 400)
         } catch (error) {
-            if (error instanceof Error) {
-                console.error(error)
-                if (error.message === "User already registered")
-                    toast.error("failed to create account User already registered")
-                else
-                    toast.error("failed to create account")
-            }
+            console.error(error);
+            // The server's error message lives at error.response.data.message
+            const axiosError = error as AxiosError<{ message: string }>;
+            const message =
+                axiosError.response?.data?.message ??
+                "Failed to create account";
+            toast.error(message);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     };
 
@@ -82,17 +92,11 @@ function SignupForm() {
                                     {...register(input.name)}
                                     placeholder={input.placeholder}
                                     leftIcon={<IconComponent className="size-4" />}
-                                    rightIcon={
-                                        input.hasTogglePassword ? (
-                                            <EyeOff className="size-4" />
-                                        ) : undefined
-                                    }
                                     variant="outline"
                                     Size="md"
                                     rounded="lg"
                                     fullWidth
                                     aria-label={input.placeholder}
-                                    autoComplete={input.autoComplete}
                                     errorText={errors[input.name]?.message}
                                 />
                             </div>
@@ -101,7 +105,7 @@ function SignupForm() {
                 </div>
 
                 {/* Role selector (Student / Teacher only) */}
-                <RoleSelector selectedRole={selectedRole} onSelectRole={setSelectedRole} />
+                <RoleSelector selectedRole={selectedRole} onSelectRole={handleRoleSelect} />
 
                 {/* Terms and Privacy */}
                 <label

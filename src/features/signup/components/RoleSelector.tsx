@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { roles } from "../data/RoleOption";
 import { AuthRole } from "../types";
 
+
 interface RoleSelectorProps {
     selectedRole: AuthRole;
     onSelectRole: (role: AuthRole) => void;

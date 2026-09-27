@@ -1,11 +1,10 @@
 import { signupSchemaType } from "@/features/signup/schema/schema";
-import { AuthRole } from "@/features/signup/types";
 import { supabase } from "@/lib/supabase/client";
 
 
-export const signupService = async (data: signupSchemaType, selectedRole: AuthRole) => {
-    const { email, password, firstName, lastName } = data;
-    const { error } = await supabase.auth.signUp({
+export const signupService = async (data: Omit<signupSchemaType, 'confirmPassword'>) => {
+    const { email, password, firstName, lastName, selectedRole } = data;
+    const { data: user, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -21,5 +20,6 @@ export const signupService = async (data: signupSchemaType, selectedRole: AuthRo
     if (error) {
         throw (error)
     }
+    return user
 }
 
