@@ -1,18 +1,19 @@
 "use client"
-import { ArrowRight, Loader } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import Input from "@/components/ui/input";
-import { loginInputs } from "../data/login-inputs";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useForm } from "react-hook-form";
-import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthTabs, SocialLogin } from "@/app/(auth)/shared/components";
-import { loginService } from "@/services/auth/login/login";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import Input from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { axiosInstance } from "@/lib/axiosInstance";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { loginInputs } from "../data/login-inputs";
+import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
 
 function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
@@ -24,21 +25,18 @@ function LoginForm() {
         try {
             setIsLoading(true)
             // login service 
-            const { user } = await loginService(data)
-            toast.success("login successful")
-            // setTimeout(() => {
-            //     location.href = "/"
-            // }, 400)
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error(error)
-                if (error.message === "Invalid login credentials") {
+            const request = await axiosInstance.post("/api/login", data)
+            const response = request.data
 
-                    toast.error("Invalid login credentials ")
-                }
-                else
-                    toast.error("failed to login")
-            }
+            toast.success("login successful")
+            setTimeout(() => {
+                location.href = response.next
+            }, 400)
+        } catch (error) {
+            console.error(error)
+            const axiosError = error as AxiosError<{ message: string }>
+            const message = axiosError.response?.data?.message ?? "Failed to login"
+            toast.error(message)
         } finally {
             setIsLoading(false)
         }

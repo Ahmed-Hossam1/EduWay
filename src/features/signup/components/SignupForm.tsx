@@ -1,6 +1,5 @@
 "use client";
 import type { AxiosError } from "axios";
-
 import { AuthTabs, SocialLogin } from "@/app/(auth)/shared/components";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,12 +39,9 @@ function SignupForm() {
 
             const response = request.data;
             toast.success("Account created successfully");
-
-            console.log(response);
-
-            // setTimeout(() => {
-            //     location.href = response.next;
-            // }, 400)
+            setTimeout(() => {
+                location.href = response.next;
+            }, 400)
         } catch (error) {
             console.error(error);
             // The server's error message lives at error.response.data.message
