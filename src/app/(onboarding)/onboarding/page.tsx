@@ -1,7 +1,12 @@
-const OnboardingPage = () => {
-    return (
-        <div> welcome to Onboarding Page</div>
-    )
-}
+import { TeacherOnboardingContainer } from "@/features/onboarding";
+import { Metadata } from "next";
 
-export default OnboardingPage
+export const metadata: Metadata = {
+    title: "Teacher Onboarding - EduWay",
+    description:
+        "Build your teacher profile on EduWay. Share your skills, background, and start teaching students worldwide.",
+};
+
+export default function OnboardingPage() {
+    return <TeacherOnboardingContainer />;
+}
