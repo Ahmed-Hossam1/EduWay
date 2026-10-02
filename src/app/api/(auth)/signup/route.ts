@@ -1,8 +1,7 @@
-import { signupSchema, signupSchemaType } from "@/features/(auth)/signup/schema/schema";
-import { AuthRole } from "@/features/(auth)/signup/types";
-import { getAuthRedirectRoute } from "@/services/auth/getAuthRedirectRoute";
+import { signupSchema } from "@/features/(auth)/signup/schema/schema";
+import { getAuthRedirectRouteService } from "@/services/auth/getAuthRedirectRoute";
 import { getProfileService } from "@/services/auth/getProfile";
-import { signupService } from "@/services/auth/signup/signupService";
+import { signupService } from "@/services/auth/signup";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -35,7 +34,7 @@ export async function POST(request: Request) {
         const { role, status } = await getProfileService(user.id);
 
         // get the next route based on the role and status of the user
-        const nextRoute = getAuthRedirectRoute(role, status)
+        const nextRoute = getAuthRedirectRouteService(role, status)
 
         return NextResponse.json({
             success: true,

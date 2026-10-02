@@ -1,7 +1,7 @@
 import { loginSchema } from "@/features/(auth)/login/schema/loginSchema";
-import { getAuthRedirectRoute } from "@/services/auth/getAuthRedirectRoute";
+import { getAuthRedirectRouteService } from "@/services/auth/getAuthRedirectRoute";
 import { getProfileService } from "@/services/auth/getProfile";
-import { loginService } from "@/services/auth/login/login";
+import { loginService } from "@/services/auth/login";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         const { role, status } = await getProfileService(user.id);
 
         // get the next route based on the role and status of the user
-        const nextRoute = getAuthRedirectRoute(role, status)
+        const nextRoute = getAuthRedirectRouteService(role, status)
 
         // Step 8: Return next route to frontend
         return NextResponse.json(

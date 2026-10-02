@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { getAuthRedirectRoute } from "@/services/auth/getAuthRedirectRoute";
+import { getAuthRedirectRouteService } from "@/services/auth/getAuthRedirectRoute";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
         }
 
         // get the next route based on the role and status of the user
-        const nextRoute = getAuthRedirectRoute(profile.role, profile.status)
+        const nextRoute = getAuthRedirectRouteService(profile.role, profile.status)
 
         return NextResponse.redirect(
             new URL(nextRoute, request.url)

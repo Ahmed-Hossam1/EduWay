@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { axiosInstance } from "@/lib/axiosInstance";
+import { axiosInstance } from "@/lib/axios/axiosInstance";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { ArrowRight } from "lucide-react";

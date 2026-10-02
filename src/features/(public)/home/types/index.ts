@@ -46,16 +46,4 @@ export interface Company {
   name: string;
 }
 
-export interface NavItem {
-  label: string;
-  href: string;
-  isActive?: boolean;
-}
-
-export interface FooterColumn {
-  title: string;
-  links: {
-    label: string;
-    href: string;
-  }[];
-}
+export type { NavItem, FooterColumn } from "@/types/navigation";

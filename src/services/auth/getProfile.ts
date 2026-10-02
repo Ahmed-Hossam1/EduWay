@@ -1,5 +1,5 @@
 import { supabaseClient } from "@/lib/supabase/client"
-import { Profile } from "@/types"
+import { Profile } from "@/types/profile"
 
 
 export const getProfileService = async (id: string): Promise<Profile> => {
