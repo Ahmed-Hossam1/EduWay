@@ -25,7 +25,7 @@ function LoginForm() {
         try {
             setIsLoading(true)
             // login service 
-            const request = await axiosInstance.post("/api/login", data)
+            const request = await axiosInstance.post("/login", data)
             const response = request.data
 
             toast.success("login successful")

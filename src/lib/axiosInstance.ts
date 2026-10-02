@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    // No baseURL needed — relative paths work for same-origin Next.js API routes
+    baseURL: `${process.env.NEXT_PUBLIC_APP_URL}/api`,
     headers: {
         'Content-Type': 'application/json'
     }
