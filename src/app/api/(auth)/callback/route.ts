@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getAuthRedirectRoute } from "@/services/auth/getAuthRedirectRoute";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -67,42 +68,8 @@ export async function GET(request: Request) {
             );
         }
 
-        // Existing user:
-        // Determine the destination based on role and status.
-        let nextRoute = "/";
-
-        // Profile exists but role hasn't been chosen yet
-        if (!profile.role || !profile.status) {
-            return NextResponse.redirect(
-                new URL("/choose-role", request.url)
-            );
-        }
-
-        if (profile.role === "student") {
-            nextRoute = "/dashboard";
-        }
-
-        if (profile.role === "teacher") {
-            switch (profile.status) {
-                case "onboarding":
-                    nextRoute = "/onboarding";
-                    break;
-
-                case "waiting":
-                    nextRoute = "/waiting";
-                    break;
-
-                case "approved":
-                    nextRoute = "/dashboard";
-                    break;
-
-                case "rejected":
-                    nextRoute = "/rejected";
-                    break;
-            }
-        }
-
-        console.log("Authenticated OAuth user:", user.id);
+        // get the next route based on the role and status of the user
+        const nextRoute = getAuthRedirectRoute(profile.role, profile.status)
 
         return NextResponse.redirect(
             new URL(nextRoute, request.url)

@@ -1,5 +1,6 @@
 import { signupSchema, signupSchemaType } from "@/features/(auth)/signup/schema/schema";
 import { AuthRole } from "@/features/(auth)/signup/types";
+import { getAuthRedirectRoute } from "@/services/auth/getAuthRedirectRoute";
 import { getProfileService } from "@/services/auth/getProfile";
 import { signupService } from "@/services/auth/signup/signupService";
 import { NextResponse } from "next/server";
@@ -33,36 +34,12 @@ export async function POST(request: Request) {
         // getting profile after creating account to decide where to redirect user to 
         const { role, status } = await getProfileService(user.id);
 
-        // setting next route
-        let next = "/";
-
-        if (role === "teacher") {
-            switch (status) {
-                case "onboarding":
-                    next = "/onboarding";
-                    break;
-
-                case "waiting":
-                    next = "/waiting";
-                    break;
-
-                case "approved":
-                    next = "/dashboard";
-                    break;
-
-                case "rejected":
-                    next = "/rejected";
-                    break;
-            }
-        }
-
-        if (role === "student") {
-            next = "/";
-        }
+        // get the next route based on the role and status of the user
+        const nextRoute = getAuthRedirectRoute(role, status)
 
         return NextResponse.json({
             success: true,
-            next,
+            nextRoute,
         }, { status: 201 });
     } catch (error) {
         console.error("Signup API Error:", error);

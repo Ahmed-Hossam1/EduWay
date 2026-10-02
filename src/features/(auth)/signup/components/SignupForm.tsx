@@ -46,9 +46,7 @@ function SignupForm() {
             console.error(error);
             // The server's error message lives at error.response.data.message
             const axiosError = error as AxiosError<{ message: string }>;
-            const message =
-                axiosError.response?.data?.message ??
-                "Failed to create account";
+            const message = axiosError.response?.data?.message ?? "Failed to create account";
             toast.error(message);
         } finally {
             setIsLoading(false);

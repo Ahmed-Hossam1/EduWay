@@ -1,4 +1,5 @@
 import { loginSchema } from "@/features/(auth)/login/schema/loginSchema";
+import { getAuthRedirectRoute } from "@/services/auth/getAuthRedirectRoute";
 import { getProfileService } from "@/services/auth/getProfile";
 import { loginService } from "@/services/auth/login/login";
 import { NextResponse } from "next/server";
@@ -33,33 +34,12 @@ export async function POST(request: Request) {
         // Step 5: Get the user's profile to determine redirect
         const { role, status } = await getProfileService(user.id);
 
-        // Steps 6 & 7: Determine next route based on role and status
-        let next = "/";
-
-        if (role === "teacher") {
-            switch (status) {
-                case "onboarding":
-                    next = "/onboarding";
-                    break;
-                case "waiting":
-                    next = "/waiting";
-                    break;
-                case "approved":
-                    next = "/dashboard";
-                    break;
-                case "rejected":
-                    next = "/rejected";
-                    break;
-            }
-        }
-
-        if (role === "student") {
-            next = "/";
-        }
+        // get the next route based on the role and status of the user
+        const nextRoute = getAuthRedirectRoute(role, status)
 
         // Step 8: Return next route to frontend
         return NextResponse.json(
-            { success: true, next },
+            { success: true, nextRoute },
             { status: 200 }
         );
 

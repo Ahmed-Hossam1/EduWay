@@ -1,6 +1,5 @@
-import { BarChart3, GraduationCap, Users } from "lucide-react";
-import Image from "next/image";
 import { Logo } from "@/components/shared/Logo";
+import Image from "next/image";
 import { heroFeatures } from "../data/heroFeatures";
 
 
