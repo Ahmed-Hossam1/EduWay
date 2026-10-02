@@ -9,3 +9,9 @@ export interface RoleOption {
     subLabel: string;
     icon: LucideIcon
 }
+
+
+export interface SignupResponse {
+    nextRoute: string;
+    success: boolean
+}

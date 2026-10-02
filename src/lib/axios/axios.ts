@@ -1,7 +1,8 @@
+import { apiConfig } from "@/constant/api";
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL: `${process.env.NEXT_PUBLIC_APP_URL}/api`,
+    baseURL: `${apiConfig.baseURL}/api`,
     headers: {
         'Content-Type': 'application/json'
     }

@@ -15,7 +15,7 @@ import { signupInputs } from "../data/AuthInputConfig";
 import { signupSchema, signupSchemaType } from "../schema/schema";
 import { AuthRole } from "../types";
 import RoleSelector from "./RoleSelector";
-import { axiosInstance } from "@/lib/axios/axiosInstance";
+import { axiosInstance } from "@/lib/axios/axios";
 
 
 function SignupForm() {

@@ -5,3 +5,8 @@ export type LoginFeaturesType = {
     description: string;
     icon: LucideIcon;
 }
+
+export interface LoginResponse {
+    nextRoute: string;
+    success: boolean
+}

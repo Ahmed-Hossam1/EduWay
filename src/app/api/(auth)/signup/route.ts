@@ -1,7 +1,8 @@
 import { signupSchema } from "@/features/(auth)/signup/schema/schema";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getAuthRedirectRouteService } from "@/services/auth/getAuthRedirectRoute";
 import { getProfileService } from "@/services/auth/getProfile";
-import { signupService } from "@/services/auth/signup";
+
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -20,18 +21,31 @@ export async function POST(request: Request) {
         }
 
         const { firstName, lastName, email, password, selectedRole } = result.data
-        // sign up service 
-        const { user } = await signupService({ firstName, lastName, email, password, selectedRole });
 
-        if (!user || !user?.id) {
+        const supabaseClient = await createSupabaseServerClient()
+        const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    role: selectedRole
+                }
+            }
+
+        });
+
+
+        if (error || !data?.user) {
             return NextResponse.json(
-                { message: "User not found" },
+                { message: "Failed to create account", error },
                 { status: 400 }
             );
         }
 
         // getting profile after creating account to decide where to redirect user to 
-        const { role, status } = await getProfileService(user.id);
+        const { role, status } = await getProfileService(data.user.id);
 
         // get the next route based on the role and status of the user
         const nextRoute = getAuthRedirectRouteService(role, status)

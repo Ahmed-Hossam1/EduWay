@@ -3,42 +3,36 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { axiosInstance } from "@/lib/axios/axiosInstance";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { loginInputs } from "../data/login-inputs";
-import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
 import { AuthTabs, SocialLogin } from "../../shared";
+import { loginInputs } from "../data/login-inputs";
+import { useLogin } from "../hooks/useLogin";
+import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
 
 function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema)
     })
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { mutateAsync, isPending, error } = useLogin()
 
     const onSubmit = async (data: LoginSchemaType) => {
         try {
-            setIsLoading(true)
-            // login service 
-            const request = await axiosInstance.post("/login", data)
-            const response = request.data
-
+            const response = await mutateAsync(data)
+            if (error) throw error
             toast.success("login successful")
             setTimeout(() => {
-                location.href = response.next
+                location.href = response.nextRoute
             }, 400)
         } catch (error) {
             console.error(error)
             const axiosError = error as AxiosError<{ message: string }>
             const message = axiosError.response?.data?.message ?? "Failed to login"
             toast.error(message)
-        } finally {
-            setIsLoading(false)
         }
     }
     return (
@@ -103,11 +97,11 @@ function LoginForm() {
                 <Button
                     onClick={handleSubmit(onSubmit)}
                     variant="default"
-                    disabled={isLoading}
+                    disabled={isPending}
                     size="lg"
                     className="mt-2 h-11 w-full rounded-xl font-semibold"
                 >
-                    {isLoading ?
+                    {isPending ?
                         <>
                             <span>Signing in...</span>
                             <Spinner className="size-4" />

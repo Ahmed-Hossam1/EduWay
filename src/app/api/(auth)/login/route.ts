@@ -1,8 +1,9 @@
-import { loginSchema } from "@/features/(auth)/login/schema/loginSchema";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
 import { getAuthRedirectRouteService } from "@/services/auth/getAuthRedirectRoute";
 import { getProfileService } from "@/services/auth/getProfile";
-import { loginService } from "@/services/auth/login";
-import { NextResponse } from "next/server";
+import { loginSchema } from "@/features/(auth)/login/schema/loginSchema";
+
 
 export async function POST(request: Request) {
     try {
@@ -22,17 +23,23 @@ export async function POST(request: Request) {
 
         // Step 3: Authenticate with Supabase
         const { email, password } = result.data;
-        const { user } = await loginService({ email, password });
 
-        if (!user?.id) {
+        const supabaseClient = await createSupabaseServerClient();
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        })
+
+        if (error) {
             return NextResponse.json(
-                { message: "Invalid credentials" },
+                { message: "Invalid credentials", error },
                 { status: 401 }
             );
         }
 
         // Step 5: Get the user's profile to determine redirect
-        const { role, status } = await getProfileService(user.id);
+        const { role, status } = await getProfileService(data.user.id);
 
         // get the next route based on the role and status of the user
         const nextRoute = getAuthRedirectRouteService(role, status)
