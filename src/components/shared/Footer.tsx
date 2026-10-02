@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
-import { footerColumns } from "../../features/home/data";
+import { footerColumns } from "@/features/(public)/home/data";
 
 export function Footer() {
   const [email, setEmail] = useState("");

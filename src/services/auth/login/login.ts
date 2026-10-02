@@ -1,4 +1,4 @@
-import { LoginSchemaType } from "@/features/login/schema/loginSchema";
+import { LoginSchemaType } from "@/features/(auth)/login/schema/loginSchema";
 import { supabaseClient } from "@/lib/supabase/client";
 
 

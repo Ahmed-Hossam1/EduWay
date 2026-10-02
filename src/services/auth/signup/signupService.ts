@@ -1,4 +1,4 @@
-import { signupSchemaType } from "@/features/signup/schema/schema";
+import { signupSchemaType } from "@/features/(auth)/signup/schema/schema";
 import { supabaseClient } from "@/lib/supabase/client";
 
 

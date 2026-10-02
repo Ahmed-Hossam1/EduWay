@@ -1,4 +1,4 @@
-import { loginSchema } from "@/features/login/schema/loginSchema";
+import { loginSchema } from "@/features/(auth)/login/schema/loginSchema";
 import { getProfileService } from "@/services/auth/getProfile";
 import { loginService } from "@/services/auth/login/login";
 import { NextResponse } from "next/server";

@@ -1,5 +1,5 @@
-import { signupSchema, signupSchemaType } from "@/features/signup/schema/schema";
-import { AuthRole } from "@/features/signup/types";
+import { signupSchema, signupSchemaType } from "@/features/(auth)/signup/schema/schema";
+import { AuthRole } from "@/features/(auth)/signup/types";
 import { getProfileService } from "@/services/auth/getProfile";
 import { signupService } from "@/services/auth/signup/signupService";
 import { NextResponse } from "next/server";

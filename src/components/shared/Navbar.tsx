@@ -6,7 +6,7 @@ import { Search, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Logo } from "./Logo";
-import { navItems } from "../../features/home/data";
+import { navItems } from "@/features/(public)/home/data";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

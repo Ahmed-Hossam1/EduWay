@@ -1,7 +1,7 @@
-import { AuthHeader } from "@/app/(auth)/shared/components";
-import ChooseRoleForm from "@/features/choose-role/components/ChooseRoleForm";
+import ChooseRoleForm from "@/features/(auth)/choose-role/components/ChooseRoleForm";
 import { Logo } from "@/components/shared/Logo";
 import { Sparkles } from "lucide-react";
+import { AuthHeader } from "@/features/(auth)/shared";
 
 export const metadata = {
     title: "Choose Your Role - EduWay",
