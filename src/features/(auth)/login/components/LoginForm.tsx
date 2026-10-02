@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -24,16 +24,19 @@ function LoginForm() {
     const onSubmit = async (data: LoginSchemaType) => {
         try {
             const response = await mutateAsync(data)
-            if (error) throw error
-            toast.success("login successful")
+            toast.success("Login successful")
             setTimeout(() => {
                 router.push(response.nextRoute)
             }, 400)
-        } catch (error) {
-            console.error(error)
-            const axiosError = error as AxiosError<{ message: string }>
-            const message = axiosError.response?.data?.message ?? "Failed to login"
-            toast.error(message)
+        } catch (err) {
+            console.error(err)
+            if (axios.isAxiosError(err)) {
+                const axiosError = err as AxiosError<{ message: string }>
+                const message = axiosError.response?.data?.message ?? "Failed to login"
+                toast.error(message)
+            } else {
+                toast.error("Something went wrong. Please try again.")
+            }
         }
     }
     return (

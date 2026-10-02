@@ -37,10 +37,26 @@ export async function POST(request: Request) {
         });
 
 
-        if (error || !data?.user) {
+        if (error) {
             return NextResponse.json(
-                { message: "Failed to create account", error },
+                { message: error.message ?? "Failed to create account" },
                 { status: 400 }
+            );
+        }
+
+        if (!data?.user) {
+            return NextResponse.json(
+                { message: "Failed to create account" },
+                { status: 400 }
+            );
+        }
+
+        // Supabase quirk: when email is already registered, signUp() succeeds
+        // but returns a user with an empty identities array instead of an error.
+        if (data.user.identities?.length === 0) {
+            return NextResponse.json(
+                { message: "An account with this email already exists" },
+                { status: 409 }
             );
         }
 
