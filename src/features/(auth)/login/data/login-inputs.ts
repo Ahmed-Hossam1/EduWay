@@ -1,6 +1,6 @@
 import { Lock, Mail } from "lucide-react";
 import { LoginSchemaType } from "../schema/loginSchema";
-import { AuthInputConfig } from "../../shared";
+import { AuthInputConfig } from "../../shared/types/AuthInputs";
 
 export const loginInputs: AuthInputConfig<keyof LoginSchemaType>[] = [
     {

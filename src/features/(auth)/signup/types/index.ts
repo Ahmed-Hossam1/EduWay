@@ -10,8 +10,3 @@ export interface RoleOption {
     icon: LucideIcon
 }
 
-
-export interface SignupResponse {
-    nextRoute: string;
-    success: boolean
-}

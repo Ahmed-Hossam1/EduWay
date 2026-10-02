@@ -1,6 +1,5 @@
 "use client";
 import type { AxiosError } from "axios";
-import { AuthTabs, SocialLogin } from "@/features/(auth)/shared";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
@@ -16,6 +15,7 @@ import { signupSchema, signupSchemaType } from "../schema/schema";
 import { AuthRole } from "../types";
 import RoleSelector from "./RoleSelector";
 import { axiosInstance } from "@/lib/axios/axios";
+import { AuthTabs, SocialLogin } from "../../shared/components";
 
 
 function SignupForm() {

@@ -1,6 +1,6 @@
 import LoginHero from "@/features/(auth)/login/components/LoginHero";
 import LoginForm from "@/features/(auth)/login/components/LoginForm";
-import { AuthHeader } from "@/features/(auth)/shared";
+import { AuthHeader } from "@/features/(auth)/shared/components";
 
 export const metadata = {
     title: "Sign In",

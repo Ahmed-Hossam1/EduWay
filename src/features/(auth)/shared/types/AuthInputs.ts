@@ -9,3 +9,8 @@ export interface AuthInputConfig<T extends string = string> {
     halfWidth?: boolean;
 }
 
+
+export interface AuthResponse {
+    nextRoute: string;
+    success: boolean
+}

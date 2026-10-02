@@ -1,6 +1,6 @@
-import { AuthInputConfig } from "@/features/(auth)/shared";
 import { Lock, Mail, User } from "lucide-react";
 import { signupSchemaType } from "../schema/schema";
+import { AuthInputConfig } from "../../shared/types/AuthInputs";
 
 export const signupInputs: AuthInputConfig<keyof signupSchemaType>[] = [
     {

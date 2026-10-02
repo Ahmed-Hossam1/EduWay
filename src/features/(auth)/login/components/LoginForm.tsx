@@ -9,10 +9,10 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { AuthTabs, SocialLogin } from "../../shared";
 import { loginInputs } from "../data/login-inputs";
 import { useLogin } from "../hooks/useLogin";
 import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
+import { AuthTabs, SocialLogin } from "../../shared/components";
 
 function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
