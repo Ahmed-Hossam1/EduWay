@@ -1,21 +1,22 @@
 "use client";
-import type { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { AxiosError } from "axios";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { AuthTabs, SocialLogin } from "../../shared/components";
 import { signupInputs } from "../data/AuthInputConfig";
+import { useSignup } from "../hooks/useSignup";
 import { signupSchema, signupSchemaType } from "../schema/schema";
 import { AuthRole } from "../types";
 import RoleSelector from "./RoleSelector";
-import { axiosInstance } from "@/lib/axios/axios";
-import { AuthTabs, SocialLogin } from "../../shared/components";
 
 
 function SignupForm() {
@@ -24,32 +25,29 @@ function SignupForm() {
         resolver: zodResolver(signupSchema),
         defaultValues: { selectedRole: "student" },
     });
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { mutateAsync, isPending, error } = useSignup()
 
+    const router = useRouter()
+
+    //  choose role handler  
     const handleRoleSelect = (role: AuthRole) => {
         setSelectedRole(role);
         setValue("selectedRole", role, { shouldValidate: true });
     };
-
+    //  submit handler for sign up form     
     const onSubmit = async (data: signupSchemaType) => {
         try {
-            setIsLoading(true);
-
-            const request = await axiosInstance.post("/api/signup", data);
-
-            const response = request.data;
-            toast.success("Account created successfully");
+            const response = await mutateAsync(data)
+            if (error) throw error
+            toast.success("Account created successfully")
             setTimeout(() => {
-                location.href = response.next;
+                router.push(response.nextRoute)
             }, 400)
         } catch (error) {
-            console.error(error);
-            // The server's error message lives at error.response.data.message
-            const axiosError = error as AxiosError<{ message: string }>;
-            const message = axiosError.response?.data?.message ?? "Failed to create account";
-            toast.error(message);
-        } finally {
-            setIsLoading(false);
+            console.error(error)
+            const axiosError = error as AxiosError<{ message: string }>
+            const message = axiosError.response?.data?.message ?? "Failed to create account"
+            toast.error(message)
         }
     };
 
@@ -70,7 +68,7 @@ function SignupForm() {
             <AuthTabs activeTab="signup" />
 
             {/* Form */}
-            <form className="mt-6 space-y-4">
+            <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
                 {/* Data-driven inputs */}
                 <div className="grid grid-cols-2 gap-3">
                     {signupInputs.map((input) => {
@@ -127,13 +125,13 @@ function SignupForm() {
 
                 {/* Primary CTA */}
                 <Button
-                    onClick={handleSubmit(onSubmit)}
+                    type="submit"
                     variant="default"
                     size="lg"
                     className="mt-2 h-11 w-full rounded-xl font-semibold"
-                    disabled={isLoading}
+                    disabled={isPending}
                 >
-                    {isLoading ?
+                    {isPending ?
                         <>
                             <span>Creating account...</span>
                             <Spinner className="size-4" />

@@ -2,32 +2,34 @@
 
 import { Button } from "@/components/ui/button";
 import { AuthRole } from "@/features/(auth)/signup/types";
+import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
-import { useState, useTransition } from "react";
-import { assignRoleAction } from "../actions/assignRole";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import { rolesData } from "../data/rolesData";
+import { useRole } from "../hooks/useRole";
 import ChooseRoleCard from "./ChooseRoleCard";
 
 export default function ChooseRoleForm() {
     const [selectedRole, setSelectedRole] = useState<AuthRole | null>(null);
-    const [isPending, startTransition] = useTransition();
-    const [error, setError] = useState<string | null>(null);
-
-    function handleSubmit() {
+    const { mutateAsync, isPending, error } = useRole()
+    const router = useRouter()
+    async function handleSubmit() {
         if (!selectedRole) return;
-        setError(null);
-        startTransition(async () => {
-            try {
-                await assignRoleAction(selectedRole);
-            } catch (error) {
-                if (error instanceof Error) {
-                    console.error(error)
-                } else {
-                    setError("Something went wrong. Please try again.");
-                }
-            }
-        });
+        try {
+            const response = await mutateAsync(selectedRole);
+            if (error) throw error
+            router.push(response.nextRoute)
+        } catch (error) {
+            const axiosError = error as AxiosError<{ message: string }>
+            const message = axiosError.response?.data.message || "Failed to choose role"
+            console.log(message);
+            toast.error(message);
+
+        }
     }
+
 
     return (
         <div className="flex w-full max-w-2xl flex-col gap-8">

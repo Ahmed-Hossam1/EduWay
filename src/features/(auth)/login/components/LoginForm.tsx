@@ -13,20 +13,21 @@ import { loginInputs } from "../data/login-inputs";
 import { useLogin } from "../hooks/useLogin";
 import { loginSchema, LoginSchemaType } from "../schema/loginSchema";
 import { AuthTabs, SocialLogin } from "../../shared/components";
+import { useRouter } from "next/navigation";
 
 function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema)
     })
     const { mutateAsync, isPending, error } = useLogin()
-
+    const router = useRouter()
     const onSubmit = async (data: LoginSchemaType) => {
         try {
             const response = await mutateAsync(data)
             if (error) throw error
             toast.success("login successful")
             setTimeout(() => {
-                location.href = response.nextRoute
+                router.push(response.nextRoute)
             }, 400)
         } catch (error) {
             console.error(error)
