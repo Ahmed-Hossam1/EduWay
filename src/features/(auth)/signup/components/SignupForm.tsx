@@ -8,32 +8,23 @@ import axios, { type AxiosError } from "axios";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { AuthTabs, SocialLogin } from "../../shared/components";
 import { signupInputs } from "../data/AuthInputConfig";
 import { useSignup } from "../hooks/useSignup";
 import { signupSchema, signupSchemaType } from "../schema/schema";
-import { AuthRole } from "../types";
-import RoleSelector from "./RoleSelector";
 
 
 function SignupForm() {
-    const [selectedRole, setSelectedRole] = useState<AuthRole>("student");
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<signupSchemaType>({
+    const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
         resolver: zodResolver(signupSchema),
-        defaultValues: { selectedRole: "student" },
+
     });
-    const { mutateAsync, isPending, error } = useSignup()
+    const { mutateAsync, isPending } = useSignup()
 
     const router = useRouter()
 
-    //  choose role handler  
-    const handleRoleSelect = (role: AuthRole) => {
-        setSelectedRole(role);
-        setValue("selectedRole", role, { shouldValidate: true });
-    };
     //  submit handler for sign up form     
     const onSubmit = async (data: signupSchemaType) => {
         try {
@@ -98,9 +89,6 @@ function SignupForm() {
                         );
                     })}
                 </div>
-
-                {/* Role selector (Student / Teacher only) */}
-                <RoleSelector selectedRole={selectedRole} onSelectRole={handleRoleSelect} />
 
                 {/* Terms and Privacy */}
                 <label

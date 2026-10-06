@@ -19,7 +19,7 @@ function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema)
     })
-    const { mutateAsync, isPending, error } = useLogin()
+    const { mutateAsync, isPending } = useLogin()
     const router = useRouter()
     const onSubmit = async (data: LoginSchemaType) => {
         try {

@@ -20,7 +20,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const { firstName, lastName, email, password, selectedRole } = result.data
+        const { firstName, lastName, email, password } = result.data
 
         const supabaseClient = await createSupabaseServerClient()
         const { data, error } = await supabaseClient.auth.signUp({
@@ -30,21 +30,13 @@ export async function POST(request: Request) {
                 data: {
                     first_name: firstName,
                     last_name: lastName,
-                    role: selectedRole
                 }
             }
 
         });
 
 
-        if (error) {
-            return NextResponse.json(
-                { message: error.message ?? "Failed to create account" },
-                { status: 400 }
-            );
-        }
-
-        if (!data?.user) {
+        if (error || !data?.user) {
             return NextResponse.json(
                 { message: "Failed to create account" },
                 { status: 400 }

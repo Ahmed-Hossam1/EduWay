@@ -27,8 +27,6 @@ export const signupSchema = z.object({
 
     confirmPassword: z.string().min(1, "Please confirm your password"),
 
-    selectedRole: z.enum(["student", "teacher"]),
-
     // refine: adds custom validation after the object passes the basic field validations.
     // It compares password and confirmPassword and attaches the error to confirmPassword.
 }).refine((val) => val.password === val.confirmPassword, {
