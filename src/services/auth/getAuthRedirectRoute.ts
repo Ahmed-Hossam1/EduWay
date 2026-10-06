@@ -1,3 +1,4 @@
+"use server"
 /**
  * this function returns the next route based on the role and status of the user
  * @param role string
