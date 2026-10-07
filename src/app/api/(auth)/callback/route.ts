@@ -69,7 +69,7 @@ export async function GET(request: Request) {
         }
 
         // get the next route based on the role and status of the user
-        const nextRoute = getAuthRedirectRouteService(profile.role, profile.status)
+        const nextRoute = await getAuthRedirectRouteService(profile.role, profile.status)
 
         return NextResponse.redirect(
             new URL(nextRoute, request.url)

@@ -42,7 +42,7 @@ export async function POST(request: Request) {
         const { role, status } = await getProfileService(data.user.id);
 
         // get the next route based on the role and status of the user
-        const nextRoute = getAuthRedirectRouteService(role, status)
+        const nextRoute = await getAuthRedirectRouteService(role, status)
 
         // Step 8: Return next route to frontend
         return NextResponse.json(

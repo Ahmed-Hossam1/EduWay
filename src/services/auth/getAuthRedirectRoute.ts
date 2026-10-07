@@ -5,7 +5,7 @@
  * @param status string
  * @returns string
 **/
-export function getAuthRedirectRouteService(role: string, status: string): string {
+export async function getAuthRedirectRouteService(role: string, status: string): Promise<string> {
 
     // Determine the destination based on role and status.
     let nextRoute = "/";
