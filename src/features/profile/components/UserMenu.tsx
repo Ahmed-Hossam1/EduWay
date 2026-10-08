@@ -16,7 +16,7 @@ import {
 import { supabaseClient } from "@/lib/supabase/client";
 
 type UserMenuProps = {
-  firstName: string | null;
+  firstName: string;
   lastName: string | null;
   avatarUrl: string | null;
 };
@@ -25,8 +25,8 @@ export function UserMenu({ firstName, lastName, avatarUrl }: UserMenuProps) {
   const router = useRouter();
   const queryClient = useQueryClient()
 
-  const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim();
-  const initials = `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
+  const fullName = `${firstName} ${lastName ?? ""}`.trim();
+  const initials = `${firstName[0]} ${lastName?.[0] ?? ""}`.toUpperCase();
 
   const handleLogout = async () => {
     // 1- Remove the session cookies from Supabase

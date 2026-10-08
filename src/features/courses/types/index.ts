@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 // Database enums 
 export type CourseLevel = "beginner" | "intermediate" | "advanced";
 export type CourseStatus = "draft" | "published" | "archived";
@@ -88,4 +90,17 @@ export interface FilterGroup {
 export interface SortOption {
   value: string;
   label: string;
+}
+
+export interface HeroStat {
+  id: string;
+  value: string;
+  label: string;
+  icon: LucideIcon;
+  color: string;
+}
+
+export interface PopularTopic {
+  label: string;
+  slug: string;
 }

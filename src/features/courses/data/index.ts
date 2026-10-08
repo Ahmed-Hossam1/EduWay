@@ -1,4 +1,5 @@
-import { FilterGroup, SortOption } from "../types";
+import { BookOpen, GraduationCap, Star, Users } from "lucide-react";
+import { FilterGroup, HeroStat, PopularTopic, SortOption } from "../types";
 
 // Static UI data — replace with real data from the API later
 
@@ -59,4 +60,20 @@ export const coursesCategoryChips: string[] = [
   "UI/UX Design",
   "Marketing",
   "Productivity",
+];
+
+// Courses hero: numbers on the right side
+export const coursesHeroStats: HeroStat[] = [
+  { id: "courses", value: "300+", label: "Online courses", icon: BookOpen, color: "text-primary bg-primary/10" },
+  { id: "instructors", value: "120+", label: "Expert instructors", icon: GraduationCap, color: "text-sky-600 bg-sky-500/10 dark:text-sky-400" },
+  { id: "learners", value: "17K+", label: "Active learners", icon: Users, color: "text-emerald-600 bg-emerald-500/10 dark:text-emerald-400" },
+  { id: "rating", value: "4.8", label: "Average rating", icon: Star, color: "text-amber-500 bg-amber-500/10" },
+];
+
+// Courses hero: quick links under the search (slug = category id in the URL)
+export const coursesPopularTopics: PopularTopic[] = [
+  { label: "Web Development", slug: "web-dev" },
+  { label: "Data Science", slug: "data-ai" },
+  { label: "UI/UX Design", slug: "design" },
+  { label: "Marketing", slug: "marketing" },
 ];
