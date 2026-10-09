@@ -39,7 +39,7 @@ export default function SocialLogin() {
                         type="button"
                         variant="outline"
                         size="default"
-                        className="h-10 rounded-xl"
+                        rounded="xl" className="h-10"
                         aria-label={provider.ariaLabel}
                     >
                         <IconComponent />

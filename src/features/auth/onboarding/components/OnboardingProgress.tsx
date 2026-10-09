@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { ONBOARDING_STEPS } from "../data/onboardingSteps";
 
 interface OnboardingProgressProps {
@@ -57,12 +58,15 @@ export function OnboardingProgress({
                 className="flex flex-1 flex-col items-center text-center px-1"
               >
                 {/* Node circle */}
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
+                  rounded="full"
                   disabled={!isClickable}
                   onClick={() => isClickable && onStepClick(step.stepNumber)}
                   className={cn(
-                    "flex size-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ring-4 ring-background",
+                    "text-xs font-bold transition-all duration-300 ring-4 ring-background disabled:opacity-100",
                     isClickable ? "cursor-pointer" : "cursor-default",
                     isCompleted &&
                     "bg-primary text-primary-foreground shadow-sm hover:opacity-90",
@@ -84,7 +88,7 @@ export function OnboardingProgress({
                       )}
                     </span>
                   )}
-                </button>
+                </Button>
 
                 {/* Step title & subtitle */}
                 <div className="mt-2.5 flex flex-col items-center">

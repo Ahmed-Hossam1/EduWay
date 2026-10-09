@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card";
 import { contactInfo } from "../data";
 
 export function ContactInfoCards() {
@@ -6,9 +7,9 @@ export function ContactInfoCards() {
       {contactInfo.map((item) => {
         const Icon = item.icon;
         return (
-          <div
+          <Card
             key={item.id}
-            className="rounded-2xl border border-border bg-card p-5 transition-colors hover:border-primary/40"
+            className="gap-0 rounded-2xl p-5 transition-shadow hover:ring-primary/40"
           >
             <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Icon className="size-5" />
@@ -25,7 +26,7 @@ export function ContactInfoCards() {
               <p className="mt-1 text-sm font-medium text-foreground">{item.value}</p>
             )}
             <p className="mt-1 text-xs text-muted-foreground">{item.description}</p>
-          </div>
+          </Card>
         );
       })}
     </div>

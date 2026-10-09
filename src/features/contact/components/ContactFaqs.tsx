@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { contactFaqs } from "../data";
 
@@ -11,20 +11,18 @@ export function ContactFaqs() {
           subtitle="Quick answers before you reach out."
         />
 
-        <div className="space-y-3">
+        <Accordion className="space-y-3">
           {contactFaqs.map((faq) => (
-            <details
+            <AccordionItem
               key={faq.id}
-              className="group rounded-xl border border-border bg-card px-5 py-4 open:border-primary/40"
+              value={faq.id}
+              className="rounded-xl border border-border bg-card px-5 data-open:border-primary/40"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-foreground">
-                {faq.question}
-                <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
-              </summary>
-              <p className="mt-3 text-sm text-muted-foreground">{faq.answer}</p>
-            </details>
+              <AccordionTrigger className="text-sm font-semibold">{faq.question}</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">{faq.answer}</AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </div>
     </section>
   );

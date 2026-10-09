@@ -1,13 +1,11 @@
 import { Suspense } from "react";
-import { SlidersHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { coursesSortOptions } from "../data";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CoursesResponse, FilterOption } from "../types";
 import { CoursesCount } from "./CoursesCount";
-import { Skeleton } from "@/components/ui/skeleton";
-import CoursesCategoryChips, {
-  CoursesCategoryChipsSkeleton,
-} from "./CoursesCategoryChips";
+import { CoursesCategoryChipsSkeleton } from "./CoursesCategoryChipsSkeleton";
+import CoursesCategoryChips from "./CoursesCategoryChips";
+import { CoursesMobileFilters } from "./CoursesMobileFilters";
+import { CoursesSortSelect } from "./CoursesSortSelect";
 
 interface CoursesToolbarProps {
   coursesPromise: Promise<CoursesResponse>;
@@ -33,29 +31,10 @@ export function CoursesToolbar({
 
         <div className="flex items-center gap-2">
           {/* Mobile only: the filters sidebar is hidden on small screens */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full lg:hidden"
-          >
-            <SlidersHorizontal className="size-4" />
-            Filters
-          </Button>
+          <CoursesMobileFilters categoriesPromise={categoryPromise} />
 
-          <label className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="hidden sm:inline">Sort by</span>
-            <select
-              name="sort"
-              defaultValue={coursesSortOptions[0].value}
-              className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-            >
-              {coursesSortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <span className="hidden text-sm text-muted-foreground sm:inline">Sort by</span>
+          <CoursesSortSelect />
         </div>
       </div>
     </div>

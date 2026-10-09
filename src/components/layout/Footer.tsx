@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import Input from "@/components/ui/input";
 import { Logo } from "./Logo";
 import { footerColumns } from "@/config/navigation";
 
@@ -128,23 +129,22 @@ export function Footer() {
               </p>
             ) : (
               <form onSubmit={handleSubscribe} className="space-y-2">
-                <div className="flex items-center rounded-full border border-border/80 bg-card p-1 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 shadow-xs transition-all">
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Your email"
-                    className="w-full bg-transparent px-3 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0"
-                  />
-                  <Button
-                    type="submit"
-                    size="sm"
-                    className="rounded-full bg-primary text-primary-foreground hover:bg-primary-hover px-4 py-1.5 text-xs font-semibold shrink-0"
-                  >
-                    Subscribe
-                  </Button>
-                </div>
+                <Input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email"
+                  aria-label="Your email"
+                  rounded="full"
+                  Size="md"
+                  className="bg-card pr-1 shadow-xs focus-within:ring-2"
+                  rightIcon={
+                    <Button type="submit" size="sm" rounded="full" className="px-4 text-xs font-semibold">
+                      Subscribe
+                    </Button>
+                  }
+                />
               </form>
             )}
           </div>

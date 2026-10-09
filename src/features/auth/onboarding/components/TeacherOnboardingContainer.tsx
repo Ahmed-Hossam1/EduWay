@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { BookOpen, ShieldCheck, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { OnboardingHeader } from "./OnboardingHeader";
@@ -33,7 +34,7 @@ export function TeacherOnboardingContainer() {
           {/* Header section */}
           <div className="flex flex-col items-center gap-3 text-center">
             {/* Step pill */}
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground shadow-xs">
+            <Badge variant="accent" className="h-auto gap-1.5 border-primary/20 px-3 py-1 font-semibold shadow-xs">
               {currentStep === 1 && (
                 <>
                   <Sparkles className="size-3.5" aria-hidden="true" />
@@ -52,7 +53,7 @@ export function TeacherOnboardingContainer() {
                   Step 3 of 3 · Profile & Verification
                 </>
               )}
-            </span>
+            </Badge>
 
             {/* Main title */}
             <div className="space-y-2">

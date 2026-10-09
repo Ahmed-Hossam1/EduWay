@@ -36,7 +36,7 @@ export function HeroSearch() {
         />
         <Button
           type="submit"
-          className="rounded-full bg-primary text-primary-foreground hover:bg-primary-hover px-6 sm:px-8 py-2 text-sm font-semibold shrink-0"
+          rounded="full" className="bg-primary text-primary-foreground hover:bg-primary-hover px-6 sm:px-8 py-2 text-sm font-semibold shrink-0"
         >
           Search
         </Button>
@@ -52,7 +52,7 @@ export function HeroSearch() {
             variant={"outline"}
             key={topic}
             onClick={() => setQuery(topic)}
-            className="rounded-full border hover:bg-primary hover:text-primary-foreground hover:transition border-border/60 transition-all font-medium"
+            rounded="full" className="border hover:bg-primary hover:text-primary-foreground hover:transition border-border/60 transition-all font-medium"
           >
             {topic}
           </Button>

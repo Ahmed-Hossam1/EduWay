@@ -1,5 +1,6 @@
 import { use } from "react";
 import { SearchX } from "lucide-react";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CourseCard } from "./CourseCard";
 import { CoursesResponse } from "../types";
 
@@ -15,11 +16,15 @@ export default function CoursesGrid({ coursesPromise }: CoursesGridProps) {
 
   if (courses.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
-        <SearchX className="size-10 text-muted-foreground" />
-        <h2 className="mt-4 text-base font-semibold text-foreground">No courses found</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Try another search or remove some filters.</p>
-      </div>
+      <Empty className="border border-dashed py-16">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <SearchX />
+          </EmptyMedia>
+          <EmptyTitle>No courses found</EmptyTitle>
+          <EmptyDescription>Try another search or remove some filters.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 

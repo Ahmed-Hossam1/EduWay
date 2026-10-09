@@ -33,45 +33,45 @@ export function CareerBannerSection() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4">
-                <Link href="/signup">
-                  <Button
-                    className="rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold px-8 py-3 h-auto text-sm shadow-lg shadow-primary/30"
-                  >
-                    <span>Get Started</span>
-                    <ArrowRight className="size-4 ml-1.5" />
-                  </Button>
-                </Link>
+                <Button
+                  rounded="full"
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground font-semibold px-8 py-3 h-auto text-sm shadow-lg shadow-primary/30"
+                  nativeButton={false}
+                  render={<Link href="/signup" />}
+                >
+                  <span>Get Started</span>
+                  <ArrowRight className="size-4 ml-1.5" />
+                </Button>
 
-                <Link href="/preview">
-                  <Button
-                    variant="outline"
-                    className="rounded-full border-white/25 bg-white/5 hover:bg-white/10 text-white font-semibold px-6 py-3 h-auto text-sm backdrop-blur-xs"
-                  >
-                    <Play className="size-4 mr-2 fill-white" />
-                    <span>Watch Video</span>
-                  </Button>
-                </Link>
+                <Button
+                  variant="outline"
+                  rounded="full"
+                  className="border-white/25 bg-white/5 hover:bg-white/10 text-white font-semibold px-6 py-3 h-auto text-sm backdrop-blur-xs"
+                  nativeButton={false}
+                  render={<Link href="/preview" />}
+                >
+                  <Play className="size-4 mr-2 fill-white" />
+                  <span>Watch Video</span>
+                </Button>
               </div>
 
               {/* Social Proof */}
               <div className="flex items-center gap-3 pt-2">
                 <div className="flex -space-x-2">
-                  {
-                    HeroFloatingCard2Images.map((image, idx) => (
-                      <Image
-                        key={idx}
-                        src={image.src}
-                        alt={image.alt}
-                        width={image.width}
-                        height={image.height}
-                        className={image.className}
-                      />
-                    ))
-                  }
+                  {HeroFloatingCard2Images.map((image, idx) => (
+                    <Image
+                      key={idx}
+                      src={image.src}
+                      alt={image.alt}
+                      width={image.width}
+                      height={image.height}
+                      className={image.className}
+                    />
+                  ))}
                 </div>
                 <p className="text-xs text-gray-300 font-medium">
-                  Join <span className="text-white font-bold">10,000+</span> learners
-                  already building their future with EduWay.
+                  Join <span className="text-white font-bold">10,000+</span>{" "}
+                  learners already building their future with EduWay.
                 </p>
               </div>
             </div>
@@ -109,7 +109,9 @@ export function CareerBannerSection() {
                 </div>
                 <div>
                   <p className="text-5 font-bold leading-tight">Track</p>
-                  <p className="text-5 text-gray-500 font-medium">Your Progress</p>
+                  <p className="text-5 text-gray-500 font-medium">
+                    Your Progress
+                  </p>
                 </div>
               </div>
 

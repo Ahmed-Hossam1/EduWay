@@ -119,7 +119,7 @@ function SignupForm() {
                     type="submit"
                     variant="default"
                     size="lg"
-                    className="mt-2 h-11 w-full rounded-xl font-semibold"
+                    rounded="xl" className="mt-2 h-11 w-full font-semibold"
                     disabled={isPending}
                 >
                     {isPending ?

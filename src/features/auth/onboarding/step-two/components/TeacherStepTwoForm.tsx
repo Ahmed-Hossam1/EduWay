@@ -68,7 +68,7 @@ export function TeacherStepTwoForm({
           variant="outline"
           size="lg"
           onClick={onBack}
-          className="w-full sm:w-auto rounded-xl text-sm font-semibold gap-2 border-border hover:bg-muted"
+          rounded="xl" className="w-full sm:w-auto text-sm font-semibold gap-2 border-border hover:bg-muted"
         >
           <ArrowLeft className="size-4" />
           <span>Back to About You</span>
@@ -78,7 +78,7 @@ export function TeacherStepTwoForm({
           type="button"
           size="lg"
           onClick={onContinue}
-          className="w-full sm:w-auto rounded-xl text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
+          rounded="xl" className="w-full sm:w-auto text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
         >
           <span>Continue to Verification</span>
           <ArrowRight className="size-4" />

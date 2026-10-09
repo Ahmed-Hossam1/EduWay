@@ -1,20 +1,21 @@
 "use client"
+import { use } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
 import { RatingStars } from "@/components/shared/RatingStars";
 import { coursesFilterGroups, coursesRatingOptions } from "../data";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { use } from "react";
 import { FilterGroup, FilterOption } from "../types";
+import { useCoursesSearchParams } from "../hooks/useCoursesSearchParams";
 
 type CoursesFiltersProps = {
   categoriesPromise: Promise<FilterOption[]>;
 };
 
 export function CoursesFilters({ categoriesPromise }: CoursesFiltersProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { getValue, getValues, updateParams } = useCoursesSearchParams();
 
   // Categories come from the database, the other groups are static
   const categories = use(categoriesPromise);
@@ -22,24 +23,10 @@ export function CoursesFilters({ categoriesPromise }: CoursesFiltersProps) {
     { id: "category", title: "Category", options: categories },
     ...coursesFilterGroups,
   ];
-  // using this to update URL params instead of using searchParams because searchParams is readonly
-  const params = new URLSearchParams(searchParams.toString());
 
-  // Values of one group from the URL
-  // ?category=web-dev,design => getSelectedValues("category") => ["web-dev", "design"]
-  const getSelectedValues = (groupName: string) => {
-    return searchParams.get(groupName)?.split(",") ?? [];
-  };
-
-  // Put the new params in the URL => the page gets the new courses from the server
-  const updateUrl = (params: URLSearchParams) => {
-    params.delete("page"); // filters changed => start again from page 1
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const handleFilterChange = (checked: boolean, value: string, groupName: string) => {
-    // copy the current URL params so we keep the other filters (search, sort, ...)
-    const selectedValues = getSelectedValues(groupName);
+  const handleFilterChange = (checked: boolean, value: string, queryName: string) => {
+    // ?category=web-dev,design → ["web-dev", "design"]
+    const selectedValues = getValues(queryName);
 
     let newValues: string[];
 
@@ -52,31 +39,19 @@ export function CoursesFilters({ categoriesPromise }: CoursesFiltersProps) {
     }
 
     // 3- write the values back to the URL: ["web-dev", "design"] => "web-dev,design"
-    //    or remove the param when nothing is selected in this group
-    if (newValues.length > 0) {
-      params.set(groupName, newValues.join(","));
-    } else {
-      params.delete(groupName);
-    }
-
-    updateUrl(params);
-  };
-
-  // Rating is one value only (radio), not a list
-  const handleRatingChange = (rating: number) => {
-    params.set("rating", String(rating));
-    updateUrl(params);
+    //    (an empty list → null → the param is removed)
+    updateParams({ [queryName]: newValues.length > 0 ? newValues.join(",") : null });
   };
 
   // Remove every sidebar filter, but keep the search text and the sort
   const handleClearAll = () => {
-    filterGroups.forEach((group) => params.delete(group.id));
-    params.delete("rating");
-    updateUrl(params);
+    const changes: Record<string, null> = { rating: null };
+    filterGroups.forEach((group) => (changes[group.id] = null));
+    updateParams(changes);
   };
 
   return (
-    <aside className="space-y-6" aria-label="Course filters">
+    <aside className="space-y-5" aria-label="Course filters">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-bold text-foreground">Filters</h2>
         <Button variant="link" size="sm" className="h-auto p-0" onClick={handleClearAll}>
@@ -85,53 +60,57 @@ export function CoursesFilters({ categoriesPromise }: CoursesFiltersProps) {
       </div>
 
       {filterGroups.map((group) => (
-        <fieldset key={group.id} className="space-y-3 border-t border-border pt-5">
+        <fieldset key={group.id} className="space-y-3">
+          <Separator className="mb-5" />
           <legend className="sr-only">{group.title}</legend>
           <p className="text-sm font-semibold text-foreground">{group.title}</p>
-          {group.options.map((option) => (
-            <label
-              key={option.id}
-              className="flex cursor-pointer items-center justify-between gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <span className="flex items-center gap-2.5">
-                <Checkbox
-                  name={group.id}
-                  value={option.id}
-                  // checked comes from the URL => stays correct after refresh / back button
-                  checked={getSelectedValues(group.id).includes(option.id)}
-                  onCheckedChange={(checked) => handleFilterChange(checked, option.id, group.id)}
-                />
-                {option.label}
-              </span>
-              {option.count !== undefined && (
-                <span className="text-xs tabular-nums text-muted-foreground/70">{option.count}</span>
-              )}
-            </label>
-          ))}
+
+          {group.options.map((option) => {
+            const id = `filter-${group.id}-${option.id}`;
+            return (
+              <div key={option.id} className="flex items-center justify-between gap-3">
+                <Label htmlFor={id} className="cursor-pointer font-normal text-muted-foreground hover:text-foreground">
+                  <Checkbox
+                    id={id}
+                    name={group.id}
+                    value={option.id}
+                    // checked comes from the URL => stays correct after refresh / back button
+                    checked={getValues(group.id).includes(option.id)}
+                    onCheckedChange={(checked) => handleFilterChange(checked, option.id, group.id)}
+                  />
+                  {option.label}
+                </Label>
+                {option.count !== undefined && (
+                  <span className="text-xs tabular-nums text-muted-foreground/70">{option.count}</span>
+                )}
+              </div>
+            );
+          })}
         </fieldset>
       ))}
 
-      {/* Rating */}
-      <fieldset className="space-y-3 border-t border-border pt-5">
+      {/* Rating: one value only (radio), not a list */}
+      <fieldset className="space-y-3">
+        <Separator className="mb-5" />
         <legend className="sr-only">Rating</legend>
         <p className="text-sm font-semibold text-foreground">Rating</p>
-        {coursesRatingOptions.map((rating) => (
-          <label
-            key={rating}
-            className="flex cursor-pointer items-center gap-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <input
-              type="radio"
-              name="rating"
-              value={rating}
-              checked={searchParams.get("rating") === String(rating)}
-              onChange={() => handleRatingChange(rating)}
-              className="size-4 accent-primary"
-            />
-            <RatingStars rating={rating} />
-            <span>{rating} & up</span>
-          </label>
-        ))}
+
+        <RadioGroup
+          value={getValue("rating") ?? ""}
+          onValueChange={(value) => updateParams({ rating: value as string })}
+          className="gap-3"
+        >
+          {coursesRatingOptions.map((rating) => {
+            const id = `filter-rating-${rating}`;
+            return (
+              <Label key={rating} htmlFor={id} className="cursor-pointer font-normal text-muted-foreground hover:text-foreground">
+                <RadioGroupItem id={id} value={String(rating)} />
+                <RatingStars rating={rating} />
+                <span>{rating} & up</span>
+              </Label>
+            );
+          })}
+        </RadioGroup>
       </fieldset>
     </aside>
   );

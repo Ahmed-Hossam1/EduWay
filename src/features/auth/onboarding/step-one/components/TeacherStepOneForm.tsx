@@ -73,7 +73,7 @@ export function TeacherStepOneForm({
           type="button"
           size="lg"
           onClick={onContinue}
-          className="w-full rounded-xl text-base font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
+          rounded="xl" className="w-full text-base font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
         >
           <span>Continue to Teaching Information</span>
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />

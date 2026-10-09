@@ -14,7 +14,7 @@ export default function AuthTabs({ activeTab }: AuthTabsProps) {
                     type="button"
                     variant="default"
                     size="default"
-                    className="h-8 w-full rounded-lg text-sm font-semibold"
+                    rounded="lg" className="h-8 w-full text-sm font-semibold"
                     aria-current="page"
                 >
                     Sign In
@@ -36,7 +36,7 @@ export default function AuthTabs({ activeTab }: AuthTabsProps) {
                     type="button"
                     variant="default"
                     size="default"
-                    className="h-8 w-full rounded-lg text-sm font-semibold"
+                    rounded="lg" className="h-8 w-full text-sm font-semibold"
                     aria-current="page"
                 >
                     Sign Up

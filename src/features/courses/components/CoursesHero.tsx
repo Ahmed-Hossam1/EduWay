@@ -1,32 +1,32 @@
 "use client"
 import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
-import { ChevronRight, Search, Sparkles, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Search, Sparkles, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
 import { coursesHeroStats, coursesPopularTopics } from "../data";
 import { useState } from "react";
+import { useCoursesSearchParams } from "../hooks/useCoursesSearchParams";
 
 export function CoursesHero() {
-  const searchParams = useSearchParams()
-  const [query, setQuery] = useState<string>(searchParams.get('q') ?? '');
-  const router = useRouter();
+  const { getValue, updateParams } = useCoursesSearchParams();
+  const [query, setQuery] = useState<string>(getValue("q") ?? "");
 
   // Runs when the user presses "Search" (or Enter), not on every letter
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // stop the browser from reloading the page
 
-    // copy the current URL params so we keep the other filters
-    const params = new URLSearchParams(searchParams.toString());
-
-    const text = query.trim();
-    if (text) params.set("q", text);
-    else params.delete("q");
-
-    // new search → start again from page 1
-    params.delete("page");
-
-    router.push(`/courses?${params.toString()}`);
+    // empty text → null → removes q from the URL (the other filters stay)
+    updateParams({ q: query.trim() || null });
   };
 
   return (
@@ -43,16 +43,22 @@ export function CoursesHero() {
           {/* Left: copy + search + topics */}
           <div className="lg:col-span-7">
             {/* Breadcrumb */}
-            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <Link href="/" className="transition-colors hover:text-primary">Home</Link>
-              <ChevronRight className="size-3.5" />
-              <span className="text-foreground">Courses</span>
-            </nav>
+            <Breadcrumb>
+              <BreadcrumbList className="text-xs font-medium">
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link href="/" />} className="hover:text-primary">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Courses</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
 
-            <span className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-background/80 px-3 py-1 text-xs font-semibold text-primary shadow-xs backdrop-blur">
-              <Sparkles className="size-3.5" />
+            <Badge variant="accent" className="mt-5 h-auto gap-1.5 border-primary/20 px-3 py-1 font-semibold shadow-xs">
+              <Sparkles />
               New courses added every week
-            </span>
+            </Badge>
 
             <h1 className="mt-4 text-3xl font-black leading-[1.15] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               Find the right course to{" "}
@@ -83,7 +89,7 @@ export function CoursesHero() {
                   leftIcon={<Search className="size-4" />}
                 />
               </div>
-              <Button type="submit" className="h-12 rounded-full px-8 font-semibold">
+              <Button type="submit" rounded="full" className="h-12 px-8 font-semibold">
                 Search
               </Button>
             </form>
@@ -95,13 +101,14 @@ export function CoursesHero() {
                 Popular:
               </span>
               {coursesPopularTopics.map((topic) => (
-                <Link
+                <Badge
                   key={topic.slug}
-                  href={`/courses?category=${topic.slug}`}
-                  className="rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
+                  variant="outline"
+                  render={<Link href={`/courses?category=${topic.slug}`} />}
+                  className="h-auto bg-background/80 px-3 py-1 hover:border-primary/50 hover:text-primary"
                 >
                   {topic.label}
-                </Link>
+                </Badge>
               ))}
             </div>
           </div>
@@ -112,16 +119,16 @@ export function CoursesHero() {
               {coursesHeroStats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
-                  <div
+                  <Card
                     key={stat.id}
-                    className={`rounded-2xl border border-border bg-card/90 p-4 shadow-sm backdrop-blur transition-colors hover:border-primary/40 sm:p-5 ${index % 2 === 1 ? "lg:translate-y-6" : ""}`}
+                    className={`gap-0 rounded-2xl bg-card/90 p-4 shadow-sm backdrop-blur transition-shadow hover:ring-primary/40 sm:p-5 ${index % 2 === 1 ? "lg:translate-y-6" : ""}`}
                   >
                     <div className={`flex size-10 items-center justify-center rounded-xl ${stat.color}`}>
                       <Icon className="size-5" />
                     </div>
                     <p className="mt-4 text-2xl font-black tracking-tight text-foreground sm:text-3xl">{stat.value}</p>
                     <p className="mt-0.5 text-xs font-medium text-muted-foreground sm:text-sm">{stat.label}</p>
-                  </div>
+                  </Card>
                 );
               })}
             </div>

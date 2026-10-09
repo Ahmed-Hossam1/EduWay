@@ -51,7 +51,7 @@ export default function ChooseRoleForm() {
                 size="lg"
                 disabled={!selectedRole || isPending}
                 onClick={handleSubmit}
-                className="w-full rounded-xl text-base font-semibold transition-all duration-200"
+                rounded="xl" className="w-full text-base font-semibold transition-all duration-200"
             >
                 {isPending ? (
                     <>

@@ -56,7 +56,7 @@ export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
               type="button"
               variant="outline"
               size="sm"
-              className="gap-1.5 rounded-lg border-border hover:border-primary/50 hover:bg-accent/50 text-xs font-medium cursor-pointer"
+              rounded="lg" className="gap-1.5 border-border hover:border-primary/50 hover:bg-accent/50 text-xs font-medium cursor-pointer"
             >
               <ImagePlus className="size-3.5" />
               Upload Image

@@ -38,7 +38,7 @@ export function TeacherStepThreeForm({
           variant="outline"
           size="lg"
           onClick={onBack}
-          className="w-full sm:w-auto rounded-xl text-sm font-semibold gap-2 border-border hover:bg-muted"
+          rounded="xl" className="w-full sm:w-auto text-sm font-semibold gap-2 border-border hover:bg-muted"
         >
           <ArrowLeft className="size-4" />
           <span>Back to Teaching Information</span>
@@ -48,7 +48,7 @@ export function TeacherStepThreeForm({
           type="button"
           size="lg"
           onClick={onFinish}
-          className="w-full sm:w-auto rounded-xl text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
+          rounded="xl" className="w-full sm:w-auto text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
         >
           <Sparkles className="size-4" />
           <span>Finish</span>

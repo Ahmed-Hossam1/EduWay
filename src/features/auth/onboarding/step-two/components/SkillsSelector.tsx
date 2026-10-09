@@ -57,14 +57,17 @@ export function SkillsSelector({ className }: SkillsSelectorProps) {
               className="gap-1.5 px-3 py-1 text-xs font-medium rounded-lg transition-all"
             >
               <span>{skill}</span>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon-xs"
+                rounded="full"
                 onClick={() => handleRemoveSkill(skill)}
-                className="hover:text-destructive transition-colors cursor-pointer"
+                className="size-4 hover:bg-transparent hover:text-destructive"
                 aria-label={`Remove ${skill}`}
               >
                 <X className="size-3" />
-              </button>
+              </Button>
             </Badge>
           ))
         )}
@@ -92,7 +95,7 @@ export function SkillsSelector({ className }: SkillsSelectorProps) {
           variant="outline"
           onClick={() => handleAddSkill(customSkill)}
           disabled={!customSkill.trim()}
-          className="gap-1.5 h-10 px-4 rounded-lg"
+          rounded="lg" className="gap-1.5 h-10 px-4"
         >
           <Plus className="size-4" />
           <span>Add</span>
@@ -106,15 +109,18 @@ export function SkillsSelector({ className }: SkillsSelectorProps) {
         </span>
         <div className="flex flex-wrap gap-1.5">
           {POPULAR_SKILLS.filter((s) => !selectedSkills.includes(s)).map((skill) => (
-            <button
+            <Button
               key={skill}
               type="button"
+              variant="outline"
+              size="xs"
+              rounded="md"
               onClick={() => handleAddSkill(skill)}
-              className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/50 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:bg-accent/40 hover:text-foreground cursor-pointer"
+              className="gap-1 bg-muted/50 px-2.5 text-muted-foreground hover:border-primary/40 hover:bg-accent/40"
             >
               <Plus className="size-3 text-muted-foreground" />
               {skill}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

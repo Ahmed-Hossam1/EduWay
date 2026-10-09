@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { TEACHING_LANGUAGES } from "../data/teachingData";
 
@@ -36,20 +37,21 @@ export function LanguagesSelector({ className }: LanguagesSelectorProps) {
         {TEACHING_LANGUAGES.map((lang) => {
           const isSelected = selectedLanguages.includes(lang);
           return (
-            <button
+            <Button
               key={lang}
               type="button"
+              size="sm"
+              rounded="lg"
+              variant={isSelected ? "default" : "outline"}
               onClick={() => toggleLanguage(lang)}
               className={cn(
-                "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer",
-                isSelected
-                  ? "border-primary bg-primary text-primary-foreground shadow-xs"
-                  : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                "gap-1.5 px-3.5 text-xs",
+                !isSelected && "text-muted-foreground hover:border-primary/40"
               )}
             >
               {isSelected && <Check className="size-3.5 stroke-3" />}
               <span>{lang}</span>
-            </button>
+            </Button>
           );
         })}
       </div>

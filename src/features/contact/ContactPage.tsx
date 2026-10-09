@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { ContactForm } from "./components/ContactForm";
 import { ContactInfoCards } from "./components/ContactInfoCards";
 import { ContactFaqs } from "./components/ContactFaqs";
@@ -9,9 +10,9 @@ export function ContactPage() {
         <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
           {/* Intro + contact info */}
           <div>
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <Badge variant="accent" className="h-auto px-3 py-1 font-semibold">
               Contact us
-            </span>
+            </Badge>
             <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               We&apos;d love to <span className="text-primary">hear from you</span>
             </h1>

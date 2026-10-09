@@ -103,7 +103,7 @@ function LoginForm() {
                     variant="default"
                     disabled={isPending}
                     size="lg"
-                    className="mt-2 h-11 w-full rounded-xl font-semibold"
+                    rounded="xl" className="mt-2 h-11 w-full font-semibold"
                 >
                     {isPending ?
                         <>

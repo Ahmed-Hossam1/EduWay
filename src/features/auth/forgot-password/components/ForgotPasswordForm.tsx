@@ -2,11 +2,12 @@ import Link from "next/link";
 import { ArrowLeft, KeyRound, Mail, Send } from "lucide-react";
 import Input from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 // UI only — the logic (send the reset email with Supabase) will be added later
 export default function ForgotPasswordForm() {
     return (
-        <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-7 shadow-lg sm:max-w-md sm:p-9">
+        <Card className="block w-full max-w-sm rounded-2xl p-7 shadow-lg sm:max-w-md sm:p-9">
             {/* Icon */}
             <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-8 ring-primary/5">
                 <KeyRound className="size-6" />
@@ -38,7 +39,7 @@ export default function ForgotPasswordForm() {
                     autoComplete="email"
                 />
 
-                <Button type="submit" size="lg" className="mt-2 h-11 w-full rounded-xl font-semibold">
+                <Button type="submit" size="lg" rounded="xl" className="mt-2 h-11 w-full font-semibold">
                     <span>Send reset link</span>
                     <Send className="size-4" />
                 </Button>
@@ -57,6 +58,6 @@ export default function ForgotPasswordForm() {
                 <ArrowLeft className="size-4" />
                 Back to sign in
             </Link>
-        </div>
+        </Card>
     );
 }
