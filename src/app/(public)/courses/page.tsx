@@ -12,15 +12,15 @@ type Params = {
 }
 
 export default async function Courses({ searchParams }: Params) {
-    // 1- Read the URL (?category=web-dev&sort=rating&page=2)
     const params = await searchParams;
 
-    // 2- Validate it — a broken URL (?page=abc) falls back to the defaults instead of crashing
+    //  Validate if it's a broken URL (?page=abc) falls back to the defaults instead of crashing
     const parsed = coursesQuerySchema.safeParse(params);
     const query = parsed.success ? parsed.data : coursesQuerySchema.parse({});
 
-    // 3- Get the courses directly from the database (server component → no API request)
-    const data = await getCourses(query);
+    // - Start getting the courses WITHOUT await => the page shows right away,
+    //    and CoursesGrid shows the card skeleton when the promise is done (STREAMING)
+    const coursesPromise = getCourses(query);
 
-    return <CoursesPage data={data} />;
+    return <CoursesPage coursesPromise={coursesPromise} filtersKey={JSON.stringify(query)} />;
 }

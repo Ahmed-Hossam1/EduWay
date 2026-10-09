@@ -1,18 +1,18 @@
-import { SearchX } from "lucide-react";
-import { CourseCard } from "./components/CourseCard";
-import { CoursesHero } from "./components/CoursesHero";
+import { Suspense } from "react";
 import { CoursesFilters } from "./components/CoursesFilters";
-import { CoursesToolbar } from "./components/CoursesToolbar";
+import { CoursesHero } from "./components/CoursesHero";
 import { CoursesPagination } from "./components/CoursesPagination";
+import CoursesGridSkeleton from "./components/CoursesSkeleton";
+import { CoursesToolbar } from "./components/CoursesToolbar";
 import { CoursesResponse } from "./types";
+import CoursesGrid from "./components/CoursesGrid";
 
 type CoursesPageProps = {
-  data: CoursesResponse;
+  coursesPromise: Promise<CoursesResponse>;
+  filtersKey: string; // changes when the filters change => shows the skeleton again
 };
 
-export function CoursesPage({ data }: CoursesPageProps) {
-  const { courses, totalCount } = data;
-
+export function CoursesPage({ coursesPromise, filtersKey }: CoursesPageProps) {
   return (
     <>
       <CoursesHero />
@@ -24,21 +24,12 @@ export function CoursesPage({ data }: CoursesPageProps) {
           </div>
 
           <div className="min-w-0 space-y-8">
-            <CoursesToolbar resultsCount={totalCount} />
+            <CoursesToolbar coursesPromise={coursesPromise} />
 
-            {courses.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
-                {courses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
-                <SearchX className="size-10 text-muted-foreground" />
-                <h2 className="mt-4 text-base font-semibold text-foreground">No courses found</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Try another search or remove some filters.</p>
-              </div>
-            )}
+            {/* Course cards: skeleton first, then the real cards when the data arrives */}
+            <Suspense key={filtersKey} fallback={<CoursesGridSkeleton />}>
+              <CoursesGrid coursesPromise={coursesPromise} />
+            </Suspense>
 
             <CoursesPagination />
           </div>

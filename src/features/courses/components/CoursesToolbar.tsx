@@ -1,12 +1,15 @@
+import { Suspense } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { coursesCategoryChips, coursesSortOptions } from "../data";
+import { CoursesResponse } from "../types";
+import { CoursesCount } from "./CoursesCount";
 
 interface CoursesToolbarProps {
-  resultsCount: number;
+  coursesPromise: Promise<CoursesResponse>;
 }
 
-export function CoursesToolbar({ resultsCount }: CoursesToolbarProps) {
+export function CoursesToolbar({ coursesPromise }: CoursesToolbarProps) {
   return (
     <div className="space-y-4">
       {/* Category chips */}
@@ -27,9 +30,9 @@ export function CoursesToolbar({ resultsCount }: CoursesToolbarProps) {
 
       {/* Results count + sort */}
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">
-          Showing <span className="font-semibold text-foreground">{resultsCount}</span> courses
-        </p>
+        <Suspense fallback={<div className="h-4 w-32 animate-pulse rounded bg-muted" />}>
+          <CoursesCount coursesPromise={coursesPromise} />
+        </Suspense>
 
         <div className="flex items-center gap-2">
           {/* Mobile only: the filters sidebar is hidden on small screens */}

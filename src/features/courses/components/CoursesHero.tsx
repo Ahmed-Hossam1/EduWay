@@ -14,9 +14,9 @@ export function CoursesHero() {
   const params = new URLSearchParams(searchParams.toString())
 
   useEffect(() => {
-    if (!query) return;
-    params.set('q', query)
-    router.replace(`/courses?${params.toString()}`)
+    if (query) params.set('q', query)
+    else params.delete('q');
+    router.push(`/courses?${params.toString()}`)
   }, [query])
 
   return (

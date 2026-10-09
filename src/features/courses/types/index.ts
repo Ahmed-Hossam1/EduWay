@@ -104,3 +104,23 @@ export interface PopularTopic {
   label: string;
   slug: string;
 }
+
+
+// ---------------------------------------------------------------------
+// Params the frontend sends to getCourses() (they come from the URL)
+// example: /courses?q=react&category=web-dev&level=beginner&price=free&duration=0-3&rating=4&sort=rating&page=2
+// ---------------------------------------------------------------------
+export type CourseSort = "popular" | "rating" | "newest" | "price-asc" | "price-desc";
+export type CoursePriceFilter = "free" | "paid";
+export type CourseDurationFilter = "0-3" | "3-10" | "10-plus"; // hours
+
+export interface GetCoursesParams {
+  q?: string;                          // search in the course title
+  category?: string[];                 // category slugs → ["web-dev", "design"]
+  level?: CourseLevel[];               // ["beginner", "advanced"]
+  price?: CoursePriceFilter[];         // ["free"] / ["paid"] / both
+  duration?: CourseDurationFilter[];   // ["0-3", "10-plus"]
+  rating?: number;                     // minimum rating → 4 means "4 stars & up"
+  sort?: CourseSort;                   // default: "popular"
+  page?: number;                       // default: 1
+}
