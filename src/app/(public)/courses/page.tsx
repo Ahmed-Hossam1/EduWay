@@ -1,6 +1,7 @@
 import { CoursesPage } from "@/features/courses/CoursesPage";
 import { coursesQuerySchema } from "@/features/courses/schemas/coursesQuerySchema";
 import { getCourses } from "@/features/courses/server/getCourses";
+import { getCategories } from "@/features/courses/server/getCategories";
 
 export const metadata = {
     title: "Courses",
@@ -22,5 +23,14 @@ export default async function Courses({ searchParams }: Params) {
     //    and CoursesGrid shows the card skeleton when the promise is done (STREAMING)
     const coursesPromise = getCourses(query);
 
-    return <CoursesPage coursesPromise={coursesPromise} filtersKey={JSON.stringify(query)} />;
+    // Categories for the filters sidebar (same idea: no await)
+    const categoriesPromise = getCategories();
+
+    return (
+        <CoursesPage
+            coursesPromise={coursesPromise}
+            categoriesPromise={categoriesPromise}
+            filtersKey={JSON.stringify(query)}
+        />
+    );
 }

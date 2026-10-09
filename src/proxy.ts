@@ -47,7 +47,6 @@ export async function proxy(request: NextRequest) {
         const loginUrl = new URL("/login", request.url);
         return NextResponse.redirect(loginUrl);
     }
-
     // 5- Otherwise let the request pass
     return response;
 }

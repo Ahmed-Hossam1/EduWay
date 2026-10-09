@@ -4,15 +4,17 @@ import { CoursesHero } from "./components/CoursesHero";
 import { CoursesPagination } from "./components/CoursesPagination";
 import CoursesGridSkeleton from "./components/CoursesSkeleton";
 import { CoursesToolbar } from "./components/CoursesToolbar";
-import { CoursesResponse } from "./types";
+import { CoursesResponse, FilterOption } from "./types";
 import CoursesGrid from "./components/CoursesGrid";
+import CoursesFiltersSkeleton from "./components/CoursesFiltersSkeleton";
 
 type CoursesPageProps = {
   coursesPromise: Promise<CoursesResponse>;
+  categoriesPromise: Promise<FilterOption[]>;
   filtersKey: string; // changes when the filters change => shows the skeleton again
 };
 
-export function CoursesPage({ coursesPromise, filtersKey }: CoursesPageProps) {
+export function CoursesPage({ coursesPromise, categoriesPromise, filtersKey }: CoursesPageProps) {
   return (
     <>
       <CoursesHero />
@@ -20,11 +22,13 @@ export function CoursesPage({ coursesPromise, filtersKey }: CoursesPageProps) {
         <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:gap-10">
           {/* Filters sidebar (desktop) */}
           <div className="hidden lg:block">
-            <CoursesFilters />
+            <Suspense fallback={<CoursesFiltersSkeleton />}>
+              <CoursesFilters categoriesPromise={categoriesPromise} />
+            </Suspense>
           </div>
 
           <div className="min-w-0 space-y-8">
-            <CoursesToolbar coursesPromise={coursesPromise} />
+            <CoursesToolbar coursesPromise={coursesPromise} categoryPromise={categoriesPromise} />
 
             {/* Course cards: skeleton first, then the real cards when the data arrives */}
             <Suspense key={filtersKey} fallback={<CoursesGridSkeleton />}>

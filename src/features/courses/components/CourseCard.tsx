@@ -31,7 +31,7 @@ export function CourseCard({ course }: CourseCardProps) {
   const instructorName = getInstructorName(course.instructor);
 
   return (
-    <Card className="group relative transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:ring-primary/40">
+    <Card className="group relative pt-0 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:ring-primary/40">
       {/* Thumbnail — first child gets rounded-t-xl from Card automatically */}
       <div className="relative aspect-16/10 w-full overflow-hidden bg-muted">
         {course.thumbnail_url ? (

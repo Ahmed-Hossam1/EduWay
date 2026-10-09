@@ -1,42 +1,43 @@
 import { Suspense } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { coursesCategoryChips, coursesSortOptions } from "../data";
-import { CoursesResponse } from "../types";
+import { coursesSortOptions } from "../data";
+import { CoursesResponse, FilterOption } from "../types";
 import { CoursesCount } from "./CoursesCount";
+import { Skeleton } from "@/components/ui/skeleton";
+import CoursesCategoryChips, {
+  CoursesCategoryChipsSkeleton,
+} from "./CoursesCategoryChips";
 
 interface CoursesToolbarProps {
   coursesPromise: Promise<CoursesResponse>;
+  categoryPromise: Promise<FilterOption[]>;
 }
 
-export function CoursesToolbar({ coursesPromise }: CoursesToolbarProps) {
+export function CoursesToolbar({
+  coursesPromise,
+  categoryPromise,
+}: CoursesToolbarProps) {
   return (
     <div className="space-y-4">
       {/* Category chips */}
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-        {coursesCategoryChips.map((chip, index) => (
-          <button
-            key={chip}
-            type="button"
-            className={`shrink-0 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${index === 0
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
-              }`}
-          >
-            {chip}
-          </button>
-        ))}
-      </div>
+      <Suspense fallback={<CoursesCategoryChipsSkeleton />}>
+        <CoursesCategoryChips categoryPromise={categoryPromise} />
+      </Suspense>
 
       {/* Results count + sort */}
       <div className="flex items-center justify-between gap-3">
-        <Suspense fallback={<div className="h-4 w-32 animate-pulse rounded bg-muted" />}>
+        <Suspense fallback={<Skeleton className="h-4 w-32" />}>
           <CoursesCount coursesPromise={coursesPromise} />
         </Suspense>
 
         <div className="flex items-center gap-2">
           {/* Mobile only: the filters sidebar is hidden on small screens */}
-          <Button variant="outline" size="sm" className="rounded-full lg:hidden">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full lg:hidden"
+          >
             <SlidersHorizontal className="size-4" />
             Filters
           </Button>

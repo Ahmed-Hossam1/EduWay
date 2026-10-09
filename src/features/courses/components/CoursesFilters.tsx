@@ -4,11 +4,24 @@ import { Button } from "@/components/ui/button";
 import { RatingStars } from "@/components/shared/RatingStars";
 import { coursesFilterGroups, coursesRatingOptions } from "../data";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { use } from "react";
+import { FilterGroup, FilterOption } from "../types";
 
-export function CoursesFilters() {
+type CoursesFiltersProps = {
+  categoriesPromise: Promise<FilterOption[]>;
+};
+
+export function CoursesFilters({ categoriesPromise }: CoursesFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  // Categories come from the database, the other groups are static
+  const categories = use(categoriesPromise);
+  const filterGroups: FilterGroup[] = [
+    { id: "category", title: "Category", options: categories },
+    ...coursesFilterGroups,
+  ];
   // using this to update URL params instead of using searchParams because searchParams is readonly
   const params = new URLSearchParams(searchParams.toString());
 
@@ -57,7 +70,7 @@ export function CoursesFilters() {
 
   // Remove every sidebar filter, but keep the search text and the sort
   const handleClearAll = () => {
-    coursesFilterGroups.forEach((group) => params.delete(group.id));
+    filterGroups.forEach((group) => params.delete(group.id));
     params.delete("rating");
     updateUrl(params);
   };
@@ -71,7 +84,7 @@ export function CoursesFilters() {
         </Button>
       </div>
 
-      {coursesFilterGroups.map((group) => (
+      {filterGroups.map((group) => (
         <fieldset key={group.id} className="space-y-3 border-t border-border pt-5">
           <legend className="sr-only">{group.title}</legend>
           <p className="text-sm font-semibold text-foreground">{group.title}</p>
