@@ -1,4 +1,4 @@
-import { TeacherOnboardingContainer } from "@/features/(auth)/onboarding";
+import { TeacherOnboardingContainer } from "@/features/auth/onboarding";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
