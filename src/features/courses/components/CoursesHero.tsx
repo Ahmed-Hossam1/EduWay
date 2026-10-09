@@ -5,19 +5,29 @@ import { ChevronRight, Search, Sparkles, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { coursesHeroStats, coursesPopularTopics } from "../data";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function CoursesHero() {
   const searchParams = useSearchParams()
   const [query, setQuery] = useState<string>(searchParams.get('q') ?? '');
   const router = useRouter();
-  const params = new URLSearchParams(searchParams.toString())
 
-  useEffect(() => {
-    if (query) params.set('q', query)
-    else params.delete('q');
-    router.push(`/courses?${params.toString()}`)
-  }, [query])
+  // Runs when the user presses "Search" (or Enter), not on every letter
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // stop the browser from reloading the page
+
+    // copy the current URL params so we keep the other filters
+    const params = new URLSearchParams(searchParams.toString());
+
+    const text = query.trim();
+    if (text) params.set("q", text);
+    else params.delete("q");
+
+    // new search → start again from page 1
+    params.delete("page");
+
+    router.push(`/courses?${params.toString()}`);
+  };
 
   return (
     <section className="relative overflow-hidden border-b border-border/50 bg-linear-to-b from-accent/70 via-background to-background">
@@ -59,7 +69,7 @@ export function CoursesHero() {
             </p>
 
             {/* Search */}
-            <form className="mt-7 flex max-w-xl flex-col gap-2 rounded-2xl border border-border bg-card p-2 shadow-lg shadow-primary/5 sm:flex-row sm:rounded-full">
+            <form onSubmit={handleSearch} className="mt-7 flex max-w-xl flex-col gap-2 rounded-2xl border border-border bg-card p-2 shadow-lg shadow-primary/5 sm:flex-row sm:rounded-full">
               <div className="flex-1">
                 <Input
                   type="search"
