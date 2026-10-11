@@ -23,6 +23,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
             description: course.short_description ?? undefined,
             images: course.thumbnail_url ? [course.thumbnail_url] : undefined,
         },
+        twitter: {
+            title: course.title,
+            description: course.short_description ?? undefined,
+            images: course.thumbnail_url ? [course.thumbnail_url] : undefined,
+        }
     };
 }
 

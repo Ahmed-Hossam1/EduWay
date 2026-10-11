@@ -19,7 +19,10 @@ export const getCourseBySlug = cache(async (slug: string): Promise<CourseDetails
         .from("courses")
         .select(`
             *,
-            instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
+            instructor:profiles!courses_instructor_id_fkey (
+                id, first_name, last_name, avatar_url,
+                profile:instructor_profiles ( headline, bio )
+            ),
             course_categories ( category:categories ( id, name, slug ) ),
             course_tags ( tag:tags ( id, name, slug ) ),
             prerequisites:course_requirements!course_requirements_course_id_fkey (

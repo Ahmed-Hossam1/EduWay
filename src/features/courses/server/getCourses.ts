@@ -33,7 +33,7 @@ export const getCourses = async (
     pageSize: number = COURSES_PAGE_SIZE
 ): Promise<CoursesResponse> => {
     // Default values when the param is not in the URL
-    const { q, category, level, price, duration, rating, sort = "popular", page = 1 } = params;
+    const { q, category, level, price, duration, rating, instructorId, sort = "popular", page = 1 } = params;
 
     // 1- Get all published courses + their instructor + their categories
     const supabase = await createSupabaseServerClient();
@@ -74,6 +74,9 @@ export const getCourses = async (
 
         // rating: 4 → only courses rated 4 or more
         if (rating && course.rating_avg < rating) return false;
+
+        // instructor: only the courses of this teacher
+        if (instructorId && course.instructor.id !== instructorId) return false;
 
         return true;
     });

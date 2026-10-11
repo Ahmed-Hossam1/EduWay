@@ -1,4 +1,11 @@
 import { CategoryRow, CourseInstructor, CourseRow } from "@/features/courses/types";
+import { InstructorProfile } from "@/features/instructor-details/types";
+
+// The course instructor + a small part of his instructor profile
+// (profile is null when he has none, or is not approved yet)
+export type CourseDetailsInstructor = CourseInstructor & {
+  profile: Pick<InstructorProfile, "headline" | "bio"> | null;
+};
 
 // One lesson inside a section (no video yet → Phase 3)
 export interface CourseLesson {
@@ -36,7 +43,7 @@ export interface PrerequisiteCourse {
 export type CourseDetails = CourseRow & {
   learning_outcomes: string[];   // "What you'll learn"
   requirements: string[];        // requirements as text
-  instructor: CourseInstructor;
+  instructor: CourseDetailsInstructor;
   categories: CategoryRow[];
   tags: CourseTag[];
   prerequisites: PrerequisiteCourse[];

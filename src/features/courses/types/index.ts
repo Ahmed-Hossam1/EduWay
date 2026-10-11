@@ -123,4 +123,5 @@ export interface GetCoursesParams {
   rating?: number;                     // minimum rating → 4 means "4 stars & up"
   sort?: CourseSort;                   // default: "popular"
   page?: number;                       // default: 1
+  instructorId?: string;               // only this teacher's courses (instructor page)
 }
