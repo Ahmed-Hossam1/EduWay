@@ -7,6 +7,7 @@ import { CoursesToolbar } from "./components/CoursesToolbar";
 import { CoursesResponse, FilterOption } from "./types";
 import CoursesGrid from "./components/CoursesGrid";
 import CoursesFiltersSkeleton from "./components/CoursesFiltersSkeleton";
+import CoursesPaginationSkeleton from "./components/CoursesPaginationSkeleton";
 
 type CoursesPageProps = {
   coursesPromise: Promise<CoursesResponse>;
@@ -35,7 +36,11 @@ export function CoursesPage({ coursesPromise, categoriesPromise, filtersKey }: C
               <CoursesGrid coursesPromise={coursesPromise} />
             </Suspense>
 
-            <CoursesPagination />
+
+            <Suspense key={filtersKey} fallback={<CoursesPaginationSkeleton />}>
+              <CoursesPagination coursesPromise={coursesPromise} />
+            </Suspense>
+
           </div>
         </div>
       </section>

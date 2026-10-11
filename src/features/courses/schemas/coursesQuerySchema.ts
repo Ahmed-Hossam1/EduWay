@@ -7,7 +7,7 @@ export const coursesLevelValues = ["beginner", "intermediate", "advanced"] as co
 export const coursesPriceValues = ["free", "paid"] as const;
 export const coursesDurationValues = ["0-3", "3-10", "10-plus"] as const;
 
-// "web-dev,design" → ["web-dev", "design"]   |   "" or missing → undefined
+// "web-dev,design" => ["web-dev", "design"]   |   "" or missing => undefined
 const commaList = z
     .string()
     .optional()
@@ -18,7 +18,7 @@ const commaList = z
 export const coursesQuerySchema = z.object({
     q: z.string().trim().optional(),
     category: commaList,
-    // only allowed values pass (level=expert → 400)
+    // only allowed values pass (level=expert => 400)
     level: commaList.pipe(z.array(z.enum(coursesLevelValues)).optional()),
     price: commaList.pipe(z.array(z.enum(coursesPriceValues)).optional()),
     duration: commaList.pipe(z.array(z.enum(coursesDurationValues)).optional()),
