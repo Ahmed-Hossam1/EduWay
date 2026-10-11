@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search, Menu, Heart, ShoppingCart } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -19,6 +20,13 @@ import { navItems } from "@/config/navigation";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { UserMenu } from "@/features/profile/components/UserMenu";
 import { usePathname } from "next/navigation";
+
+// One look for every Navbar icon (search, wishlist, cart, theme):
+// round ghost button, 19px icon, muted color → darker on hover
+const navbarIconClass = cn(
+  buttonVariants({ variant: "ghost", size: "icon", rounded: "full" }),
+  "text-muted-foreground hover:text-foreground [&_svg:not([class*='size-'])]:size-[19px]"
+);
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -50,17 +58,20 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="hidden md:flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Search courses"
-            rounded="full"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Button variant="ghost" size="icon" rounded="full" aria-label="Search courses" className={navbarIconClass}>
             <Search />
           </Button>
 
-          <AnimatedThemeToggler className="cursor-pointer" />
+          {/* TODO: counts come from useWishlist / useCart when the tables exist */}
+          <Link href="/wishlist" aria-label="Wishlist" className={cn(navbarIconClass, "hidden lg:inline-flex")}>
+            <Heart />
+          </Link>
+
+          <Link href="/cart" aria-label="Cart" className={cn(navbarIconClass, "hidden lg:inline-flex")}>
+            <ShoppingCart />
+          </Link>
+
+          <AnimatedThemeToggler className={navbarIconClass} />
 
           {isPending ? (
             <Skeleton className="size-8 rounded-full" />
@@ -84,8 +95,8 @@ export function Navbar() {
         </div>
 
         {/* Mobile: theme + avatar + menu */}
-        <div className="flex md:hidden items-center gap-2">
-          <AnimatedThemeToggler />
+        <div className="flex md:hidden items-center gap-1">
+          <AnimatedThemeToggler className={navbarIconClass} />
           {profile && (
             <UserMenu
               firstName={profile.first_name}
@@ -123,6 +134,16 @@ export function Navbar() {
                 ))}
               </nav>
 
+              <div className="flex flex-col gap-1 px-4">
+                <Separator className="mb-2" />
+                <Link href="/wishlist" onClick={closeMobileMenu} className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary">
+                  <Heart className="size-5" /> Wishlist
+                </Link>
+                <Link href="/cart" onClick={closeMobileMenu} className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary">
+                  <ShoppingCart className="size-5" /> Cart
+                </Link>
+              </div>
+
               {!isPending && !profile && (
                 <div className="mt-auto flex flex-col gap-2.5 p-4">
                   <Separator className="mb-2" />
@@ -138,6 +159,6 @@ export function Navbar() {
           </Sheet>
         </div>
       </div>
-    </header>
+    </header >
   );
 }
