@@ -18,11 +18,12 @@ import { Logo } from "./Logo";
 import { navItems } from "@/config/navigation";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { UserMenu } from "@/features/profile/components/UserMenu";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: profile, isPending } = useProfile();
-
+  const pathName = usePathname()
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
@@ -37,7 +38,7 @@ export function Navbar() {
             <Link
               key={item.label}
               href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${item.isActive
+              className={`text-sm font-medium transition-colors hover:text-primary ${item.href === pathName
                 ? "text-primary font-semibold"
                 : "text-muted-foreground"
                 }`}
@@ -114,7 +115,7 @@ export function Navbar() {
                     key={item.label}
                     href={item.href}
                     onClick={closeMobileMenu}
-                    className={`rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary ${item.isActive ? "text-primary font-semibold" : "text-foreground"
+                    className={`rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary ${item.href === pathName ? "text-primary font-semibold" : "text-foreground"
                       }`}
                   >
                     {item.label}

@@ -32,12 +32,12 @@ export function CoursesPage({ coursesPromise, categoriesPromise, filtersKey }: C
             <CoursesToolbar coursesPromise={coursesPromise} categoryPromise={categoriesPromise} />
 
             {/* Course cards: skeleton first, then the real cards when the data arrives */}
-            <Suspense key={filtersKey} fallback={<CoursesGridSkeleton />}>
+            <Suspense key={`grid-${filtersKey}`} fallback={<CoursesGridSkeleton />}>
               <CoursesGrid coursesPromise={coursesPromise} />
             </Suspense>
 
 
-            <Suspense key={filtersKey} fallback={<CoursesPaginationSkeleton />}>
+            <Suspense key={`pagination-${filtersKey}`} fallback={<CoursesPaginationSkeleton />}>
               <CoursesPagination coursesPromise={coursesPromise} />
             </Suspense>
 

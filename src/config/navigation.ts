@@ -1,7 +1,7 @@
 import { NavItem, FooterColumn } from "@/types/navigation";
 
 export const navItems: NavItem[] = [
-  { label: "Home", href: "/", isActive: true },
+  { label: "Home", href: "/" },
   { label: "Courses", href: "/courses" },
   { label: "Instructors", href: "/instructors" },
   { label: "About", href: "/about" },
