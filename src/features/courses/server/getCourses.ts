@@ -41,7 +41,7 @@ export const getCourses = async (
         .from("courses")
         .select(`
             *,
-            instructor:profiles ( id, first_name, last_name, avatar_url ),
+            instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
             course_categories ( category:categories ( id, name, slug ) )
         `)
         .eq("status", "published");

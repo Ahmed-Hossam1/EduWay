@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
 // Routes that require a logged-in user (any path that starts with one of these)
-const protectedRoutes = ["/choose-role", "/onboarding", "/dashboard", "/waiting", "/rejected"];
+const protectedRoutes = ["/choose-role", "/onboarding", "/dashboard", "/waiting", "/rejected", "/wishlist", "/cart"];
 
 export async function proxy(request: NextRequest) {
     // 1- The response we will return if the user is allowed to continue.

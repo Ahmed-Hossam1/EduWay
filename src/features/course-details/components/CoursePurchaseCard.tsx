@@ -1,4 +1,5 @@
-import { BarChart3, BookOpen, Clock, Globe, Heart, Layers, ShoppingCart } from "lucide-react";
+import { BarChart3, BookOpen, Clock, Globe, Layers, ShoppingCart } from "lucide-react";
+import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -9,7 +10,7 @@ type CoursePurchaseCardProps = {
   course: CourseDetails;
 };
 
-// UI only for now — Enroll / Cart / Wishlist logic comes with enrollments, cart and wishlist
+// Enroll / Cart are UI only for now — Wishlist works
 export function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
   const { price, currency, level, duration_seconds, lessons_count, sections, language } = course
   const isFree = price === 0;
@@ -46,10 +47,7 @@ export function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
           </Button>
         )}
 
-        <Button variant="ghost" size="lg" rounded="xl" className="h-10 w-full text-muted-foreground">
-          <Heart />
-          Add to wishlist
-        </Button>
+        <WishlistButton courseId={course.id} variant="full" />
       </CardContent>
 
       <Separator />

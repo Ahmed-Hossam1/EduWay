@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bookmark, ImageOff } from "lucide-react";
+import { ImageOff } from "lucide-react";
+import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RatingStars } from "@/components/shared/RatingStars";
-import { Button } from "@/components/ui/button";
 import { Course } from "../types";
 import {
   COURSE_BADGES,
@@ -70,7 +70,7 @@ export function CourseCard({ course }: CourseCardProps) {
         )}
       </div>
 
-      {/* Header: Title + Bookmark */}
+      {/* Header: Title + Wishlist heart */}
       <CardHeader>
         <CardTitle>
           <Link href={`/courses/${course.slug}`}>
@@ -81,9 +81,7 @@ export function CourseCard({ course }: CourseCardProps) {
         </CardTitle>
 
         <CardAction>
-          <Button variant={"ghost"} size={"icon"} aria-label="Save course">
-            <Bookmark />
-          </Button>
+          <WishlistButton courseId={course.id} />
         </CardAction>
       </CardHeader>
 

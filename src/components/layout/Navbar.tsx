@@ -19,6 +19,8 @@ import { Logo } from "./Logo";
 import { navItems } from "@/config/navigation";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { UserMenu } from "@/features/profile/components/UserMenu";
+import { useWishlist } from "@/features/wishlist/hooks/useWishlist";
+import { Badge } from "@/components/ui/badge";
 import { usePathname } from "next/navigation";
 
 // One look for every Navbar icon (search, wishlist, cart, theme):
@@ -31,6 +33,7 @@ const navbarIconClass = cn(
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: profile, isPending } = useProfile();
+  const { data: wishlistIds = [] } = useWishlist();
   const pathName = usePathname()
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -62,9 +65,18 @@ export function Navbar() {
             <Search />
           </Button>
 
-          {/* TODO: counts come from useWishlist / useCart when the tables exist */}
-          <Link href="/wishlist" aria-label="Wishlist" className={cn(navbarIconClass, "hidden lg:inline-flex")}>
+          {/* TODO: cart count comes from useCart when the cart tables exist */}
+          <Link
+            href="/wishlist"
+            aria-label={wishlistIds.length > 0 ? `Wishlist (${wishlistIds.length})` : "Wishlist"}
+            className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
+          >
             <Heart />
+            {wishlistIds.length > 0 && (
+              <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] tabular-nums">
+                {wishlistIds.length > 99 ? "99+" : wishlistIds.length}
+              </Badge>
+            )}
           </Link>
 
           <Link href="/cart" aria-label="Cart" className={cn(navbarIconClass, "hidden lg:inline-flex")}>
@@ -138,6 +150,7 @@ export function Navbar() {
                 <Separator className="mb-2" />
                 <Link href="/wishlist" onClick={closeMobileMenu} className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary">
                   <Heart className="size-5" /> Wishlist
+                  {wishlistIds.length > 0 && <Badge className="ml-auto">{wishlistIds.length}</Badge>}
                 </Link>
                 <Link href="/cart" onClick={closeMobileMenu} className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary">
                   <ShoppingCart className="size-5" /> Cart
