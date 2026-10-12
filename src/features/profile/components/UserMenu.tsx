@@ -34,6 +34,7 @@ export function UserMenu({ firstName, lastName, avatarUrl }: UserMenuProps) {
     // 2- Clear the cached profile so the navbar shows Log in / Sign up again
     queryClient.setQueryData(["profile"], null);
     queryClient.removeQueries({ queryKey: ["wishlist"] }); // the next user must not see these hearts
+    queryClient.removeQueries({ queryKey: ["cart"] });
     // 3- Go home and re-run the proxy / server components without the session
     router.push("/");
     router.refresh();

@@ -1,4 +1,5 @@
-import { BarChart3, BookOpen, Clock, Globe, Layers, ShoppingCart } from "lucide-react";
+import { BarChart3, BookOpen, Clock, Globe, Layers } from "lucide-react";
+import { AddToCartButton } from "@/features/cart/components/AddToCartButton";
 import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -10,7 +11,7 @@ type CoursePurchaseCardProps = {
   course: CourseDetails;
 };
 
-// Enroll / Cart are UI only for now — Wishlist works
+// Enroll is UI only for now — Cart and Wishlist work
 export function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
   const { price, currency, level, duration_seconds, lessons_count, sections, language } = course
   const isFree = price === 0;
@@ -41,10 +42,7 @@ export function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
         </Button>
 
         {!isFree && (
-          <Button variant="outline" size="lg" rounded="xl" className="h-11 w-full font-semibold">
-            <ShoppingCart />
-            Add to cart
-          </Button>
+          <AddToCartButton courseId={course.id} />
         )}
 
         <WishlistButton courseId={course.id} variant="full" />
