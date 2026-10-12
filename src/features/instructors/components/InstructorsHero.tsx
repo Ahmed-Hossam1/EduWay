@@ -1,10 +1,4 @@
 "use client"
-import Link from "next/link";
-import { useState } from "react";
-import { Search, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Input from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,8 +7,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import Input from "@/components/ui/input";
+import { ArrowRight, Check, Search } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 // same URL helper as /courses (it works with the current page path)
 import { useCoursesSearchParams } from "@/features/courses/hooks/useCoursesSearchParams";
+import { highlights, teachPerks } from "../data";
+
+
 
 export function InstructorsHero() {
   const { getValue, updateParams } = useCoursesSearchParams();
@@ -29,60 +32,98 @@ export function InstructorsHero() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-border/50 bg-linear-to-b from-accent/70 via-background to-background">
-      {/* Background decoration */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[22px_22px] opacity-60 mask-[radial-gradient(ellipse_at_top_left,black_30%,transparent_70%)]" />
-        <div className="absolute -top-24 -right-24 size-96 rounded-full bg-primary/15 blur-3xl" />
-      </div>
+    <section className="border-b border-border/50 bg-muted/40">
+      <div className="container mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
+        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+          {/* Left: title + search + highlights */}
+          <div className="lg:col-span-7">
+            {/* Breadcrumb */}
+            <Breadcrumb>
+              <BreadcrumbList className="text-xs font-medium">
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link href="/" />} className="hover:text-primary">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Instructors</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
 
-      <div className="container relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
-        <div className="max-w-2xl">
-          {/* Breadcrumb */}
-          <Breadcrumb>
-            <BreadcrumbList className="text-xs font-medium">
-              <BreadcrumbItem>
-                <BreadcrumbLink render={<Link href="/" />} className="hover:text-primary">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Instructors</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+            {/* Small title above the heading */}
+            <p className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary">
+              <span className="h-px w-8 bg-primary" />
+              Our instructors
+            </p>
 
-          <Badge variant="accent" className="mt-5 h-auto gap-1.5 border-primary/20 px-3 py-1 font-semibold shadow-xs">
-            <Sparkles />
-            Every instructor is reviewed by our team
-          </Badge>
+            <h1 className="mt-3 text-3xl font-black leading-[1.15] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              The experts behind every EduWay course
+            </h1>
 
-          <h1 className="mt-4 text-3xl font-black leading-[1.15] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            Learn from <span className="text-primary">industry experts</span>
-          </h1>
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Engineers, designers and data experts who teach what they do every day. Find your next mentor.
+            </p>
 
-          <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Meet the people behind EduWay courses — engineers, designers and data experts who teach what they do every day.
-          </p>
+            {/* Search */}
+            <form onSubmit={handleSearch} className="mt-7 flex max-w-xl gap-2">
+              <div className="flex-1">
+                <Input
+                  type="search"
+                  placeholder="Search by name"
+                  aria-label="Search instructors"
+                  Size="lg"
+                  className="bg-background"
+                  onChange={(e) => setQuery(e.target.value)}
+                  value={query}
+                  leftIcon={<Search className="size-4" />}
+                />
+              </div>
+              <Button type="submit" className="h-12 px-6 font-semibold">
+                Search
+              </Button>
+            </form>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="mt-7 flex max-w-xl flex-col gap-2 rounded-2xl border border-border bg-card p-2 shadow-lg shadow-primary/5 sm:flex-row sm:rounded-full">
-            <div className="flex-1">
-              <Input
-                type="search"
-                placeholder="Search instructors by name"
-                aria-label="Search instructors"
-                Size="lg"
-                rounded="full"
-                variant="ghost"
-                onChange={(e) => setQuery(e.target.value)}
-                value={query}
-                leftIcon={<Search className="size-4" />}
-              />
-            </div>
-            <Button type="submit" rounded="full" className="h-12 px-8 font-semibold">
-              Search
-            </Button>
-          </form>
+            {/* Highlights */}
+            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+              {highlights.map((item) => (
+                <li key={item.label} className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <item.icon className="size-4 text-primary" />
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Right: "Teach on EduWay" card */}
+          <div className="lg:col-span-5">
+            <Card className="gap-0 rounded-3xl bg-primary p-6 text-primary-foreground ring-0 sm:p-8">
+              <h2 className="text-2xl font-black tracking-tight">Teach on EduWay</h2>
+              <p className="mt-2 text-sm text-primary-foreground/80">
+                Are you an expert? Join our instructors and start teaching today.
+              </p>
+
+              <ul className="mt-5 space-y-3">
+                {teachPerks.map((perk) => (
+                  <li key={perk} className="flex items-start gap-2 text-sm">
+                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/15">
+                      <Check className="size-3" />
+                    </span>
+                    {perk}
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                variant="secondary"
+                className="mt-7 h-11 w-full font-semibold"
+                nativeButton={false}
+                render={<Link href="/auth/signup" />}
+              >
+                Become an instructor
+                <ArrowRight />
+              </Button>
+            </Card>
+          </div>
         </div>
       </div>
     </section>

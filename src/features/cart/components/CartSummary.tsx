@@ -1,11 +1,12 @@
 "use client"
 import Link from "next/link"
 import { ArrowRight, Lock } from "lucide-react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Spinner } from "@/components/ui/spinner"
 import { formatPrice } from "@/features/courses/utils/format"
+import { useCheckout } from "@/features/checkout/hooks/useCheckout"
 
 type CartSummaryProps = {
     itemsCount: number
@@ -13,8 +14,12 @@ type CartSummaryProps = {
     currency: string
 }
 
-// The order summary on the right (bottom on mobile). Checkout is UI only until payments exist.
+// The order summary on the right (bottom on mobile). "Checkout" → Stripe payment page.
 export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
+    const { mutate: startCheckout, isPending, isSuccess } = useCheckout()
+    // isSuccess: the request is done but the browser is still loading Stripe → keep the spinner
+    const isRedirecting = isPending || isSuccess
+
     return (
         <Card className="rounded-2xl shadow-lg">
             <CardHeader>
@@ -38,10 +43,20 @@ export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
                     size="lg"
                     rounded="xl"
                     className="h-11 w-full font-semibold"
-                    onClick={() => toast.info("Checkout is coming soon")}
+                    disabled={isRedirecting}
+                    onClick={() => startCheckout()}
                 >
-                    Checkout
-                    <ArrowRight />
+                    {isRedirecting ? (
+                        <>
+                            <Spinner className="size-4" />
+                            Redirecting to payment...
+                        </>
+                    ) : (
+                        <>
+                            Checkout
+                            <ArrowRight />
+                        </>
+                    )}
                 </Button>
                 <Button variant="ghost" rounded="xl" className="w-full" nativeButton={false} render={<Link href="/courses" />}>
                     Continue shopping
