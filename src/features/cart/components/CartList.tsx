@@ -9,6 +9,7 @@ import { Course } from "@/features/courses/types"
 import { useCart } from "../hooks/useCart"
 import { CartItem } from "./CartItem"
 import { CartSummary } from "./CartSummary"
+import { useRemoveAllCart } from "../hooks/useRemoveAllCart"
 
 type CartListProps = {
     coursesPromise: Promise<Course[]>
@@ -17,6 +18,8 @@ type CartListProps = {
 export function CartList({ coursesPromise }: CartListProps) {
     // full courses from the server (streamed)...
     const courses = use(coursesPromise)
+
+    const { mutate: removeAllCart } = useRemoveAllCart()
 
     // ...filtered by the ids in the React Query cache => "Remove" hides the row
     // and updates the total right away (optimistic), without a reload
@@ -47,9 +50,15 @@ export function CartList({ coursesPromise }: CartListProps) {
     return (
         <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
             <Card className="rounded-2xl p-5 sm:p-6">
-                <p className="text-sm font-semibold text-foreground">
-                    {cartCourses.length} {cartCourses.length === 1 ? "course" : "courses"} in cart
-                </p>
+                <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-foreground">
+                        {cartCourses.length} {cartCourses.length === 1 ? "course" : "courses"} in cart
+                    </p>
+                    <Button variant={"destructive"} className="capitalize" onClick={() => removeAllCart()}>
+                        remove all
+                    </Button>
+                </div>
+
                 <ul className="divide-y divide-border">
                     {cartCourses.map((course) => (
                         <CartItem key={course.id} course={course} />
@@ -57,11 +66,15 @@ export function CartList({ coursesPromise }: CartListProps) {
                 </ul>
             </Card>
 
+
+
             <aside>
                 <div className="lg:sticky lg:top-24">
                     <CartSummary itemsCount={cartCourses.length} total={total} currency={cartCourses[0].currency} />
+
                 </div>
             </aside>
+
         </div>
     )
 }

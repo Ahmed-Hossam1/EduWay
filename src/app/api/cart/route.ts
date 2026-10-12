@@ -58,3 +58,19 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: "Added to cart" }, { status: 201 });
 }
+
+
+export async function DELETE() {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const { error } = await supabase
+        .from("cart_items")
+        .delete()
+        .eq("user_id", user.id);
+    if (error) {
+        console.error("Remove all from cart error:", error);
+        return NextResponse.json({ message: "Failed to remove all from cart" }, { status: 500 });
+    }
+    return NextResponse.json({ message: "Removed all from cart" }, { status: 200 });
+}

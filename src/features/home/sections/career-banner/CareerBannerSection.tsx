@@ -37,7 +37,7 @@ export function CareerBannerSection() {
                   rounded="full"
                   className="bg-primary hover:bg-primary-hover text-primary-foreground font-semibold px-8 py-3 h-auto text-sm shadow-lg shadow-primary/30"
                   nativeButton={false}
-                  render={<Link href="/signup" />}
+                  render={<Link href="/auth/signup" />}
                 >
                   <span>Get Started</span>
                   <ArrowRight className="size-4 ml-1.5" />

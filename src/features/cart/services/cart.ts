@@ -15,3 +15,7 @@ export const addToCartService = async (courseId: string) => {
 export const removeFromCartService = async (courseId: string) => {
     return await apiClient.delete(`/cart/${courseId}`);
 };
+
+export const RemoveAllCart = async () => {
+    await apiClient.delete("/cart")
+}

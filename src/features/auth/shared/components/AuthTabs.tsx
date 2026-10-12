@@ -21,7 +21,7 @@ export default function AuthTabs({ activeTab }: AuthTabsProps) {
                 </Button>
             ) : (
                 <Link
-                    href="/login"
+                    href="/auth/login"
                     className={cn(
                         buttonVariants({ variant: "ghost", size: "default" }),
                         "h-8 w-full rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -43,7 +43,7 @@ export default function AuthTabs({ activeTab }: AuthTabsProps) {
                 </Button>
             ) : (
                 <Link
-                    href="/signup"
+                    href="/auth/signup"
                     className={cn(
                         buttonVariants({ variant: "ghost", size: "default" }),
                         "h-8 w-full rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground"

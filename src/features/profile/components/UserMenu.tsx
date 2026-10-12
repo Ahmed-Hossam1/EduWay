@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { BookOpen, LayoutDashboard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -35,6 +35,7 @@ export function UserMenu({ firstName, lastName, avatarUrl }: UserMenuProps) {
     queryClient.setQueryData(["profile"], null);
     queryClient.removeQueries({ queryKey: ["wishlist"] }); // the next user must not see these hearts
     queryClient.removeQueries({ queryKey: ["cart"] });
+    queryClient.removeQueries({ queryKey: ["enrollments"] });
     // 3- Go home and re-run the proxy / server components without the session
     router.push("/");
     router.refresh();
@@ -57,7 +58,11 @@ export function UserMenu({ firstName, lastName, avatarUrl }: UserMenuProps) {
           <DropdownMenuLabel className="text-sm text-foreground">{fullName}</DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+        <DropdownMenuItem onClick={() => router.push("/student/my-courses")}>
+          <BookOpen />
+          My courses
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/teacher/dashboard")}>
           <LayoutDashboard />
           Dashboard
         </DropdownMenuItem>

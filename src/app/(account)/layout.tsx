@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export default function OnboardingLayout({
+export default function AccountLayout({
   children,
 }: {
   children: ReactNode;

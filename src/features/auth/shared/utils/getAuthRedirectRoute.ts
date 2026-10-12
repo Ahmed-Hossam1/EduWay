@@ -11,7 +11,7 @@ export function getAuthRedirectRoute(role: string, status: string): string {
 
     // Profile exists but role hasn't been chosen yet
     if (!role || !status) {
-        nextRoute = "/choose-role";
+        nextRoute = "/account/choose-role";
     }
 
     if (role === "student") {
@@ -21,19 +21,19 @@ export function getAuthRedirectRoute(role: string, status: string): string {
     if (role === "teacher") {
         switch (status) {
             case "onboarding":
-                nextRoute = "/onboarding";
+                nextRoute = "/account/onboarding";
                 break;
 
             case "waiting":
-                nextRoute = "/waiting";
+                nextRoute = "/account/waiting";
                 break;
 
             case "approved":
-                nextRoute = "/dashboard";
+                nextRoute = "/teacher/dashboard";
                 break;
 
             case "rejected":
-                nextRoute = "/rejected";
+                nextRoute = "/account/rejected";
                 break;
         }
     }

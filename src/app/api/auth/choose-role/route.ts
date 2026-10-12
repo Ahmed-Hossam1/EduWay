@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const nextRoute =
         role === "teacher"
-            ? "/onboarding"
+            ? "/account/onboarding"
             : "/";
 
     return NextResponse.json(

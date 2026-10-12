@@ -48,3 +48,22 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: "Added to wishlist" }, { status: 201 });
 }
+
+// REMOVE ALL
+export async function DELETE() {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const { error } = await supabase
+        .from("wishlist_items")
+        .delete()
+        .eq("user_id", user.id);
+
+    if (error) {
+        console.error("Remove all from wishlist error:", error);
+        return NextResponse.json({ message: "Failed to remove all from wishlist" }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: "Removed all from wishlist" }, { status: 200 });
+}

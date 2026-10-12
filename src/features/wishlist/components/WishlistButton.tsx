@@ -27,7 +27,7 @@ export function WishlistButton({ courseId, variant = "icon", className }: Wishli
         // guests have no wishlist → ask them to log in
         if (!profile) {
             toast.info("Log in to save courses to your wishlist")
-            router.push("/login")
+            router.push("/auth/login")
             return
         }
         toggleWishlist({ courseId, isSaved })

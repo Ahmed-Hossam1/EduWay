@@ -15,3 +15,7 @@ export const addToWishlistService = async (courseId: string) => {
 export const removeFromWishlistService = async (courseId: string) => {
     return await apiClient.delete(`/wishlist/${courseId}`);
 };
+
+export const removeAllFromWishlistService = async () => {
+    return await apiClient.delete(`/wishlist`);
+};

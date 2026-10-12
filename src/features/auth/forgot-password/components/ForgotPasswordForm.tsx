@@ -52,7 +52,7 @@ export default function ForgotPasswordForm() {
 
             {/* Back to login */}
             <Link
-                href="/login"
+                href="/auth/login"
                 className="mt-6 flex items-center justify-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
             >
                 <ArrowLeft className="size-4" />

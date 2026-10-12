@@ -10,7 +10,7 @@ export async function GET(request: Request) {
         // OAuth callback must contain a temporary authorization code.
         if (!code) {
             return NextResponse.redirect(
-                new URL("/login?error=oauth_callback", request.url)
+                new URL("/auth/login?error=oauth_callback", request.url)
             );
         }
 
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
             console.error("OAuth exchange error:", exchangeError);
 
             return NextResponse.redirect(
-                new URL("/login?error=oauth_exchange", request.url)
+                new URL("/auth/login?error=oauth_exchange", request.url)
             );
         }
 
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
             console.error("Get user error:", userError);
 
             return NextResponse.redirect(
-                new URL("/login?error=user_not_found", request.url)
+                new URL("/auth/login?error=user_not_found", request.url)
             );
         }
 
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
             console.error("Profile lookup error:", profileError);
 
             return NextResponse.redirect(
-                new URL("/login?error=profile_error", request.url)
+                new URL("/auth/login?error=profile_error", request.url)
             );
         }
 
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
         // POST /api/auth/select-role
         if (!profile) {
             return NextResponse.redirect(
-                new URL("/choose-role", request.url)
+                new URL("/account/choose-role", request.url)
             );
         }
 
@@ -79,7 +79,7 @@ export async function GET(request: Request) {
         console.error("OAuth callback error:", error);
 
         return NextResponse.redirect(
-            new URL("/login?error=oauth_callback", request.url)
+            new URL("/auth/login?error=oauth_callback", request.url)
         );
     }
 }

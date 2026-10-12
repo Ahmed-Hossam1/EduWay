@@ -151,7 +151,7 @@ function SignupForm() {
             <p className="mt-7 text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
                 <Link
-                    href="/login"
+                    href="/auth/login"
                     className="font-semibold text-primary transition-colors hover:text-primary-hover hover:underline"
                 >
                     Sign in

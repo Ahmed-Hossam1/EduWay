@@ -67,18 +67,23 @@ export function Navbar() {
             <Search />
           </Button>
 
-          <Link
-            href="/wishlist"
-            aria-label={wishlistIds.length > 0 ? `Wishlist (${wishlistIds.length})` : "Wishlist"}
-            className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
-          >
-            <Heart />
-            {wishlistIds.length > 0 && (
-              <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] tabular-nums">
-                {wishlistIds.length > 99 ? "99+" : wishlistIds.length}
-              </Badge>
+
+          {
+            profile && (
+              <Link
+                href="/student/wishlist"
+                aria-label={wishlistIds.length > 0 ? `Wishlist (${wishlistIds.length})` : "Wishlist"}
+                className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
+              >
+                <Heart />
+                {wishlistIds.length > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] tabular-nums">
+                    {wishlistIds.length > 99 ? "99+" : wishlistIds.length}
+                  </Badge>
+                )}
+              </Link>
+
             )}
-          </Link>
 
           <Link
             href="/cart"
@@ -106,10 +111,10 @@ export function Navbar() {
           ) : (
             <>
               {/* render={<Link />} → the Button IS the link (no <button> inside <a>) */}
-              <Button variant="outline" rounded="full" className="px-5" nativeButton={false} render={<Link href="/login" />}>
+              <Button variant="outline" rounded="full" className="px-5" nativeButton={false} render={<Link href="/auth/login" />}>
                 Log in
               </Button>
-              <Button rounded="full" className="px-5 shadow-sm" nativeButton={false} render={<Link href="/signup" />}>
+              <Button rounded="full" className="px-5 shadow-sm" nativeButton={false} render={<Link href="/auth/signup" />}>
                 Sign up
               </Button>
             </>
@@ -158,10 +163,14 @@ export function Navbar() {
 
               <div className="flex flex-col gap-1 px-4">
                 <Separator className="mb-2" />
-                <Link href="/wishlist" onClick={closeMobileMenu} className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary">
-                  <Heart className="size-5" /> Wishlist
-                  {wishlistIds.length > 0 && <Badge className="ml-auto">{wishlistIds.length}</Badge>}
-                </Link>
+                {
+                  profile && (
+                    <Link href="/student/wishlist" onClick={closeMobileMenu} className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary">
+                      <Heart className="size-5" /> Wishlist
+                      {wishlistIds.length > 0 && <Badge className="ml-auto">{wishlistIds.length}</Badge>}
+                    </Link>
+                  )}
+
                 <Link href="/cart" onClick={closeMobileMenu} className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary">
                   <ShoppingCart className="size-5" /> Cart
                   {cartIds.length > 0 && <Badge className="ml-auto">{cartIds.length}</Badge>}
@@ -171,10 +180,10 @@ export function Navbar() {
               {!isPending && !profile && (
                 <div className="mt-auto flex flex-col gap-2.5 p-4">
                   <Separator className="mb-2" />
-                  <Button variant="outline" rounded="full" nativeButton={false} render={<Link href="/login" onClick={closeMobileMenu} />}>
+                  <Button variant="outline" rounded="full" nativeButton={false} render={<Link href="/auth/login" onClick={closeMobileMenu} />}>
                     Log in
                   </Button>
-                  <Button rounded="full" nativeButton={false} render={<Link href="/signup" onClick={closeMobileMenu} />}>
+                  <Button rounded="full" nativeButton={false} render={<Link href="/auth/signup" onClick={closeMobileMenu} />}>
                     Sign up
                   </Button>
                 </div>

@@ -51,7 +51,7 @@ export function CTASection() {
                 rounded="full"
                 className="bg-white text-primary hover:bg-white/90 font-bold px-8 py-3.5 h-auto text-sm sm:text-base shadow-xl hover:scale-105 transition-all"
                 nativeButton={false}
-                render={<Link href="/signup" />}
+                render={<Link href="/auth/signup" />}
               >
                 <span>Create Free Account</span>
                 <ArrowRight className="size-4 ml-2" />

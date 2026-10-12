@@ -90,7 +90,7 @@ function LoginForm() {
                     </label>
 
                     <Link
-                        href="/forgot-password"
+                        href="/auth/forgot-password"
                         className="text-sm font-medium text-primary transition-colors hover:text-primary-hover hover:underline"
                     >
                         Forgot password?
@@ -133,7 +133,7 @@ function LoginForm() {
             <p className="mt-7 text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
                 <Link
-                    href="/signup"
+                    href="/auth/signup"
                     className="font-semibold text-primary transition-colors hover:text-primary-hover hover:underline"
                 >
                     Sign up free

@@ -6,7 +6,7 @@ export const metadata = {
     robots: { index: false }, // a private page => Google shouldn't show it
 };
 
-// Protected in proxy.ts => only logged-in users get here
+// Public page: a guest just sees an empty cart (RLS returns no rows)
 export default function Cart() {
     // no await => the title shows right away, the courses are streamed
     const coursesPromise = getCartCourses();

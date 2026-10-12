@@ -41,7 +41,7 @@ export function AddToCartButton({ courseId }: AddToCartButtonProps) {
         // choice: the cart needs an account (same as the wishlist)
         if (!profile) {
             toast.info("Log in to add courses to your cart")
-            router.push("/login")
+            router.push("/auth/login")
             return
         }
         addToCart(courseId)
