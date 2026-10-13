@@ -5,7 +5,6 @@ import { fulfillOrder } from "@/features/checkout/server/fulfillOrder";
 import { failOrder } from "@/features/checkout/server/failOrder";
 
 // POST /api/checkout/webhook  ← Stripe calls this, NOT the browser
-// Local dev: stripe listen --forward-to localhost:3000/api/checkout/webhook
 export async function POST(request: NextRequest) {
     // 1- The raw text body (the signature check needs it exactly as Stripe sent it)
     const body = await request.text();
@@ -23,7 +22,7 @@ export async function POST(request: NextRequest) {
 
     // 3- Do the work for the events we care about
     try {
-        // paid by card → "completed" | paid later (bank methods) → "async_payment_succeeded"
+        // paid by card => "completed" | paid later (bank methods) => "async_payment_succeeded"
         if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
             await fulfillOrder(event.data.object.id);
         }
