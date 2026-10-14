@@ -2,14 +2,17 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useController } from "react-hook-form";
+import { OnboardingFormValues } from "../../schemas/onboardingSchema";
+import { FieldError } from "../../components/FieldError";
 
 interface VerificationSectionProps {
   className?: string;
 }
 
 export function VerificationSection({ className }: VerificationSectionProps) {
-  const [isChecked, setIsChecked] = useState(true);
+  // field.value = true / false (starts unchecked: he must check it himself)
+  const { field, fieldState } = useController<OnboardingFormValues, "confirmed">({ name: "confirmed" });
 
   return (
     <div className={`space-y-3 ${className || ""}`}>
@@ -18,8 +21,8 @@ export function VerificationSection({ className }: VerificationSectionProps) {
           <div className="pt-0.5">
             <Checkbox
               id="confirm-accuracy"
-              checked={isChecked}
-              onCheckedChange={(checked) => setIsChecked(!!checked)}
+              checked={field.value}
+              onCheckedChange={(checked) => field.onChange(!!checked)}
             />
           </div>
 
@@ -43,6 +46,8 @@ export function VerificationSection({ className }: VerificationSectionProps) {
           </span>
         </div>
       </div>
+
+      <FieldError message={fieldState.error?.message} />
     </div>
   );
 }
