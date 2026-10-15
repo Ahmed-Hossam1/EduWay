@@ -2,15 +2,18 @@
 
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useController } from "react-hook-form";
 import { EXPERIENCE_LEVELS } from "../data/teachingData";
+import { OnboardingFormValues } from "../../schemas/onboardingSchema";
+import { FieldError } from "../../components/FieldError";
 
 interface ExperienceSelectorProps {
   className?: string;
 }
 
 export function ExperienceSelector({ className }: ExperienceSelectorProps) {
-  const [selectedExperience, setSelectedExperience] = useState<string>("intermediate");
+  // field.value = "beginner" | "intermediate" | "expert" | "veteran" (empty until he chooses)
+  const { field, fieldState } = useController<OnboardingFormValues, "experienceLevel">({ name: "experienceLevel" });
 
   return (
     <div className={`space-y-3 ${className || ""}`}>
@@ -25,15 +28,15 @@ export function ExperienceSelector({ className }: ExperienceSelectorProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {EXPERIENCE_LEVELS.map((level) => {
-          const isSelected = selectedExperience === level.id;
+          const isSelected = field.value === level.id;
           return (
-            <div
+            <button
               key={level.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedExperience(level.id)}
+              type="button"
+              onClick={() => field.onChange(level.id)}
+              aria-pressed={isSelected}
               className={cn(
-                "relative flex flex-col gap-1 p-3.5 rounded-xl border-2 cursor-pointer transition-all duration-200 select-none",
+                "relative flex flex-col gap-1 p-3.5 rounded-xl border-2 text-left cursor-pointer transition-all duration-200 select-none",
                 isSelected
                   ? "border-primary bg-accent/50 shadow-sm"
                   : "border-border bg-card hover:border-primary/40 hover:bg-muted/30"
@@ -57,10 +60,12 @@ export function ExperienceSelector({ className }: ExperienceSelectorProps) {
               <p className="text-xs text-muted-foreground leading-relaxed">
                 {level.description}
               </p>
-            </div>
+            </button>
           );
         })}
       </div>
+
+      <FieldError message={fieldState.error?.message} />
     </div>
   );
 }

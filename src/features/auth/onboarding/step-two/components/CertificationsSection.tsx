@@ -3,51 +3,26 @@
 import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import { Award, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
-
-interface CertificationItem {
-  id: string;
-  name: string;
-  issuer: string;
-  year: string;
-}
+import { useFieldArray, useFormContext, useFormState } from "react-hook-form";
+import { OnboardingFormValues } from "../../schemas/onboardingSchema";
+import { FieldError } from "../../components/FieldError";
 
 interface CertificationsSectionProps {
   className?: string;
 }
 
 export function CertificationsSection({ className }: CertificationsSectionProps) {
-  const [certifications, setCertifications] = useState<CertificationItem[]>([
-    {
-      id: "cert-1",
-      name: "AWS Certified Solutions Architect",
-      issuer: "Amazon Web Services",
-      year: "2024",
-    },
-  ]);
+  const { register } = useFormContext<OnboardingFormValues>();
+  // useFormState (not formState from the context): this component listens to the errors itself,
+  // so it re-renders when they change (needed with the React Compiler, which memoizes components)
+  const { errors } = useFormState<OnboardingFormValues>();
+
+  // useFieldArray = a list inside the form: fields (to show), append (add), remove (delete)
+  // field.id is a key made by react-hook-form (only for React's key=)
+  const { fields, append, remove } = useFieldArray<OnboardingFormValues, "certifications">({ name: "certifications" });
 
   const handleAddCert = () => {
-    const newCert: CertificationItem = {
-      id: `cert-${Date.now()}`,
-      name: "",
-      issuer: "",
-      year: new Date().getFullYear().toString(),
-    };
-    setCertifications((prev) => [...prev, newCert]);
-  };
-
-  const handleRemoveCert = (id: string) => {
-    setCertifications((prev) => prev.filter((c) => c.id !== id));
-  };
-
-  const handleUpdateCert = (
-    id: string,
-    field: keyof CertificationItem,
-    value: string
-  ) => {
-    setCertifications((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, [field]: value } : c))
-    );
+    append({ name: "", issuer: "", year: "" });
   };
 
   return (
@@ -74,7 +49,7 @@ export function CertificationsSection({ className }: CertificationsSectionProps)
         </Button>
       </div>
 
-      {certifications.length === 0 ? (
+      {fields.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-6 rounded-xl border border-dashed border-border bg-card/40 text-center">
           <Award className="size-8 text-muted-foreground/60 mb-2" />
           <p className="text-xs text-muted-foreground">
@@ -93,65 +68,72 @@ export function CertificationsSection({ className }: CertificationsSectionProps)
         </div>
       ) : (
         <div className="space-y-3">
-          {certifications.map((cert, index) => (
-            <div
-              key={cert.id}
-              className="relative p-3.5 rounded-xl border border-border bg-card/60 space-y-3 group"
-            >
-              <div className="flex items-center justify-between pb-1 border-b border-border/40">
-                <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  <Award className="size-3.5 text-primary" />
-                  Certificate #{index + 1}
-                </span>
+          {fields.map((cert, index) => {
+            // the errors of THIS certificate (if any)
+            const certErrors = errors.certifications?.[index];
 
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  onClick={() => handleRemoveCert(cert.id)}
-                  className="text-muted-foreground hover:text-destructive size-6"
-                  aria-label="Remove certification"
-                >
-                  <Trash2 className="size-3.5" />
-                </Button>
-              </div>
+            return (
+              <div
+                key={cert.id}
+                className="relative p-3.5 rounded-xl border border-border bg-card/60 space-y-3 group"
+              >
+                <div className="flex items-center justify-between pb-1 border-b border-border/40">
+                  <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <Award className="size-3.5 text-primary" />
+                    Certificate #{index + 1}
+                  </span>
 
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-                <div className="sm:col-span-6">
-                  <Input
-                    placeholder="Certificate Name (e.g. Meta Frontend Certificate)"
-                    value={cert.name}
-                    onChange={(e) =>
-                      handleUpdateCert(cert.id, "name", e.target.value)
-                    }
-                    fullWidth
-                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={() => remove(index)}
+                    className="text-muted-foreground hover:text-destructive size-6"
+                    aria-label="Remove certification"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
                 </div>
-                <div className="sm:col-span-4">
-                  <Input
-                    placeholder="Issuing Org (e.g. Meta / Coursera)"
-                    value={cert.issuer}
-                    onChange={(e) =>
-                      handleUpdateCert(cert.id, "issuer", e.target.value)
-                    }
-                    fullWidth
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <Input
-                    placeholder="Year"
-                    value={cert.year}
-                    onChange={(e) =>
-                      handleUpdateCert(cert.id, "year", e.target.value)
-                    }
-                    fullWidth
-                  />
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                  <div className="sm:col-span-6">
+                    <Input
+                      placeholder="Certificate Name (e.g. Meta Frontend Certificate)"
+                      aria-label="Certificate name"
+                      {...register(`certifications.${index}.name`)}
+                      errorText={certErrors?.name?.message}
+                      fullWidth
+                    />
+                  </div>
+                  <div className="sm:col-span-4">
+                    <Input
+                      placeholder="Issuing Org (e.g. Meta / Coursera)"
+                      aria-label="Issuing organization"
+                      {...register(`certifications.${index}.issuer`)}
+                      errorText={certErrors?.issuer?.message}
+                      fullWidth
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <Input
+                      placeholder="Year"
+                      aria-label="Year"
+                      inputMode="numeric"
+                      maxLength={4}
+                      {...register(`certifications.${index}.year`)}
+                      errorText={certErrors?.year?.message}
+                      fullWidth
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
+
+      {/* "You can add up to 10 certificates" */}
+      <FieldError message={errors.certifications?.message} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { SocialLinksSection } from "./SocialLinksSection";
@@ -8,20 +9,19 @@ import { VerificationSection } from "./VerificationSection";
 
 interface TeacherStepThreeFormProps {
   onBack?: () => void;
-  onFinish?: () => void;
+  isSubmitting?: boolean; // true while POST /api/onboarding is running
   className?: string;
 }
 
+// Step 3 · Profile & verification. Part of the ONE onboarding <form> (TeacherOnboardingContainer).
+// "Finish" submits the form → everything is checked again and saved.
 export function TeacherStepThreeForm({
   onBack,
-  onFinish,
+  isSubmitting,
   className,
 }: TeacherStepThreeFormProps) {
   return (
-    <form
-      onSubmit={(e) => e.preventDefault()}
-      className={`flex flex-col gap-8 ${className || ""}`}
-    >
+    <div className={`flex flex-col gap-8 ${className || ""}`}>
       {/* ── Section 1: Profile Photo ── */}
       <ProfilePhotoUpload />
 
@@ -38,6 +38,7 @@ export function TeacherStepThreeForm({
           variant="outline"
           size="lg"
           onClick={onBack}
+          disabled={isSubmitting}
           rounded="xl" className="w-full sm:w-auto text-sm font-semibold gap-2 border-border hover:bg-muted"
         >
           <ArrowLeft className="size-4" />
@@ -45,19 +46,19 @@ export function TeacherStepThreeForm({
         </Button>
 
         <Button
-          type="button"
+          type="submit"
           size="lg"
-          onClick={onFinish}
+          disabled={isSubmitting}
           rounded="xl" className="w-full sm:w-auto text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
         >
-          <Sparkles className="size-4" />
-          <span>Finish</span>
+          {isSubmitting ? <Spinner className="size-4" /> : <Sparkles className="size-4" />}
+          <span>{isSubmitting ? "Submitting..." : "Finish"}</span>
         </Button>
       </div>
 
       <p className="text-center text-xs text-muted-foreground">
         Step 3 of 3 — Upon finishing, your instructor profile will be submitted for verification.
       </p>
-    </form>
+    </div>
   );
 }

@@ -5,31 +5,33 @@ import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
+import { useController } from "react-hook-form";
 import { POPULAR_SKILLS } from "../data/teachingData";
+import { OnboardingFormValues } from "../../schemas/onboardingSchema";
+import { FieldError } from "../../components/FieldError";
 
 interface SkillsSelectorProps {
   className?: string;
 }
 
 export function SkillsSelector({ className }: SkillsSelectorProps) {
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([
-    "Next.js",
-    "TypeScript",
-    "React",
-    "Tailwind CSS",
-  ]);
+  // field.value = the chosen skills (string[]) — saved in the onboarding form
+  const { field, fieldState } = useController<OnboardingFormValues, "skills">({ name: "skills" });
+  const selectedSkills = field.value;
+
+  // the text of the "Type a skill" input (not part of the form)
   const [customSkill, setCustomSkill] = useState("");
 
   const handleAddSkill = (skill: string) => {
     const trimmed = skill.trim();
     if (trimmed && !selectedSkills.includes(trimmed)) {
-      setSelectedSkills((prev) => [...prev, trimmed]);
+      field.onChange([...selectedSkills, trimmed]);
       setCustomSkill("");
     }
   };
 
   const handleRemoveSkill = (skillToRemove: string) => {
-    setSelectedSkills((prev) => prev.filter((s) => s !== skillToRemove));
+    field.onChange(selectedSkills.filter((s) => s !== skillToRemove));
   };
 
   return (
@@ -80,8 +82,10 @@ export function SkillsSelector({ className }: SkillsSelectorProps) {
             id="custom-skill-input"
             placeholder="Type a skill (e.g. Python, Figma, GraphQL)"
             value={customSkill}
+            maxLength={30}
             onChange={(e) => setCustomSkill(e.target.value)}
             onKeyDown={(e) => {
+              // Enter adds the skill (and doesn't submit the form)
               if (e.key === "Enter") {
                 e.preventDefault();
                 handleAddSkill(customSkill);
@@ -101,6 +105,8 @@ export function SkillsSelector({ className }: SkillsSelectorProps) {
           <span>Add</span>
         </Button>
       </div>
+
+      <FieldError message={fieldState.error?.message} />
 
       {/* Suggested Quick-Pick Skills */}
       <div className="pt-1">

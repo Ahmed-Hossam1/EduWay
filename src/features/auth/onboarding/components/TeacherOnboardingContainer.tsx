@@ -3,15 +3,66 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, ShieldCheck, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { DefaultValues, FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { OnboardingHeader } from "./OnboardingHeader";
 import { OnboardingProgress } from "./OnboardingProgress";
 import { TeacherStepOneForm } from "../step-one";
 import { TeacherStepTwoForm } from "../step-two";
 import { TeacherStepThreeForm } from "../step-three";
+import { onboardingSchema, OnboardingFormValues, STEP_FIELDS } from "../schemas/onboardingSchema";
+import { useSubmitOnboarding } from "../hooks/useSubmitOnboarding";
+import { CategoryOption } from "../types";
+import { useRouter } from "next/navigation";
 
-export function TeacherOnboardingContainer() {
-  const [currentStep, setCurrentStep] = useState<number>(1);
+type Step = 1 | 2 | 3;
+
+interface TeacherOnboardingContainerProps {
+  defaultValues: DefaultValues<OnboardingFormValues>; // name + photo already filled (from the server)
+  categories: CategoryOption[];
+}
+
+export function TeacherOnboardingContainer({ defaultValues, categories }: TeacherOnboardingContainerProps) {
+  const [currentStep, setCurrentStep] = useState<Step>(1);
+
+  // ONE form for the 3 steps => going Back never loses what he typed
+  const form = useForm<OnboardingFormValues>({
+    resolver: zodResolver(onboardingSchema),
+    defaultValues,
+  });
+
+  const { mutate: submitOnboarding, isPending } = useSubmitOnboarding();
+
+  const goToStep = (step: Step) => {
+    setCurrentStep(step);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // "Continue": check ONLY the fields of this step (the next steps are still empty)
+  const goToNextStep = async () => {
+    // trigger means trigger the validation of the fields in the current step
+    const isStepValid = await form.trigger(STEP_FIELDS[currentStep]);
+    if (!isStepValid) return; // the errors show under the inputs
+
+    if (currentStep === 1) goToStep(2);
+    if (currentStep === 2) goToStep(3);
+  };
+
+  // Enter key / submit button:
+  // steps 1 & 2 => go to the next step | step 3 => check everything and save
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    if (currentStep < 3) {
+      e.preventDefault();
+      goToNextStep();
+      return;
+    }
+    // handleSubmit(fn) RETURNS a function => call it with the event (e):
+    // it stops the browser reload, checks all the fields, then calls fn with the values
+    form.handleSubmit((values) => {
+      submitOnboarding(values);
+    })(e);
+  };
 
   return (
     <main className="min-h-screen w-full bg-background text-foreground flex flex-col">
@@ -100,28 +151,22 @@ export function TeacherOnboardingContainer() {
             <div className="pb-8 border-b border-border/60">
               <OnboardingProgress
                 currentStep={currentStep}
-                onStepClick={(step) => setCurrentStep(step)}
+                onStepClick={(step) => goToStep(step as Step)}
               />
             </div>
 
-            {/* Step Forms */}
-            <div className="pt-8">
-              {currentStep === 1 && (
-                <TeacherStepOneForm onContinue={() => setCurrentStep(2)} />
-              )}
-              {currentStep === 2 && (
-                <TeacherStepTwoForm
-                  onBack={() => setCurrentStep(1)}
-                  onContinue={() => setCurrentStep(3)}
-                />
-              )}
-              {currentStep === 3 && (
-                <TeacherStepThreeForm
-                  onBack={() => setCurrentStep(2)}
-                  onFinish={() => {}}
-                />
-              )}
-            </div>
+            {/* Step Forms (one <form>, the steps are parts of it) */}
+            <FormProvider {...form}>
+              <form onSubmit={handleFormSubmit} noValidate className="pt-8">
+                {currentStep === 1 && <TeacherStepOneForm />}
+                {currentStep === 2 && (
+                  <TeacherStepTwoForm categories={categories} onBack={() => goToStep(1)} />
+                )}
+                {currentStep === 3 && (
+                  <TeacherStepThreeForm onBack={() => goToStep(2)} isSubmitting={isPending} />
+                )}
+              </form>
+            </FormProvider>
           </Card>
         </div>
       </div>

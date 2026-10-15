@@ -1,37 +1,14 @@
-import { ExperienceLevel, SubjectCategory } from "../types";
+import { ExperienceLevel } from "../types";
 
-export const SUBJECT_CATEGORIES: SubjectCategory[] = [
-  {
-    id: "web-dev",
-    label: "Web Development",
-    description: "Frontend, Backend & Fullstack frameworks",
-  },
-  {
-    id: "data-ai",
-    label: "Data Science & AI",
-    description: "Machine Learning, Python & Analytics",
-  },
-  {
-    id: "design",
-    label: "Design & Creative",
-    description: "UI/UX, Figma & Product Design",
-  },
-  {
-    id: "mobile-dev",
-    label: "Mobile Development",
-    description: "React Native, Flutter, iOS & Android",
-  },
-  {
-    id: "cloud-devops",
-    label: "Cloud & DevOps",
-    description: "AWS, Docker, Kubernetes & CI/CD",
-  },
-  {
-    id: "business-mgmt",
-    label: "Business & Management",
-    description: "Product Management & Entrepreneurship",
-  },
-];
+// The categories come from the database (categories table).
+// This only adds a short description under each one, by its slug.
+export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  "web-dev": "Frontend, Backend & Fullstack frameworks",
+  "data-ai": "Machine Learning, Python & Analytics",
+  design: "UI/UX, Figma & Product Design",
+  marketing: "SEO, Social Media & Content Marketing",
+  business: "Management, Entrepreneurship & Productivity",
+};
 
 export const EXPERIENCE_LEVELS: ExperienceLevel[] = [
   {

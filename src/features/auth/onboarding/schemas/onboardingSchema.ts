@@ -119,7 +119,8 @@ export const stepThreeSchema = z.object({
 });
 
 
-// All the steps together: used by the form AND by POST /api/onboarding
+// combine the all 3 schemas in one schema to be
+// used by the form and by POST /api/onboarding
 // (the server checks everything again, never trust the browser)
 export const onboardingSchema = z.object({
     ...stepOneSchema.shape,

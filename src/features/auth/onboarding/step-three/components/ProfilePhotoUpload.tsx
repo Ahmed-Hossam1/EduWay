@@ -4,12 +4,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Camera, ImagePlus, User, X } from "lucide-react";
+import { useController } from "react-hook-form";
+import { OnboardingFormValues } from "../../schemas/onboardingSchema";
+import { FieldError } from "../../components/FieldError";
 
 interface ProfilePhotoUploadProps {
   className?: string;
 }
 
 export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
+  // field.value = the photo link ("" = no photo). Starts with the Google / GitHub photo if he has one.
+  // TODO (Cloudinary): after the upload, call field.onChange(uploadedImageUrl)
+  const { field, fieldState } = useController<OnboardingFormValues, "avatarUrl">({ name: "avatarUrl" });
+  const photoUrl = field.value;
+
   return (
     <div className={cn("space-y-3", className)}>
       <div>
@@ -25,7 +33,7 @@ export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
         {/* Avatar Display */}
         <div className="relative group shrink-0">
           <Avatar className="size-24 rounded-full border-2 border-border/80 shadow-inner ring-4 ring-primary/5">
-            <AvatarImage src="" alt="Teacher profile photo" />
+            {photoUrl && <AvatarImage src={photoUrl} alt="Teacher profile photo" />}
             <AvatarFallback className="bg-muted text-muted-foreground">
               <User className="size-10 stroke-[1.5]" />
             </AvatarFallback>
@@ -50,8 +58,8 @@ export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
             </p>
           </div>
 
-          {/* Action buttons (Visual only) */}
           <div className="flex flex-wrap items-center gap-2 pt-1">
+            {/* Visual only for now → Cloudinary upload later */}
             <Button
               type="button"
               variant="outline"
@@ -61,20 +69,25 @@ export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
               <ImagePlus className="size-3.5" />
               Upload Image
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="gap-1.5 text-xs text-muted-foreground hover:text-destructive cursor-pointer"
-            >
-              <X className="size-3.5" />
-              Remove
-            </Button>
+            {photoUrl && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => field.onChange("")}
+                className="gap-1.5 text-xs text-muted-foreground hover:text-destructive cursor-pointer"
+              >
+                <X className="size-3.5" />
+                Remove
+              </Button>
+            )}
           </div>
 
           <p className="text-[11px] text-muted-foreground/75">
             Supported formats: JPG, PNG, WebP (Max 5MB)
           </p>
+
+          <FieldError message={fieldState.error?.message} />
         </div>
       </div>
     </div>

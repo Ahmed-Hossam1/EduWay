@@ -50,7 +50,8 @@ export function OnboardingProgress({
             const isCompleted = step.stepNumber < currentStep;
             const isCurrent = step.stepNumber === currentStep;
             const isUpcoming = step.stepNumber > currentStep;
-            const isClickable = onStepClick && step.stepNumber <= 3;
+            // only finished steps (going back) — going forward must pass "Continue" (validation)
+            const isClickable = onStepClick && step.stepNumber < currentStep;
 
             return (
               <li

@@ -3,23 +3,27 @@
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useController } from "react-hook-form";
 import { TEACHING_LANGUAGES } from "../data/teachingData";
+import { OnboardingFormValues } from "../../schemas/onboardingSchema";
+import { FieldError } from "../../components/FieldError";
 
 interface LanguagesSelectorProps {
   className?: string;
 }
 
 export function LanguagesSelector({ className }: LanguagesSelectorProps) {
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([
-    "English",
-    "Arabic",
-  ]);
+  // field.value = the chosen languages (string[])
+  const { field, fieldState } = useController<OnboardingFormValues, "teachingLanguages">({ name: "teachingLanguages" });
+  const selectedLanguages = field.value;
 
+  // click → add it, click again → remove it
   const toggleLanguage = (lang: string) => {
-    setSelectedLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
-    );
+    if (selectedLanguages.includes(lang)) {
+      field.onChange(selectedLanguages.filter((l) => l !== lang));
+    } else {
+      field.onChange([...selectedLanguages, lang]);
+    }
   };
 
   return (
@@ -44,6 +48,7 @@ export function LanguagesSelector({ className }: LanguagesSelectorProps) {
               rounded="lg"
               variant={isSelected ? "default" : "outline"}
               onClick={() => toggleLanguage(lang)}
+              aria-pressed={isSelected}
               className={cn(
                 "gap-1.5 px-3.5 text-xs",
                 !isSelected && "text-muted-foreground hover:border-primary/40"
@@ -55,6 +60,8 @@ export function LanguagesSelector({ className }: LanguagesSelectorProps) {
           );
         })}
       </div>
+
+      <FieldError message={fieldState.error?.message} />
     </div>
   );
 }

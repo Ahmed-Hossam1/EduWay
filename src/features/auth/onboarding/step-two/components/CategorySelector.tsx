@@ -2,15 +2,20 @@
 
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { useState } from "react";
-import { SUBJECT_CATEGORIES } from "../data/teachingData";
+import { useController } from "react-hook-form";
+import { CATEGORY_DESCRIPTIONS } from "../data/teachingData";
+import { OnboardingFormValues } from "../../schemas/onboardingSchema";
+import { FieldError } from "../../components/FieldError";
+import { CategoryOption } from "../../types";
 
 interface CategorySelectorProps {
+  categories: CategoryOption[]; // from the database
   className?: string;
 }
 
-export function CategorySelector({ className }: CategorySelectorProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>("web-dev");
+export function CategorySelector({ categories, className }: CategorySelectorProps) {
+  // field.value = the chosen category id | field.onChange = choose another one
+  const { field, fieldState } = useController<OnboardingFormValues, "categoryId">({ name: "categoryId" });
 
   return (
     <div className={`space-y-3 ${className || ""}`}>
@@ -24,14 +29,14 @@ export function CategorySelector({ className }: CategorySelectorProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-        {SUBJECT_CATEGORIES.map((category) => {
-          const isSelected = selectedCategory === category.id;
+        {categories.map((category) => {
+          const isSelected = field.value === category.id;
           return (
-            <div
+            <button
               key={category.id}
-              role="button"
-              tabIndex={0}
-              onClick={() => setSelectedCategory(category.id)}
+              type="button"
+              onClick={() => field.onChange(category.id)}
+              aria-pressed={isSelected}
               className={cn(
                 "group relative flex flex-col justify-between p-3 rounded-xl border text-left cursor-pointer transition-all duration-200 select-none",
                 isSelected
@@ -41,7 +46,7 @@ export function CategorySelector({ className }: CategorySelectorProps) {
             >
               <div className="flex items-center justify-between gap-1.5">
                 <span className="text-xs font-bold text-foreground">
-                  {category.label}
+                  {category.name}
                 </span>
                 <span
                   className={cn(
@@ -54,13 +59,17 @@ export function CategorySelector({ className }: CategorySelectorProps) {
                   {isSelected && <Check className="size-2.5 stroke-3" />}
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-1 line-clamp-1">
-                {category.description}
-              </p>
-            </div>
+              {CATEGORY_DESCRIPTIONS[category.slug] && (
+                <p className="text-[11px] text-muted-foreground mt-1 line-clamp-1">
+                  {CATEGORY_DESCRIPTIONS[category.slug]}
+                </p>
+              )}
+            </button>
           );
         })}
       </div>
+
+      <FieldError message={fieldState.error?.message} />
     </div>
   );
 }
