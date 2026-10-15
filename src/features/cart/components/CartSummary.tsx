@@ -17,7 +17,7 @@ type CartSummaryProps = {
 // The order summary on the right (bottom on mobile). "Checkout" → Stripe payment page.
 export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
     const { mutate: startCheckout, isPending, isSuccess } = useCheckout()
-    // isSuccess: the request is done but the browser is still loading Stripe → keep the spinner
+    // isSuccess: the request is done but the browser is still loading Stripe => keep the spinner
     const isRedirecting = isPending || isSuccess
 
     return (

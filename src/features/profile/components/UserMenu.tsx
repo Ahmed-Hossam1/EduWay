@@ -1,8 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, LayoutDashboard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -13,7 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { supabaseClient } from "@/lib/supabase/client";
+import { BookOpen, LayoutDashboard, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useLogout } from "../hooks/useLogout";
 
 type UserMenuProps = {
   firstName: string | null;
@@ -22,24 +21,12 @@ type UserMenuProps = {
 };
 
 export function UserMenu({ firstName, lastName, avatarUrl }: UserMenuProps) {
+  const { mutate: logout } = useLogout()
   const router = useRouter();
-  const queryClient = useQueryClient()
 
   const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim();
   const initials = `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
 
-  const handleLogout = async () => {
-    // 1- Remove the session cookies from Supabase
-    await supabaseClient.auth.signOut();
-    // 2- Clear the cached profile so the navbar shows Log in / Sign up again
-    queryClient.setQueryData(["profile"], null);
-    queryClient.removeQueries({ queryKey: ["wishlist"] }); // the next user must not see these hearts
-    queryClient.removeQueries({ queryKey: ["cart"] });
-    queryClient.removeQueries({ queryKey: ["enrollments"] });
-    // 3- Go home and re-run the proxy / server components without the session
-    router.push("/");
-    router.refresh();
-  };
 
   return (
     <DropdownMenu>
@@ -66,7 +53,7 @@ export function UserMenu({ firstName, lastName, avatarUrl }: UserMenuProps) {
           <LayoutDashboard />
           Dashboard
         </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+        <DropdownMenuItem variant="destructive" onClick={() => logout()}>
           <LogOut />
           Log out
         </DropdownMenuItem>

@@ -3,11 +3,11 @@ import { stripe } from "@/lib/stripe/stripe";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /**
- * Server only: after a Stripe payment → enroll the user in the courses of the order.
+ * Server only: after a Stripe payment => enroll the user in the courses of the order.
  *
  * Called from 2 places with the same Stripe session id:
- *   - the webhook  (/api/checkout/webhook)       → Stripe calls us
- *   - the success page (/student/checkout/success) → in case the webhook is late
+ *   - the webhook  (/api/checkout/webhook)       => Stripe calls us
+ *   - the success page (/student/checkout/success) => in case the webhook is late
  *
  * Safe to call many times: the enrollments use upsert (no duplicates),
  * and a paid order is skipped at the start.
@@ -34,7 +34,7 @@ export const fulfillOrder = async (sessionId: string): Promise<boolean> => {
 
     if (orderError) throw orderError;
 
-    // already done before (by the webhook or the success page) → nothing to do
+    // already done before (by the webhook or the success page) => nothing to do
     if (order.status === "paid") return true;
 
     // 3- Enroll the user in every course of the order
