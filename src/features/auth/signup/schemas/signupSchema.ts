@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { passwordSchema } from "../../shared/schemas/passwordSchema";
 
 export const signupSchema = z
     .object({
@@ -16,14 +17,7 @@ export const signupSchema = z
             pattern: /^(?!\.)(?!.*\.\.)([a-z0-9_'+\-\.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9\-]*\.)+[a-z]{2,}$/i,
         }),
 
-        password: z
-            .string()
-            .min(8, "Password must be at least 8 characters long")
-            .max(18, "Password must be at most 18 characters long")
-            .regex(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/,
-                "Password must contain uppercase, lowercase, number, and special character",
-            ),
+        password: passwordSchema,
 
         confirmPassword: z.string().min(1, "Please confirm your password"),
 

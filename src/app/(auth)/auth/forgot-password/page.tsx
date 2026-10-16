@@ -6,7 +6,14 @@ export const metadata = {
     description: "Reset your EduWay password.",
 };
 
-export default function ForgotPasswordPage() {
+type Params = {
+    searchParams: Promise<{ error?: string | string[] }>;
+};
+
+export default async function ForgotPasswordPage({ searchParams }: Params) {
+    // /api/auth/confirm sends people here when their reset link is old / already used
+    const { error } = await searchParams;
+
     return (
         <main className="relative min-h-screen w-full overflow-hidden bg-background text-foreground">
             {/* Background decoration */}
@@ -19,7 +26,7 @@ export default function ForgotPasswordPage() {
                 <AuthHeader />
 
                 <div className="my-auto flex w-full justify-center px-6 py-10 sm:px-10">
-                    <ForgotPasswordForm />
+                    <ForgotPasswordForm linkExpired={error === "link_expired"} />
                 </div>
             </div>
         </main>

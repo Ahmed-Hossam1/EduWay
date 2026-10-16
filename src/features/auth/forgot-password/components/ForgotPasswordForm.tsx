@@ -1,11 +1,69 @@
+"use client";
 import Link from "next/link";
-import { ArrowLeft, KeyRound, Mail, Send } from "lucide-react";
+import { ArrowLeft, KeyRound, Mail, MailCheck, Send } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { forgotPasswordSchema, ForgotPasswordSchemaType } from "../schemas/forgotPasswordSchema";
+import { useForgotPassword } from "../hooks/useForgotPassword";
 
-// UI only — the logic (send the reset email with Supabase) will be added later
-export function ForgotPasswordForm() {
+type ForgotPasswordFormProps = {
+    linkExpired?: boolean; // came back from an old / used reset link (/api/auth/confirm)
+};
+
+export function ForgotPasswordForm({ linkExpired = false }: ForgotPasswordFormProps) {
+    const {
+        register,
+        handleSubmit,
+        getValues,
+        formState: { errors },
+    } = useForm<ForgotPasswordSchemaType>({
+        resolver: zodResolver(forgotPasswordSchema),
+    });
+
+    // reset() = back to the form ("Send again")
+    const { mutate: sendResetLink, isPending, isSuccess, reset } = useForgotPassword();
+
+    // ── After sending: "Check your inbox" ──
+    if (isSuccess) {
+        return (
+            <Card className="block w-full max-w-sm rounded-2xl p-7 text-center shadow-lg sm:max-w-md sm:p-9">
+                <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 dark:bg-emerald-950/40 dark:text-emerald-400 dark:ring-emerald-950/20">
+                    <MailCheck className="size-6" />
+                </div>
+
+                <h1 className="mt-6 text-2xl font-bold tracking-tight text-foreground">Check your inbox</h1>
+                <p className="mt-2 text-sm text-muted-foreground">
+                    If an account exists for <span className="font-semibold text-foreground">{getValues("email")}</span>
+                    , we sent a link to reset your password. The link works for 1 hour.
+                </p>
+
+                <p className="mt-5 rounded-xl bg-muted/60 px-4 py-3 text-xs text-muted-foreground">
+                    Didn&apos;t get the email? Check your spam folder, or{" "}
+                    <button
+                        type="button"
+                        onClick={() => reset()}
+                        className="font-semibold text-primary hover:underline"
+                    >
+                        send it again
+                    </button>
+                    .
+                </p>
+
+                <Link
+                    href="/auth/login"
+                    className="mt-6 flex items-center justify-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
+                >
+                    <ArrowLeft className="size-4" />
+                    Back to sign in
+                </Link>
+            </Card>
+        );
+    }
+
+    // ── The form ──
     return (
         <Card className="block w-full max-w-sm rounded-2xl p-7 shadow-lg sm:max-w-md sm:p-9">
             {/* Icon */}
@@ -24,11 +82,18 @@ export function ForgotPasswordForm() {
                 </p>
             </div>
 
+            {/* Came back from an expired / used link */}
+            {linkExpired && (
+                <p className="mt-5 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-center text-sm text-destructive">
+                    Your reset link expired or was already used. Enter your email to get a new one.
+                </p>
+            )}
+
             {/* Form */}
-            <form className="mt-7 space-y-4">
+            <form onSubmit={handleSubmit((data) => sendResetLink(data))} className="mt-7 space-y-4" noValidate>
                 <Input
                     id="forgot-password-email"
-                    name="email"
+                    {...register("email")}
                     type="email"
                     label="Email"
                     placeholder="you@example.com"
@@ -38,18 +103,26 @@ export function ForgotPasswordForm() {
                     rounded="lg"
                     fullWidth
                     autoComplete="email"
+                    errorText={errors.email?.message}
                 />
 
-                <Button type="submit" size="lg" rounded="xl" className="mt-2 h-11 w-full font-semibold">
-                    <span>Send reset link</span>
-                    <Send className="size-4" />
+                <Button
+                    type="submit"
+                    size="lg"
+                    rounded="xl"
+                    className="mt-2 h-11 w-full font-semibold"
+                    isLoading={isPending}
+                >
+                    {isPending ? (
+                        "Sending..."
+                    ) : (
+                        <>
+                            Send reset link
+                            <Send className="size-4" />
+                        </>
+                    )}
                 </Button>
             </form>
-
-            {/* Help text */}
-            <p className="mt-5 rounded-xl bg-muted/60 px-4 py-3 text-center text-xs text-muted-foreground">
-                Didn&apos;t get the email? Check your spam folder or try again in a few minutes.
-            </p>
 
             {/* Back to login */}
             <Link
