@@ -1,8 +1,8 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import { socialProviders } from "../data";
+import { socialProviders } from "../data/socialProviders";
 import { useOAuthLogin } from "../hooks/useOAuthLogin";
-import { useIsAuthBusy } from "../hooks/useIsAuthBusy";
+import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 
 // "Sign in with Google / GitHub" buttons (login + signup pages)
 export default function SocialLogin() {

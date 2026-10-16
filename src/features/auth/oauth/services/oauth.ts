@@ -1,6 +1,5 @@
 import apiClient from "@/lib/axios/apiClient";
-
-export type OAuthProvider = "google" | "github";
+import { OAuthProvider } from "../types";
 
 type OAuthResponse = {
     url: string; // the Google / GitHub sign-in page

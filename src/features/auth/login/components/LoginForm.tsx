@@ -12,7 +12,8 @@ import { loginInputs } from "../data/login-inputs";
 import { useLogin } from "../hooks/useLogin";
 import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 import { loginSchema, LoginSchemaType } from "../schemas/loginSchema";
-import { AuthTabs, SocialLogin } from "../../shared/components";
+import { AuthTabs } from "../../shared/components";
+import { SocialLogin } from "../../oauth/components";
 import { useRouter } from "next/navigation";
 
 function LoginForm() {

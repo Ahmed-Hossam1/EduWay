@@ -1,5 +1,5 @@
-import { OAuthErrorPage } from "@/features/auth/shared/components/OAuthErrorPage";
-import { DEFAULT_OAUTH_ERROR_MESSAGE, OAUTH_ERROR_MESSAGES } from "@/features/auth/shared/data/oauthErrors";
+import { OAuthErrorPage } from "@/features/auth/oauth/components";
+import { DEFAULT_OAUTH_ERROR_MESSAGE, OAUTH_ERROR_MESSAGES } from "@/features/auth/oauth/data/oauthErrors";
 
 export const metadata = {
     title: "Sign-in failed",

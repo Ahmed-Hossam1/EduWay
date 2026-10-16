@@ -1,7 +1,7 @@
 import { GithubIcon, GoogleIcon } from "../components/SocialIcons";
-import { OAuthProvider } from "../services/oauth";
+import { SocialProvider } from "../types";
 
-export const socialProviders: { id: OAuthProvider; name: string; icon: typeof GoogleIcon; ariaLabel: string }[] = [
+export const socialProviders: SocialProvider[] = [
     {
         id: "google", // sent to POST /api/auth/oauth
         name: "Google", // shown on the button

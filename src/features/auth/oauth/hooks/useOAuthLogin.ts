@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { startOAuthService } from "../services/oauth"
-import { AUTH_MUTATION_KEY } from "./useIsAuthBusy"
+import { AUTH_MUTATION_KEY } from "../../shared/hooks/useIsAuthBusy"
 
 /**
  * "Sign in with Google / GitHub":

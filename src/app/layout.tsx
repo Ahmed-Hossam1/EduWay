@@ -5,7 +5,7 @@ import NextThemeProvider from "@/providers/NextThemeProvider";
 import { Toaster } from 'sonner';
 import { CircleAlert, CircleCheck, CircleX, Loader } from "lucide-react";
 import QueryClientProviders from "@/providers/QueryClientProvider";
-import { OAuthErrorRedirect } from "@/features/auth/shared/components/OAuthErrorRedirect";
+import { OAuthErrorRedirect } from "@/features/auth/oauth/components";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
