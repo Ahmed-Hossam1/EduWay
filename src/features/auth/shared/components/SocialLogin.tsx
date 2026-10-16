@@ -1,46 +1,36 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import { supabaseClient } from "@/lib/supabase/client";
-import { Provider } from "@supabase/supabase-js";
 import { socialProviders } from "../data";
-import { toast } from "sonner";
+import { useOAuthLogin } from "../hooks/useOAuthLogin";
+import { useIsAuthBusy } from "../hooks/useIsAuthBusy";
 
-
+// "Sign in with Google / GitHub" buttons (login + signup pages)
 export default function SocialLogin() {
-    // Handles OAuth login using Supabase Auth
-    async function handleOAuth(provider: Provider) {
-        try {
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider,
-                options: {
-                    // This redirects the user to our callback API route after OAuth
-                    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback`,
-                }
-            })
-            if (error) throw error
-        } catch (error) {
-            // Handles the Error object or just the message
-            console.error("Error during OAuth login:", error);
-            toast.error("Something went wrong. Please try again");
-        }
+    // variables = the provider that was clicked ("google" / "github")
+    const { mutate: signInWith, isPending, variables: clickedProvider } = useOAuthLogin();
 
-    }
+    // any sign-in running (email or Google / GitHub) → no button can be clicked
+    const isAuthBusy = useIsAuthBusy();
+
     return (
         <div className="grid grid-cols-2 gap-3">
             {socialProviders.map((provider) => {
                 const IconComponent = provider.icon;
+                // the spinner only on the button that was clicked
+                const isThisLoading = isPending && clickedProvider === provider.id;
+
                 return (
                     <Button
-                        key={provider.name}
-                        onClick={() => handleOAuth(provider.name as Provider)}
-
-                        type="button"
+                        key={provider.id}
+                        onClick={() => signInWith(provider.id)}
+                        isLoading={isThisLoading}
+                        disabled={isAuthBusy}
                         variant="outline"
                         size="default"
                         rounded="xl" className="h-10"
                         aria-label={provider.ariaLabel}
                     >
-                        <IconComponent />
+                        {!isThisLoading && <IconComponent />}
                         {provider.name}
                     </Button>
                 );

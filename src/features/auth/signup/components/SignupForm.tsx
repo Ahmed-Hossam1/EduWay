@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { AuthTabs, SocialLogin } from "../../shared/components";
 import { signupInputs } from "../data/AuthInputConfig";
 import { useSignup } from "../hooks/useSignup";
+import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 import { signupSchema, signupSchemaType } from "../schemas/signupSchema";
 
 
@@ -21,6 +22,8 @@ function SignupForm() {
 
     });
     const { mutateAsync, isPending } = useSignup()
+    // any sign-in running (email or Google / GitHub) → the button can't be clicked
+    const isAuthBusy = useIsAuthBusy()
 
     const router = useRouter()
 
@@ -114,6 +117,7 @@ function SignupForm() {
                     size="lg"
                     rounded="xl" className="mt-2 h-11 w-full font-semibold"
                     isLoading={isPending}
+                    disabled={isAuthBusy}
                 >
                     {isPending ? (
                         "Creating account..."

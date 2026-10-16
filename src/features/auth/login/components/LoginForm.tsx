@@ -4,26 +4,24 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getErrorMessage } from "@/lib/axios/getErrorMessage";
-import { ArrowRight, CircleAlert } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { loginInputs } from "../data/login-inputs";
 import { useLogin } from "../hooks/useLogin";
+import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 import { loginSchema, LoginSchemaType } from "../schemas/loginSchema";
 import { AuthTabs, SocialLogin } from "../../shared/components";
 import { useRouter } from "next/navigation";
 
-type LoginFormProps = {
-    errorMessage?: string; // Google / GitHub sign-in failed (from ?error= in the URL)
-}
-
-function LoginForm({ errorMessage }: LoginFormProps) {
+function LoginForm() {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema)
     })
     const { mutateAsync, isPending } = useLogin()
+    // any sign-in running (email or Google / GitHub) → the button can't be clicked
+    const isAuthBusy = useIsAuthBusy()
     const router = useRouter()
     const onSubmit = async (data: LoginSchemaType) => {
         try {
@@ -53,15 +51,6 @@ function LoginForm({ errorMessage }: LoginFormProps) {
 
             {/* Auth tabs */}
             <AuthTabs activeTab="login" />
-
-            {/* Google / GitHub sign-in failed */}
-            {errorMessage && (
-                <Alert variant="destructive" className="mt-6">
-                    <CircleAlert />
-                    <AlertTitle>Sign-in failed</AlertTitle>
-                    <AlertDescription>{errorMessage}</AlertDescription>
-                </Alert>
-            )}
 
             {/* Form */}
             <form className="mt-6 space-y-4" >
@@ -109,6 +98,7 @@ function LoginForm({ errorMessage }: LoginFormProps) {
                     onClick={handleSubmit(onSubmit)}
                     variant="default"
                     isLoading={isPending}
+                    disabled={isAuthBusy}
                     size="lg"
                     rounded="xl" className="mt-2 h-11 w-full font-semibold"
                 >
