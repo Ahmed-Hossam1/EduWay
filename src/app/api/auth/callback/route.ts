@@ -8,9 +8,16 @@ export async function GET(request: Request) {
 
     try {
         // OAuth callback must contain a temporary authorization code.
+        // No code = Google / GitHub (or Supabase) sent an error instead, e.g. ?error=access_denied
         if (!code) {
+            const providerError = requestUrl.searchParams.get("error");
+            console.error("OAuth callback without code:", providerError, requestUrl.searchParams.get("error_description"));
+
+            // the user pressed "Cancel" on the Google / GitHub page
+            const errorCode = providerError === "access_denied" ? "oauth_cancelled" : "oauth_callback";
+
             return NextResponse.redirect(
-                new URL("/auth/login?error=oauth_callback", request.url)
+                new URL(`/auth/login?error=${errorCode}`, request.url)
             );
         }
 

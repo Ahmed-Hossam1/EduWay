@@ -1,29 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { cartQueryKey } from "./useCart"
-import { toast } from "sonner"
-import { RemoveAllCart } from "../services/cart"
+"use client"
+import { useOptimisticIdsMutation } from "@/hooks/useOptimisticIdsMutation";
+import { RemoveAllCart } from "../services/cart";
+import { cartQueryKey } from "./useCart";
 
-export const useRemoveAllCart = () => {
-    const queryClient = useQueryClient()
-    return useMutation({
+/**
+ * "Remove all" on the cart page — OPTIMISTIC: the cart is empty right away.
+ */
+export const useRemoveAllCart = () =>
+    useOptimisticIdsMutation({
         mutationFn: () => RemoveAllCart(),
-        async onMutate() {
-            await queryClient.cancelQueries({ queryKey: cartQueryKey })
-            const previous = queryClient.getQueryData(cartQueryKey)
-            queryClient.setQueryData(cartQueryKey, [])
-            return { previous }
-        },
-        onError(err, vars, context) {
-            queryClient.setQueryData(cartQueryKey, context?.previous)
-            toast.error("failed to remove all from cart")
-        },
-        onSuccess() {
-            toast.success("removed all from cart")
-        },
-        onSettled() {
-            queryClient.invalidateQueries({ queryKey: cartQueryKey })
-        }
-
-    })
-}
-
+        updates: [{ queryKey: cartQueryKey, update: () => [] }],
+        successMessage: "Removed all from cart",
+        errorMessage: "Couldn't remove all from cart",
+    });

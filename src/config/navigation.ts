@@ -9,6 +9,17 @@ export const navItems: NavItem[] = [
   { label: "Pricing", href: "/pricing" },
 ];
 
+// Navbar search → "Trending" list (the most popular course names)
+// Static for now (UI only). Later: load the top courses from the database.
+export const trendingSearches: string[] = [
+  "HTML & CSS Crash Course",
+  "JavaScript Fundamentals",
+  "SQL for Data Analysis",
+  "Complete Web Development Bootcamp",
+  "Data Science with Python: Zero to Hero",
+  "UX Research Basics",
+];
+
 export const footerColumns: FooterColumn[] = [
   {
     title: "Explore",

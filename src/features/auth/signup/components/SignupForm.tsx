@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { type AxiosError } from "axios";
+import { getErrorMessage } from "@/lib/axios/getErrorMessage";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -35,13 +35,7 @@ function SignupForm() {
             }, 400)
         } catch (err) {
             console.error(err)
-            if (axios.isAxiosError(err)) {
-                const axiosError = err as AxiosError<{ message: string }>
-                const message = axiosError.response?.data?.message ?? "Failed to create account"
-                toast.error(message)
-            } else {
-                toast.error("Something went wrong. Please try again.")
-            }
+            toast.error(getErrorMessage(err, "Failed to create account"))
         }
     };
 

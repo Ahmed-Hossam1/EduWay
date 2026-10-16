@@ -83,7 +83,7 @@ export function CoursesHero() {
                   aria-label="Search courses"
                   Size="lg"
                   rounded="full"
-                  variant="ghost"
+                  variant="plain"
                   onChange={(e) => setQuery(e.target.value)}
                   value={query}
                   leftIcon={<Search className="size-4" />}

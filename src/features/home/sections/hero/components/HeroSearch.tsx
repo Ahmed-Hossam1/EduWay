@@ -1,25 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { heroPopularTopics } from "../../../data";
 import Input from "@/components/ui/input";
+import { useQueryParams } from "@/hooks/useQueryParams";
+import { Search } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { heroPopularTopics } from "../../../data";
 
 export function HeroSearch() {
-  const [query, setQuery] = useState("");
+  const params = useQueryParams()
+  const [searchValue, setSearchValue] = useState<string>(params.get("q") || "")
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSearch = (e: FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
-    // In real app: router.push(`/courses?search=${encodeURIComponent(query)}`);
+    if (!searchValue) return
+    params.set("q", searchValue)
+    router.push(`/courses?q=${searchValue}`)
   };
 
   return (
     <div className="w-full max-w-xl space-y-4">
       {/* Search Bar Input Form */}
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSearch}
         className="relative flex items-center bg-card rounded-full border border-border/80 shadow-sm hover:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all p-1.5"
       >
         <div className="pl-3.5 pr-2 text-muted-foreground">
@@ -27,12 +33,11 @@ export function HeroSearch() {
         </div>
         <Input
           type="text"
-          variant={"ghost"}
+          variant="plain"
           fullWidth
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
           placeholder="What do you want to learn today?"
-          className=" focus-within:ring-0!"
         />
         <Button
           type="submit"
@@ -48,14 +53,9 @@ export function HeroSearch() {
           Popular:
         </span>
         {heroPopularTopics.map((topic) => (
-          <Button
-            variant={"outline"}
-            key={topic}
-            onClick={() => setQuery(topic)}
-            rounded="full" className="border hover:bg-primary hover:text-primary-foreground hover:transition border-border/60 transition-all font-medium"
-          >
+          <Link key={topic} className="border hover:bg-primary hover:text-primary-foreground hover:transition border-border/60 transition-all font-medium" href={`/courses?q=${topic}`}>
             {topic}
-          </Button>
+          </Link>
         ))}
       </div>
     </div>

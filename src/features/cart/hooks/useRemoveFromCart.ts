@@ -1,6 +1,5 @@
 "use client"
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { removeId, useOptimisticIdsMutation } from "@/hooks/useOptimisticIdsMutation";
 import { removeFromCartService } from "../services/cart";
 import { cartQueryKey } from "./useCart";
 
@@ -12,30 +11,10 @@ type RemoveOptions = {
  * Remove a course from the cart — OPTIMISTIC:
  * the course disappears from the cart page and the count goes down right away.
  */
-export const useRemoveFromCart = ({ silent = false }: RemoveOptions = {}) => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
+export const useRemoveFromCart = ({ silent = false }: RemoveOptions = {}) =>
+    useOptimisticIdsMutation({
         mutationFn: (courseId: string) => removeFromCartService(courseId),
-
-        onMutate: async (courseId) => {
-            await queryClient.cancelQueries({ queryKey: cartQueryKey });
-            const previousCart = queryClient.getQueryData<string[]>(cartQueryKey);
-
-            queryClient.setQueryData<string[]>(cartQueryKey, (ids = []) => ids.filter((id) => id !== courseId));
-
-            return { previousCart };
-        },
-
-        onError: (_error, _courseId, context) => {
-            queryClient.setQueryData(cartQueryKey, context?.previousCart);
-            toast.error("Couldn't remove from cart");
-        },
-
-        onSuccess: () => {
-            if (!silent) toast.success("Removed from cart");
-        },
-
-        onSettled: () => queryClient.invalidateQueries({ queryKey: cartQueryKey }),
+        updates: [{ queryKey: cartQueryKey, update: (ids, courseId) => removeId(ids, courseId) }],
+        successMessage: silent ? undefined : "Removed from cart",
+        errorMessage: "Couldn't remove from cart",
     });
-};

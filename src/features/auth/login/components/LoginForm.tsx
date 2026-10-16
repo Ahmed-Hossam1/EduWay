@@ -4,8 +4,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { type AxiosError } from "axios";
-import { ArrowRight } from "lucide-react";
+import { getErrorMessage } from "@/lib/axios/getErrorMessage";
+import { ArrowRight, CircleAlert } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -15,7 +16,11 @@ import { loginSchema, LoginSchemaType } from "../schemas/loginSchema";
 import { AuthTabs, SocialLogin } from "../../shared/components";
 import { useRouter } from "next/navigation";
 
-function LoginForm() {
+type LoginFormProps = {
+    errorMessage?: string; // Google / GitHub sign-in failed (from ?error= in the URL)
+}
+
+function LoginForm({ errorMessage }: LoginFormProps) {
     const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema)
     })
@@ -30,13 +35,7 @@ function LoginForm() {
             }, 400)
         } catch (err) {
             console.error(err)
-            if (axios.isAxiosError(err)) {
-                const axiosError = err as AxiosError<{ message: string }>
-                const message = axiosError.response?.data?.message ?? "Failed to login"
-                toast.error(message)
-            } else {
-                toast.error("Something went wrong. Please try again.")
-            }
+            toast.error(getErrorMessage(err, "Failed to login"))
         }
     }
     return (
@@ -55,6 +54,15 @@ function LoginForm() {
 
             {/* Auth tabs */}
             <AuthTabs activeTab="login" />
+
+            {/* Google / GitHub sign-in failed */}
+            {errorMessage && (
+                <Alert variant="destructive" className="mt-6">
+                    <CircleAlert />
+                    <AlertTitle>Sign-in failed</AlertTitle>
+                    <AlertDescription>{errorMessage}</AlertDescription>
+                </Alert>
+            )}
 
             {/* Form */}
             <form className="mt-6 space-y-4" >

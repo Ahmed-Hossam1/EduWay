@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { AuthRole } from "@/features/auth/shared/types";
-import { AxiosError } from "axios";
+import { getErrorMessage } from "@/lib/axios/getErrorMessage";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -22,10 +22,8 @@ export default function ChooseRoleForm() {
             if (error) throw error
             router.push(response.nextRoute)
         } catch (error) {
-            const axiosError = error as AxiosError<{ message: string }>
-            const message = axiosError.response?.data.message || "Failed to choose role"
-            console.log(message);
-            toast.error(message);
+            console.error(error);
+            toast.error(getErrorMessage(error, "Failed to choose role"));
 
         }
     }

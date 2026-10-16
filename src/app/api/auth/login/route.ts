@@ -7,7 +7,7 @@ import { loginSchema } from "@/features/auth/login/schemas/loginSchema";
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
+        const body = await request.json()
 
         // Step 2: Validate request body with Zod schema
         const result = loginSchema.safeParse(body);
@@ -32,8 +32,10 @@ export async function POST(request: Request) {
         })
 
         if (error) {
+            console.error("Login error:", error.code, error.message);
+
             return NextResponse.json(
-                { message: "Invalid credentials", error },
+                { message: "Invalid email or password" },
                 { status: 401 }
             );
         }
@@ -53,14 +55,9 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error("Login API Error:", error);
 
-        const message =
-            error instanceof Error
-                ? error.message
-                : "Failed to login";
-
         return NextResponse.json(
-            { message },
-            { status: 400 }
+            { message: "Something went wrong. Please try again." },
+            { status: 500 }
         );
     }
 }

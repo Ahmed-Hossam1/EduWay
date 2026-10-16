@@ -43,9 +43,10 @@ export function CoursesFilters({ categoriesPromise }: CoursesFiltersProps) {
     updateParams({ [queryName]: newValues.length > 0 ? newValues.join(",") : null });
   };
 
-  // Remove every sidebar filter, but keep the search text and the sort
+  // Remove every sidebar filter AND the search text (q) — only the sort stays
+  // (q is often there when the user comes from outside: Navbar / home search)
   const handleClearAll = () => {
-    const changes: Record<string, null> = { rating: null };
+    const changes: Record<string, null> = { rating: null, q: null };
     filterGroups.forEach((group) => (changes[group.id] = null));
     updateParams(changes);
   };

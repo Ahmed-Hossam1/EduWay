@@ -5,6 +5,7 @@ import NextThemeProvider from "@/providers/NextThemeProvider";
 import { Toaster } from 'sonner';
 import { CircleAlert, CircleCheck, CircleX, Loader } from "lucide-react";
 import QueryClientProviders from "@/providers/QueryClientProvider";
+import { OAuthErrorToast } from "@/features/auth/shared/components/OAuthErrorToast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,14 +94,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
             {children}
             <Toaster
+              position="top-right"
               icons={{
                 success: <CircleCheck />,
                 warning: <CircleAlert />,
                 error: <CircleX />,
                 loading: <Loader />,
-              }
-              }
+              }}
             />
+            {/* Google / GitHub sign-in failed → Supabase puts the error in the URL → toast */}
+            <OAuthErrorToast />
           </QueryClientProviders>
         </NextThemeProvider>
       </body>

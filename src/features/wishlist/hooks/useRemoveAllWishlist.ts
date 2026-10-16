@@ -1,26 +1,15 @@
-import { Mutation, useMutation, useQueryClient } from "@tanstack/react-query"
-import { removeAllFromWishlistService } from "../services/wishlist"
-import { wishlistQueryKey } from "./useWishlist"
-import { toast } from "sonner"
+"use client"
+import { useOptimisticIdsMutation } from "@/hooks/useOptimisticIdsMutation";
+import { removeAllFromWishlistService } from "../services/wishlist";
+import { wishlistQueryKey } from "./useWishlist";
 
-export const useRemoveAllWishlist = () => {
-    const queryClient = useQueryClient()
-
-    return useMutation({
+/**
+ * "Remove all" on the wishlist page — OPTIMISTIC: the wishlist is empty right away.
+ */
+export const useRemoveAllWishlist = () =>
+    useOptimisticIdsMutation({
         mutationFn: () => removeAllFromWishlistService(),
-        onMutate: async () => {
-            await queryClient.cancelQueries({ queryKey: wishlistQueryKey })
-            const previous = queryClient.getQueryData(wishlistQueryKey)
-            queryClient.setQueryData(wishlistQueryKey, [])
-            return { previous }
-        },
-        onError: (error, _variables, context) => {
-            queryClient.setQueryData(wishlistQueryKey, context?.previous)
-            toast.error("failed to remove all ")
-        },
-        onSuccess: () => toast.success("removed all from wishlist "),
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: wishlistQueryKey })
-        }
-    })
-}
+        updates: [{ queryKey: wishlistQueryKey, update: () => [] }],
+        successMessage: "Removed all from wishlist",
+        errorMessage: "Couldn't remove all from wishlist",
+    });

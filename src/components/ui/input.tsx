@@ -14,6 +14,9 @@ const containerVariants = cva(
           "border-transparent bg-muted/70 hover:bg-muted focus-within:border-primary focus-within:bg-background focus-within:ring-primary/20",
         ghost:
           "border-transparent bg-transparent hover:bg-muted/50 focus-within:border-primary focus-within:bg-background focus-within:ring-primary/20",
+        // an input INSIDE a box that already has its own border + focus style
+        plain:
+          "border-transparent bg-transparent",
       },
       Size: {
         sm: "h-8 px-2.5 text-xs",

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import axios, { AxiosError } from "axios"
+import { getErrorMessage } from "@/lib/axios/getErrorMessage"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { OnboardingFormValues } from "../schemas/onboardingSchema"
@@ -22,12 +22,7 @@ export const useSubmitOnboarding = () => {
         },
         onError(err) {
             console.error(err)
-            if (axios.isAxiosError(err)) {
-                const axiosError = err as AxiosError<{ message: string }>
-                toast.error(axiosError.response?.data?.message ?? "Failed to submit your profile")
-            } else {
-                toast.error("Something went wrong. Please try again.")
-            }
+            toast.error(getErrorMessage(err, "Failed to submit your profile"))
         },
     })
 }

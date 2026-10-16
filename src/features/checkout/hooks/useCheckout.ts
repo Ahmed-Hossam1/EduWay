@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import axios, { AxiosError } from "axios"
+import { getErrorMessage } from "@/lib/axios/getErrorMessage"
 import { toast } from "sonner"
 import { startCheckoutService } from "../services/checkout"
 
@@ -15,12 +15,7 @@ export const useCheckout = () => {
         },
         onError(err) {
             console.error(err)
-            if (axios.isAxiosError(err)) {
-                const axiosError = err as AxiosError<{ message: string }>
-                toast.error(axiosError.response?.data?.message ?? "Failed to start the checkout")
-            } else {
-                toast.error("Something went wrong. Please try again.")
-            }
+            toast.error(getErrorMessage(err, "Failed to start the checkout"))
         },
     })
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Menu, Heart, ShoppingCart } from "lucide-react";
+import { Menu, Heart, ShoppingCart } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Logo } from "./Logo";
+import { NavbarSearch } from "./NavbarSearch";
 import { navItems } from "@/config/navigation";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { UserMenu } from "@/features/profile/components/UserMenu";
@@ -39,6 +40,11 @@ export function Navbar() {
   const pathName = usePathname()
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
+
+  const isActiveLink = (href: string, pathName: string): boolean => {
+    return href.split("/")[1] === pathName.split("/")[1];
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/80">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -51,9 +57,7 @@ export function Navbar() {
             <Link
               key={item.label}
               href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${item.href === pathName
-                ? "text-primary font-semibold"
-                : "text-muted-foreground"
+              className={`text-sm font-medium transition-colors hover:text-primary ${isActiveLink(item.href, pathName) ? "text-primary font-semibold" : "text-muted-foreground"
                 }`}
             >
               {item.label}
@@ -63,9 +67,8 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="icon" rounded="full" aria-label="Search courses" className={navbarIconClass}>
-            <Search />
-          </Button>
+          {/* Search icon  panel with the input + trending course names */}
+          <NavbarSearch className={navbarIconClass} />
 
 
           {
@@ -153,7 +156,7 @@ export function Navbar() {
                     key={item.label}
                     href={item.href}
                     onClick={closeMobileMenu}
-                    className={`rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary ${item.href === pathName ? "text-primary font-semibold" : "text-foreground"
+                    className={`rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary ${isActiveLink(item.href, pathName) ? "text-primary font-semibold" : "text-foreground"
                       }`}
                   >
                     {item.label}

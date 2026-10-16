@@ -31,6 +31,7 @@ export default async function Courses({ searchParams }: Params) {
             coursesPromise={coursesPromise}
             categoriesPromise={categoriesPromise}
             filtersKey={JSON.stringify(query)}
+            searchQuery={query.q ?? ""}
         />
     );
 }
