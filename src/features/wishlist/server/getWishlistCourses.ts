@@ -1,6 +1,7 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CategoryRow, Course } from "@/features/courses/types";
+import { Course } from "@/features/courses/types";
+import { CourseRow, flattenCourse } from "@/features/courses/utils/flattenCourse";
 
 /**
  * Server only: the logged-in user's wishlist as full courses (for the /wishlist page),
@@ -26,11 +27,6 @@ export const getWishlistCourses = async (): Promise<Course[]> => {
     return (data ?? [])
         // a course that was unpublished after it was saved comes back as null → skip it
         .filter((item) => item.course)
-        // same flattening as getCourses: course_categories → categories
-        .map(({ course }) => {
-            const { course_categories, ...rest } = course as unknown as Course & {
-                course_categories: { category: CategoryRow }[];
-            };
-            return { ...rest, categories: course_categories.map((item) => item.category) };
-        });
+        // course_categories → categories (same as the courses list)
+        .map((item) => flattenCourse(item.course as unknown as CourseRow));
 };

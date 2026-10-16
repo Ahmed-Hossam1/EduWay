@@ -2,6 +2,7 @@ import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { COURSES_PAGE_SIZE } from "../schemas/coursesQuerySchema";
 import { Course, CourseDurationFilter, CoursesResponse, CourseSort, GetCoursesParams } from "../types";
+import { CourseRow, flattenCourse } from "../utils/flattenCourse";
 
 // A sort function for every sort option
 const sorters: Record<CourseSort, (a: Course, b: Course) => number> = {
@@ -49,10 +50,7 @@ export const getCourses = async (
     if (error) throw error;
 
     // course_categories: [{ category: {...} }]  →  categories: [{...}]
-    const allCourses: Course[] = data.map(({ course_categories, ...course }) => ({
-        ...course,
-        categories: course_categories.map((item: { category: Course["categories"][number] }) => item.category),
-    }));
+    const allCourses: Course[] = (data as unknown as CourseRow[]).map(flattenCourse);
 
     // 2- Filter: a course stays only if it passes every filter the user chose
     const filtered = allCourses.filter((course) => {

@@ -1,12 +1,12 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CategoryRow, Course } from "@/features/courses/types";
+import { CourseRow, flattenCourse } from "@/features/courses/utils/flattenCourse";
 import { EnrolledCourse, EnrollmentStatus } from "../types";
 
 type EnrollmentRow = {
     status: EnrollmentStatus;
     enrolled_at: string;
-    course: (Course & { course_categories: { category: CategoryRow }[] }) | null;
+    course: CourseRow | null; // null = the course was unpublished (hidden by RLS)
 };
 
 /**
@@ -53,14 +53,14 @@ export const getMyCourses = async (): Promise<EnrolledCourse[]> => {
     return (enrollments as unknown as EnrollmentRow[])
         .filter((item) => item.course) // a course that was unpublished is hidden by RLS → skip it
         .map((item) => {
-            const { course_categories, ...course } = item.course!;
+            const course = flattenCourse(item.course!); // course_categories → categories
             const completedLessons = completedByCourse[course.id] ?? 0;
             const progressPercent = course.lessons_count > 0
                 ? Math.round((completedLessons / course.lessons_count) * 100)
                 : 0;
 
             return {
-                course: { ...course, categories: course_categories.map((c) => c.category) },
+                course,
                 status: item.status,
                 enrolledAt: item.enrolled_at,
                 completedLessons,
