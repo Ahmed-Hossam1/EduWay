@@ -1,15 +1,17 @@
 "use client"
-import { useOptimisticIdsMutation } from "@/hooks/useOptimisticIdsMutation";
+import { useOptimisticMutation } from "@/hooks/useOptimisticMutation";
 import { RemoveAllCart } from "../services/cart";
 import { cartQueryKey } from "./useCart";
 
 /**
- * "Remove all" on the cart page — OPTIMISTIC: the cart is empty right away.
+ * "Remove all" on the cart page: the cart is empty right away.
+ * <void> = mutate() takes nothing (no courseId).
  */
 export const useRemoveAllCart = () =>
-    useOptimisticIdsMutation({
-        mutationFn: () => RemoveAllCart(),
-        updates: [{ queryKey: cartQueryKey, update: () => [] }],
+    useOptimisticMutation<void>({
+        mutationFn: RemoveAllCart,
+        queryKeys: [cartQueryKey],
+        updateCache: () => [],
         successMessage: "Removed all from cart",
         errorMessage: "Couldn't remove all from cart",
     });
