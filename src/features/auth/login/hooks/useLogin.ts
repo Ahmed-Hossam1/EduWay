@@ -23,7 +23,7 @@ export const useLogin = () => {
         onSuccess: (response) => {
             toast.success("Login successful");
             // a short wait so the toast is seen before the page changes
-            setTimeout(() => router.push(response.nextRoute), 400);
+            setTimeout(() => router.push(response.nextRoute), 300);
         },
 
         onError: (error) => {

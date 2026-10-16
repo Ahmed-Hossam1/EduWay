@@ -23,7 +23,7 @@ export const useSignup = () => {
         onSuccess: (response) => {
             toast.success("Account created successfully");
             // a short wait so the toast is seen before the page changes
-            setTimeout(() => router.push(response.nextRoute), 400);
+            setTimeout(() => router.push(response.nextRoute), 300);
         },
 
         onError: (error) => {
