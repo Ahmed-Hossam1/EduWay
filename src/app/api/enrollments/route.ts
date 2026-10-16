@@ -5,14 +5,16 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 // GET /api/enrollments → { courseIds: ["...", "..."] }  (the courses the logged-in user owns)
 export async function GET() {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { data, error } = await supabase
         .from("enrollments")
         .select("course_id")
-        .eq("user_id", user.id)            // a teacher also sees his students' rows → keep only his own
-        .neq("status", "refunded")         // a refunded course is not owned anymore
+        .eq("user_id", user.id) // a teacher also sees his students' rows → keep only his own
+        .neq("status", "refunded") // a refunded course is not owned anymore
         .order("enrolled_at", { ascending: false });
 
     if (error) {
@@ -34,7 +36,9 @@ export async function POST(request: NextRequest) {
     if (!result.success) return NextResponse.json({ message: "A valid courseId is required" }, { status: 400 });
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     // double click → already enrolled → no error, no second row
@@ -42,7 +46,7 @@ export async function POST(request: NextRequest) {
         .from("enrollments")
         .upsert(
             { user_id: user.id, course_id: result.data.courseId },
-            { onConflict: "user_id,course_id", ignoreDuplicates: true }
+            { onConflict: "user_id,course_id", ignoreDuplicates: true },
         );
 
     if (error) {

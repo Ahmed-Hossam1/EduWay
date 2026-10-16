@@ -9,8 +9,8 @@ export const metadata = {
 };
 
 type Params = {
-    searchParams: Promise<{ session_id?: string | string[] }>
-}
+    searchParams: Promise<{ session_id?: string | string[] }>;
+};
 
 // Stripe sends the user here after paying: /student/checkout/success?session_id=cs_test_...
 // Protected in proxy.ts (/student) => only logged-in users get here

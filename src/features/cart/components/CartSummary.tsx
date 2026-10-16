@@ -1,23 +1,23 @@
-"use client"
-import Link from "next/link"
-import { ArrowRight, Lock } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { formatPrice } from "@/features/courses/utils/format"
-import { useCheckout } from "@/features/checkout/hooks/useCheckout"
+"use client";
+import Link from "next/link";
+import { ArrowRight, Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { formatPrice } from "@/features/courses/utils/format";
+import { useCheckout } from "@/features/checkout/hooks/useCheckout";
 
 type CartSummaryProps = {
-    itemsCount: number
-    total: number
-    currency: string
-}
+    itemsCount: number;
+    total: number;
+    currency: string;
+};
 
 // The order summary on the right (bottom on mobile). "Checkout" → Stripe payment page.
 export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
-    const { mutate: startCheckout, isPending, isSuccess } = useCheckout()
+    const { mutate: startCheckout, isPending, isSuccess } = useCheckout();
     // isSuccess: the request is done but the browser is still loading Stripe => keep the spinner
-    const isRedirecting = isPending || isSuccess
+    const isRedirecting = isPending || isSuccess;
 
     return (
         <Card className="rounded-2xl shadow-lg">
@@ -27,7 +27,9 @@ export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
 
             <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center justify-between text-muted-foreground">
-                    <span>Subtotal ({itemsCount} {itemsCount === 1 ? "course" : "courses"})</span>
+                    <span>
+                        Subtotal ({itemsCount} {itemsCount === 1 ? "course" : "courses"})
+                    </span>
                     <span>{formatPrice(total, currency)}</span>
                 </div>
                 <Separator />
@@ -55,9 +57,7 @@ export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
                     )}
                 </Button>
                 <Button variant="ghost" rounded="xl" className="w-full" asChild>
-                  <Link href="/courses">
-                      Continue shopping
-                  </Link>
+                    <Link href="/courses">Continue shopping</Link>
                 </Button>
                 <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Lock className="size-3.5" />
@@ -65,5 +65,5 @@ export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
                 </p>
             </CardFooter>
         </Card>
-    )
+    );
 }

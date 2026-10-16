@@ -6,8 +6,8 @@ import { getInstructorById } from "@/features/instructor-details/server/getInstr
 import { getInstructorCourses } from "@/features/instructor-details/server/getInstructorCourses";
 
 type Params = {
-    params: Promise<{ id: string }>
-}
+    params: Promise<{ id: string }>;
+};
 
 // SEO: "Ahmed Hossam — Software Engineer & Online Instructor | EduWay"
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -26,14 +26,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
             title: headline ? `${name} — ${headline}` : name,
             description: instructor.profile?.bio?.slice(0, 160) ?? `Courses by ${name} on EduWay.`,
             type: "website",
-            images: [instructor.avatar_url ?? "/"
-            ]
+            images: [instructor.avatar_url ?? "/"],
         },
         twitter: {
             title: headline ? `${name} — ${headline}` : name,
             description: instructor.profile?.bio?.slice(0, 160) ?? `Courses by ${name} on EduWay.`,
-            images: [instructor.avatar_url ?? "/"]
-        }
+            images: [instructor.avatar_url ?? "/"],
+        },
     };
 }
 

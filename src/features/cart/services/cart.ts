@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/apiClient";
+import { apiClient } from "@/lib/axios/apiClient";
 import { CartIdsResponse } from "../types";
 
 // The browser talks to /api/cart (the routes check the user and call Supabase)
@@ -16,6 +16,6 @@ export const removeFromCartService = async (courseId: string) => {
     return await apiClient.delete(`/cart/${courseId}`);
 };
 
-export const RemoveAllCart = async () => {
-    await apiClient.delete("/cart")
-}
+export const removeAllFromCartService = async () => {
+    await apiClient.delete("/cart");
+};

@@ -1,4 +1,4 @@
-import { TeacherOnboardingContainer } from "@/features/auth/onboarding";
+import { TeacherOnboardingContainer } from "@/features/auth/onboarding/components/TeacherOnboardingContainer";
 import { getOnboardingDefaults } from "@/features/auth/onboarding/server/getOnboardingDefaults";
 import { getCategoryOptions } from "@/features/auth/onboarding/server/getCategoryOptions";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
@@ -16,7 +16,9 @@ export const metadata: Metadata = {
 export default async function OnboardingPage() {
     // 1- Who is he? (proxy.ts already sends guests to /auth/login)
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) redirect("/auth/login");
 
     const profile = await getProfileByIdService(user.id);

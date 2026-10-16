@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ArrowLeft, KeyRound, Mail, Send } from "lucide-react";
-import Input from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 // UI only — the logic (send the reset email with Supabase) will be added later
-export default function ForgotPasswordForm() {
+export function ForgotPasswordForm() {
     return (
         <Card className="block w-full max-w-sm rounded-2xl p-7 shadow-lg sm:max-w-md sm:p-9">
             {/* Icon */}
@@ -19,7 +19,8 @@ export default function ForgotPasswordForm() {
                     Forgot your password?
                 </h1>
                 <p className="mt-2 text-sm text-muted-foreground">
-                    No worries! Enter the email you signed up with and we&apos;ll send you a link to reset your password.
+                    No worries! Enter the email you signed up with and we&apos;ll send you a link to reset your
+                    password.
                 </p>
             </div>
 

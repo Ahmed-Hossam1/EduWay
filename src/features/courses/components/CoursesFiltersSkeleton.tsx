@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Loading state of the filters sidebar while the categories come from the database
-export default function CoursesFiltersSkeleton() {
+export function CoursesFiltersSkeleton() {
     return (
         <div className="space-y-6">
             <Skeleton className="h-5 w-24" />

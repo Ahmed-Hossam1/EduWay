@@ -4,14 +4,11 @@ import { AuthRole } from "@/features/auth/shared/types";
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    const role = body.role as AuthRole
+    const role = body.role as AuthRole;
 
     // Validate role
     if (!role || !["student", "teacher"].includes(role)) {
-        return NextResponse.json(
-            { message: "A valid role is required" },
-            { status: 400 }
-        );
+        return NextResponse.json({ message: "A valid role is required" }, { status: 400 });
     }
 
     const supabase = await createSupabaseServerClient();
@@ -23,10 +20,7 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-        return NextResponse.json(
-            { message: "Unauthorized" },
-            { status: 401 }
-        );
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     // Determine initial status
@@ -47,30 +41,21 @@ export async function POST(request: NextRequest) {
     if (error) {
         console.error("Assign role error:", error);
 
-        return NextResponse.json(
-            { message: "Failed to assign role" },
-            { status: 500 }
-        );
+        return NextResponse.json({ message: "Failed to assign role" }, { status: 500 });
     }
 
     // Profile already has a role
     if (!data) {
-        return NextResponse.json(
-            { message: "Role already assigned" },
-            { status: 409 }
-        );
+        return NextResponse.json({ message: "Role already assigned" }, { status: 409 });
     }
 
-    const nextRoute =
-        role === "teacher"
-            ? "/account/onboarding"
-            : "/";
+    const nextRoute = role === "teacher" ? "/account/onboarding" : "/";
 
     return NextResponse.json(
         {
             message: "Role assigned successfully",
             nextRoute,
         },
-        { status: 200 }
+        { status: 200 },
     );
 }

@@ -1,10 +1,6 @@
-import { ReactNode } from "react"
+import { ReactNode } from "react";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
-    return (
-        <>
-            {children}
-        </>
-    )
-}
-export default AdminLayout
+    return <>{children}</>;
+};
+export default AdminLayout;

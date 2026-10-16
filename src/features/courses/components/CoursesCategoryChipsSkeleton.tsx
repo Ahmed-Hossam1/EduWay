@@ -7,5 +7,5 @@ export function CoursesCategoryChipsSkeleton() {
                 <Skeleton key={item} className="h-10 w-24 rounded-lg " />
             ))}
         </div>
-    )
+    );
 }

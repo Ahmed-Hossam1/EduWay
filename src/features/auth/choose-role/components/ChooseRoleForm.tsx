@@ -2,31 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { AuthRole } from "@/features/auth/shared/types";
-import { getErrorMessage } from "@/lib/axios/getErrorMessage";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import { rolesData } from "../data/rolesData";
 import { useRole } from "../hooks/useRole";
-import ChooseRoleCard from "./ChooseRoleCard";
+import { ChooseRoleCard } from "./ChooseRoleCard";
 
-export default function ChooseRoleForm() {
+export function ChooseRoleForm() {
     const [selectedRole, setSelectedRole] = useState<AuthRole | null>(null);
-    const { mutateAsync, isPending, error } = useRole()
-    const router = useRouter()
-    async function handleSubmit() {
+    // the redirect + the error toast are inside useRole
+    const { mutate: chooseRole, isPending } = useRole();
+
+    function handleSubmit() {
         if (!selectedRole) return;
-        try {
-            const response = await mutateAsync(selectedRole);
-            if (error) throw error
-            router.push(response.nextRoute)
-        } catch (error) {
-            console.error(error);
-            toast.error(getErrorMessage(error, "Failed to choose role"));
-
-        }
+        chooseRole(selectedRole);
     }
-
 
     return (
         <div className="flex w-full max-w-2xl flex-col gap-8">
@@ -49,7 +38,8 @@ export default function ChooseRoleForm() {
                 disabled={!selectedRole}
                 isLoading={isPending}
                 onClick={handleSubmit}
-                rounded="xl" className="w-full text-base font-semibold transition-all duration-200"
+                rounded="xl"
+                className="w-full text-base font-semibold transition-all duration-200"
             >
                 {isPending ? "Setting up your account…" : "Continue"}
             </Button>

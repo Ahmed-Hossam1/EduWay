@@ -1,8 +1,8 @@
-"use client"
-import { useMutation } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
-import { startOAuthService } from "../services/oauth"
-import { AUTH_MUTATION_KEY } from "../../shared/hooks/useIsAuthBusy"
+"use client";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { startOAuthService } from "../services/oauth";
+import { AUTH_MUTATION_KEY } from "../../shared/hooks/useIsAuthBusy";
 
 /**
  * "Sign in with Google / GitHub":
@@ -13,7 +13,7 @@ import { AUTH_MUTATION_KEY } from "../../shared/hooks/useIsAuthBusy"
  *   signInWith("google")
  */
 export const useOAuthLogin = () => {
-    const router = useRouter()
+    const router = useRouter();
 
     return useMutation({
         mutationKey: AUTH_MUTATION_KEY, // → useIsAuthBusy() is true while it runs
@@ -21,17 +21,17 @@ export const useOAuthLogin = () => {
 
         onSuccess: (url) => {
             // Google / GitHub is another website → a full page change (not router.push)
-            window.location.href = url
+            window.location.href = url;
 
             // The page needs a moment to leave. Returning a promise that never finishes keeps
             // this mutation "pending" until the browser leaves → the buttons stay disabled
             // (otherwise they would turn on again for a second before Google opens).
-            return new Promise(() => { })
+            return new Promise(() => {});
         },
 
         onError: (error) => {
-            console.error("OAuth start error:", error)
-            router.push("/auth/oauth-error?error=oauth_start")
+            console.error("OAuth start error:", error);
+            router.push("/auth/oauth-error?error=oauth_start");
         },
-    })
-}
+    });
+};

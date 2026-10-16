@@ -3,9 +3,8 @@
  * @param role string
  * @param status string
  * @returns string (pure function, no database calls)
-**/
+ **/
 export function getAuthRedirectRoute(role: string, status: string): string {
-
     // Determine the destination based on role and status.
     let nextRoute = "/";
 
@@ -38,5 +37,5 @@ export function getAuthRedirectRoute(role: string, status: string): string {
         }
     }
 
-    return nextRoute
+    return nextRoute;
 }

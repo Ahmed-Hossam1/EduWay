@@ -1,6 +1,6 @@
-import SignUpHero from "@/features/auth/signup/components/SignUpHero";
-import SignupForm from "@/features/auth/signup/components/SignupForm";
-import { AuthHeader } from "@/features/auth/shared/components";
+import { SignupHero } from "@/features/auth/signup/components/SignupHero";
+import { SignupForm } from "@/features/auth/signup/components/SignupForm";
+import { AuthHeader } from "@/features/auth/shared/components/AuthHeader";
 
 export const metadata = {
     title: "Sign Up",
@@ -12,7 +12,7 @@ export default function SignupPage() {
         <main className="h-full w-full bg-background text-foreground">
             <div className="flex h-full flex-col lg:flex-row">
                 {/* ── Left: Hero / Branding ── */}
-                <SignUpHero />
+                <SignupHero />
 
                 {/* ── Right: Signup Form ── */}
                 <div className="flex min-h-screen w-full flex-col lg:w-1/2">

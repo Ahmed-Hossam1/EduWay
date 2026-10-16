@@ -14,14 +14,16 @@ export const getInstructorById = cache(async (id: string): Promise<Instructor | 
 
     const { data, error } = await supabase
         .from("profiles")
-        .select(`
+        .select(
+            `
             id, first_name, last_name, avatar_url,
             profile:instructor_profiles (
                 headline, bio, experience_level, skills, teaching_languages,
                 linkedin_url, website_url, github_url, twitter_url,
                 certifications:instructor_certifications ( id, name, issuer, year )
             )
-        `)
+        `,
+        )
         .eq("id", id)
         .eq("role", "teacher")
         .order("year", { referencedTable: "profile.certifications", ascending: false })

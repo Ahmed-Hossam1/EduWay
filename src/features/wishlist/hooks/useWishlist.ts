@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useUserIdsQuery } from "@/hooks/useUserIdsQuery";
 import { getWishlistIdsService } from "../services/wishlist";
 

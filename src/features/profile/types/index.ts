@@ -1,10 +1,6 @@
 export type UserRole = "student" | "teacher" | "admin";
 
-export type ProfileStatus =
-    | "approved"
-    | "onboarding"
-    | "waiting"
-    | "rejected";
+export type ProfileStatus = "approved" | "onboarding" | "waiting" | "rejected";
 
 export interface Profile {
     id: string;

@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/apiClient";
+import { apiClient } from "@/lib/axios/apiClient";
 import { WishlistIdsResponse } from "../types";
 
 // The browser talks to /api/wishlist (the routes check the user and call Supabase)

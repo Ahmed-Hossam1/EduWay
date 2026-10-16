@@ -36,26 +36,26 @@ export const getOnboardingDefaults = (user: User, profile: Profile): DefaultValu
         firstName,
         lastName,
         /*
-            * Why are the rest of the form fields empty?
-            *
-            * - First name and last name are prefilled using the data collected during signup
-            *   or provided by the OAuth provider (Google/GitHub).
-            *
-            * - The remaining fields are not provided during signup, so they start with
-            *   empty default values.
-            *
-            * - We don't want to invent or prefill information the user hasn't provided.
-            *   Empty fields make it clear that the user still needs to complete them.
-            *
-            * - React Hook Form uses these values as the initial form state; this does not
-            *   save anything to the database by itself.
-            *
-            * - Required fields must pass validation before the user can complete onboarding.
-            *   Optional fields can remain empty.
-            *
-            * - This ensures we collect the required information before submitting the
-            *   onboarding data to the server.
-        */
+         * Why are the rest of the form fields empty?
+         *
+         * - First name and last name are prefilled using the data collected during signup
+         *   or provided by the OAuth provider (Google/GitHub).
+         *
+         * - The remaining fields are not provided during signup, so they start with
+         *   empty default values.
+         *
+         * - We don't want to invent or prefill information the user hasn't provided.
+         *   Empty fields make it clear that the user still needs to complete them.
+         *
+         * - React Hook Form uses these values as the initial form state; this does not
+         *   save anything to the database by itself.
+         *
+         * - Required fields must pass validation before the user can complete onboarding.
+         *   Optional fields can remain empty.
+         *
+         * - This ensures we collect the required information before submitting the
+         *   onboarding data to the server.
+         */
         headline: "",
         bio: "",
 

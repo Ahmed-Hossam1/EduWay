@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { socialProviders } from "../data/socialProviders";
 import { useOAuthLogin } from "../hooks/useOAuthLogin";
 import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 
 // "Sign in with Google / GitHub" buttons (login + signup pages)
-export default function SocialLogin() {
+export function SocialLogin() {
     // variables = the provider that was clicked ("google" / "github")
     const { mutate: signInWith, isPending, variables: clickedProvider } = useOAuthLogin();
 
@@ -27,7 +27,8 @@ export default function SocialLogin() {
                         disabled={isAuthBusy}
                         variant="outline"
                         size="default"
-                        rounded="xl" className="h-10"
+                        rounded="xl"
+                        className="h-10"
                         aria-label={provider.ariaLabel}
                     >
                         {!isThisLoading && <IconComponent />}

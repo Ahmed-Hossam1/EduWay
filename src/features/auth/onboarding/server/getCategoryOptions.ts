@@ -1,6 +1,6 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CategoryOption } from "../types";
+import { CategoryOption } from "../types/index";
 
 /**
  * Server only: the categories for step 2 (id = the uuid we save in instructor_profiles.category_id).
@@ -9,10 +9,7 @@ import { CategoryOption } from "../types";
 export const getCategoryOptions = async (): Promise<CategoryOption[]> => {
     const supabase = await createSupabaseServerClient();
 
-    const { data, error } = await supabase
-        .from("categories")
-        .select("id, name, slug")
-        .order("name");
+    const { data, error } = await supabase.from("categories").select("id, name, slug").order("name");
 
     if (error) throw error;
 

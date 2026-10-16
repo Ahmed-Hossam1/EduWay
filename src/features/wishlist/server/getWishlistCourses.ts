@@ -12,21 +12,25 @@ export const getWishlistCourses = async (): Promise<Course[]> => {
 
     const { data, error } = await supabase
         .from("wishlist_items")
-        .select(`
+        .select(
+            `
             created_at,
             course:courses (
                 *,
                 instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
                 course_categories ( category:categories ( id, name, slug ) )
             )
-        `)
+        `,
+        )
         .order("created_at", { ascending: false });
 
     if (error) throw error;
 
-    return (data ?? [])
-        // a course that was unpublished after it was saved comes back as null → skip it
-        .filter((item) => item.course)
-        // course_categories → categories (same as the courses list)
-        .map((item) => flattenCourse(item.course as unknown as CourseRow));
+    return (
+        (data ?? [])
+            // a course that was unpublished after it was saved comes back as null → skip it
+            .filter((item) => item.course)
+            // course_categories → categories (same as the courses list)
+            .map((item) => flattenCourse(item.course as unknown as CourseRow))
+    );
 };

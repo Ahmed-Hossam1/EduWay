@@ -1,19 +1,13 @@
-"use client"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { useCoursesSearchParams } from "@/features/courses/hooks/useCoursesSearchParams"
-import { instructorsSortOptions } from "../data"
+"use client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCoursesSearchParams } from "@/features/courses/hooks/useCoursesSearchParams";
+import { instructorsSortOptions } from "../data";
 
 export function InstructorsSortSelect() {
-    const { getValue, updateParams } = useCoursesSearchParams()
+    const { getValue, updateParams } = useCoursesSearchParams();
 
     // no sort in the URL → "students" (same default as getInstructors)
-    const currentSort = getValue("sort") ?? "students"
+    const currentSort = getValue("sort") ?? "students";
 
     return (
         <Select
@@ -32,5 +26,5 @@ export function InstructorsSortSelect() {
                 ))}
             </SelectContent>
         </Select>
-    )
+    );
 }

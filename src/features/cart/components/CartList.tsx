@@ -1,30 +1,30 @@
-"use client"
-import { use } from "react"
-import Link from "next/link"
-import { ShoppingCart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-import { Course } from "@/features/courses/types"
-import { useCart } from "../hooks/useCart"
-import { CartItem } from "./CartItem"
-import { CartSummary } from "./CartSummary"
-import { useRemoveAllCart } from "../hooks/useRemoveAllCart"
+"use client";
+import { use } from "react";
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Course } from "@/features/courses/types";
+import { useCart } from "../hooks/useCart";
+import { CartItem } from "./CartItem";
+import { CartSummary } from "./CartSummary";
+import { useRemoveAllCart } from "../hooks/useRemoveAllCart";
 
 type CartListProps = {
-    coursesPromise: Promise<Course[]>
-}
+    coursesPromise: Promise<Course[]>;
+};
 
 export function CartList({ coursesPromise }: CartListProps) {
     // full courses from the server (streamed)...
-    const courses = use(coursesPromise)
+    const courses = use(coursesPromise);
 
-    const { mutate: removeAllCart } = useRemoveAllCart()
+    const { mutate: removeAllCart } = useRemoveAllCart();
 
     // ...filtered by the ids in the React Query cache => "Remove" hides the row
     // and updates the total right away (optimistic), without a reload
-    const { data: cartIds } = useCart()
-    const cartCourses = cartIds ? courses.filter((course) => cartIds.includes(course.id)) : courses
+    const { data: cartIds } = useCart();
+    const cartCourses = cartIds ? courses.filter((course) => cartIds.includes(course.id)) : courses;
 
     if (cartCourses.length === 0) {
         return (
@@ -38,16 +38,14 @@ export function CartList({ coursesPromise }: CartListProps) {
                 </EmptyHeader>
                 <EmptyContent>
                     <Button rounded="full" asChild>
-                      <Link href="/courses">
-                          Browse courses
-                      </Link>
+                        <Link href="/courses">Browse courses</Link>
                     </Button>
                 </EmptyContent>
             </Empty>
-        )
+        );
     }
 
-    const total = cartCourses.reduce((sum, course) => sum + course.price, 0)
+    const total = cartCourses.reduce((sum, course) => sum + course.price, 0);
 
     return (
         <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
@@ -68,15 +66,11 @@ export function CartList({ coursesPromise }: CartListProps) {
                 </ul>
             </Card>
 
-
-
             <aside>
                 <div className="lg:sticky lg:top-24">
                     <CartSummary itemsCount={cartCourses.length} total={total} currency={cartCourses[0].currency} />
-
                 </div>
             </aside>
-
         </div>
-    )
+    );
 }

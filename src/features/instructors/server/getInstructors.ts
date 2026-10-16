@@ -33,11 +33,13 @@ export const getInstructors = async (params: GetInstructorsParams): Promise<Inst
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from("profiles")
-        .select(`
+        .select(
+            `
             id, first_name, last_name, avatar_url,
             profile:instructor_profiles ( headline, skills ),
             courses:courses!courses_instructor_id_fkey ( students_count, rating_avg, rating_count )
-        `)
+        `,
+        )
         .eq("role", "teacher")
         .eq("status", "approved")
         .eq("courses.status", "published");

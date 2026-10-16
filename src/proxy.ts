@@ -11,7 +11,7 @@ export async function proxy(request: NextRequest) {
 
     // 2- Supabase client for the proxy: reads cookies from the request
     //    and writes refreshed cookies to both the request and the response.
-    //    (We don't use createSupabaseServerClient() here because it creates a new 
+    //    (We don't use createSupabaseServerClient() here because it creates a new
     //    supabase client for each request, and we need to use the same client for
     //    the proxy and the request.)
     const supabase = createServerClient(
@@ -32,12 +32,14 @@ export async function proxy(request: NextRequest) {
                     cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
                 },
             },
-        }
+        },
     );
 
     // 3- Who is the user? getUser() verifies the token with Supabase,
     //    unlike getSession() which only trusts the cookie.
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
     // 4- Not logged in + trying to open a protected route => go to /login
     const pathname = request.nextUrl.pathname;

@@ -1,22 +1,15 @@
-"use client"
-import { Suspense } from "react"
-import { SlidersHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet"
-import { FilterOption } from "../types"
-import { CoursesFilters } from "./CoursesFilters"
-import CoursesFiltersSkeleton from "./CoursesFiltersSkeleton"
+"use client";
+import { Suspense } from "react";
+import { SlidersHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { FilterOption } from "../types";
+import { CoursesFilters } from "./CoursesFilters";
+import { CoursesFiltersSkeleton } from "./CoursesFiltersSkeleton";
 
 type CoursesMobileFiltersProps = {
-    categoriesPromise: Promise<FilterOption[]>
-}
+    categoriesPromise: Promise<FilterOption[]>;
+};
 
 // Small screens: the sidebar is hidden, so the same filters open in a Sheet
 export function CoursesMobileFilters({ categoriesPromise }: CoursesMobileFiltersProps) {
@@ -42,5 +35,5 @@ export function CoursesMobileFilters({ categoriesPromise }: CoursesMobileFilters
                 </div>
             </SheetContent>
         </Sheet>
-    )
+    );
 }

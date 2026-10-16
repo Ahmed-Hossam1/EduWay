@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/apiClient";
+import { apiClient } from "@/lib/axios/apiClient";
 import { OAuthProvider } from "../types";
 
 type OAuthResponse = {

@@ -14,9 +14,7 @@ export const formatCompactNumber = (value: number) =>
 
 // 49.99 + "USD" => "$49.99"   |   0 => "Free"
 export const formatPrice = (price: number, currency: string) =>
-    price === 0
-        ? "Free"
-        : new Intl.NumberFormat("en", { style: "currency", currency }).format(price);
+    price === 0 ? "Free" : new Intl.NumberFormat("en", { style: "currency", currency }).format(price);
 
 // { first_name: "Ahmed", last_name: "Emad" } => "Ahmed Emad"
 export const getInstructorName = (instructor: CourseInstructor) =>

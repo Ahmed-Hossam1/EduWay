@@ -17,7 +17,8 @@ export const getCourseBySlug = cache(async (slug: string): Promise<CourseDetails
 
     const { data, error } = await supabase
         .from("courses")
-        .select(`
+        .select(
+            `
             *,
             instructor:profiles!courses_instructor_id_fkey (
                 id, first_name, last_name, avatar_url,
@@ -29,7 +30,8 @@ export const getCourseBySlug = cache(async (slug: string): Promise<CourseDetails
                 course:courses!course_requirements_required_course_id_fkey ( id, title, slug, thumbnail_url )
             ),
             sections ( id, title, position, lessons ( id, title, duration_seconds, position, is_preview ) )
-        `)
+        `,
+        )
         .eq("slug", slug)
         .eq("status", "published")
         // sort the curriculum: sections by position, and the lessons inside each section

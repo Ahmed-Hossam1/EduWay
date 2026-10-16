@@ -1,12 +1,11 @@
-import ChooseRoleForm from "@/features/auth/choose-role/components/ChooseRoleForm";
+import { ChooseRoleForm } from "@/features/auth/choose-role/components/ChooseRoleForm";
 import { Logo } from "@/components/layout/Logo";
 import { Sparkles } from "lucide-react";
-import { AuthHeader } from "@/features/auth/shared/components";
+import { AuthHeader } from "@/features/auth/shared/components/AuthHeader";
 
 export const metadata = {
     title: "Choose Your Role - EduWay",
-    description:
-        "Tell us who you are so we can personalise your EduWay experience - start as a student or a teacher.",
+    description: "Tell us who you are so we can personalise your EduWay experience - start as a student or a teacher.",
 };
 
 export default function ChooseRolePage() {
@@ -19,10 +18,7 @@ export default function ChooseRolePage() {
                 {/* Body */}
                 <div className="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                     {/* Decorative glow */}
-                    <div
-                        aria-hidden="true"
-                        className="pointer-events-none fixed inset-0 overflow-hidden"
-                    >
+                    <div aria-hidden="true" className="pointer-events-none fixed inset-0 overflow-hidden">
                         <div className="absolute -top-40 left-1/2 size-150 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
                         <div className="absolute bottom-0 right-0 size-80 rounded-full bg-primary/5 blur-3xl" />
                     </div>
@@ -49,8 +45,8 @@ export default function ChooseRolePage() {
                                     </span>
                                 </h1>
                                 <p className="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
-                                    Pick the role that best describes you. This helps us tailor
-                                    your experience from day one.
+                                    Pick the role that best describes you. This helps us tailor your experience from day
+                                    one.
                                 </p>
                             </div>
                         </div>

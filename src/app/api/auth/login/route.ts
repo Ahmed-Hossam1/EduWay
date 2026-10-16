@@ -4,10 +4,9 @@ import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedire
 import { getProfileByIdService } from "@/features/profile/server/getProfileById";
 import { loginSchema } from "@/features/auth/login/schemas/loginSchema";
 
-
 export async function POST(request: Request) {
     try {
-        const body = await request.json()
+        const body = await request.json();
 
         // Step 2: Validate request body with Zod schema
         const result = loginSchema.safeParse(body);
@@ -17,47 +16,37 @@ export async function POST(request: Request) {
                     message: "Invalid login data",
                     errors: result.error.flatten().fieldErrors,
                 },
-                { status: 400 }
+                { status: 400 },
             );
         }
 
         // Step 3: Authenticate with Supabase
         const { email, password } = result.data;
 
-        const supabaseClient = await createSupabaseServerClient();
+        const supabase = await createSupabaseServerClient();
 
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
-            password
-        })
+            password,
+        });
 
         if (error) {
             console.error("Login error:", error.code, error.message);
 
-            return NextResponse.json(
-                { message: "Invalid email or password" },
-                { status: 401 }
-            );
+            return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
         }
 
         // Step 5: Get the user's profile to determine redirect
         const { role, status } = await getProfileByIdService(data.user.id);
 
         // get the next route based on the role and status of the user
-        const nextRoute = getAuthRedirectRoute(role, status)
+        const nextRoute = getAuthRedirectRoute(role, status);
 
         // Step 8: Return next route to frontend
-        return NextResponse.json(
-            { success: true, nextRoute },
-            { status: 200 }
-        );
-
+        return NextResponse.json({ nextRoute }, { status: 200 });
     } catch (error) {
         console.error("Login API Error:", error);
 
-        return NextResponse.json(
-            { message: "Something went wrong. Please try again." },
-            { status: 500 }
-        );
+        return NextResponse.json({ message: "Something went wrong. Please try again." }, { status: 500 });
     }
 }

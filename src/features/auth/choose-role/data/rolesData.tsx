@@ -5,8 +5,7 @@ export const rolesData = [
         id: "role-student",
         role: "student" as const,
         title: "I'm a Student",
-        description:
-            "Access thousands of courses, learn at your own pace, and build skills that open new doors.",
+        description: "Access thousands of courses, learn at your own pace, and build skills that open new doors.",
         icon: <GraduationCap className="size-7 text-primary" aria-hidden="true" />,
         accentColor: "bg-accent",
         features: [
@@ -20,8 +19,7 @@ export const rolesData = [
         id: "role-teacher",
         role: "teacher" as const,
         title: "I'm a Teacher",
-        description:
-            "Share your expertise, create engaging courses, and reach learners across the globe.",
+        description: "Share your expertise, create engaging courses, and reach learners across the globe.",
         icon: <BookOpen className="size-7 text-primary" aria-hidden="true" />,
         accentColor: "bg-accent",
         features: [

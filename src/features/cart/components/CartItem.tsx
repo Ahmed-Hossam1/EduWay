@@ -1,30 +1,30 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import { Clock, Heart, ImageOff, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Course } from "@/features/courses/types"
-import { formatDuration, formatPrice, getInstructorName } from "@/features/courses/utils/format"
-import { useToggleWishlist } from "@/features/wishlist/hooks/useToggleWishlist"
-import { useRemoveFromCart } from "../hooks/useRemoveFromCart"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { Clock, Heart, ImageOff, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Course } from "@/features/courses/types";
+import { formatDuration, formatPrice, getInstructorName } from "@/features/courses/utils/format";
+import { useToggleWishlist } from "@/features/wishlist/hooks/useToggleWishlist";
+import { useRemoveFromCart } from "../hooks/useRemoveFromCart";
 
 type CartItemProps = {
-    course: Course
-}
+    course: Course;
+};
 
 // One course row in the cart: thumbnail · title · instructor · price · Remove / Move to wishlist
 export function CartItem({ course }: CartItemProps) {
-    const { mutate: removeFromCart, isPending: isRemoving } = useRemoveFromCart()
-    const { mutate: removeSilently } = useRemoveFromCart({ silent: true })
-    const { mutate: toggleWishlist, isPending: isMoving } = useToggleWishlist()
+    const { mutate: removeFromCart, isPending: isRemoving } = useRemoveFromCart();
+    const { mutate: removeSilently } = useRemoveFromCart({ silent: true });
+    const { mutate: toggleWishlist, isPending: isMoving } = useToggleWishlist();
 
     // out of the cart + into the wishlist (its own toast says "Added to wishlist")
     const handleMoveToWishlist = () => {
-        removeSilently(course.id)
-        toggleWishlist({ courseId: course.id, isSaved: false })
-    }
+        removeSilently(course.id);
+        toggleWishlist({ courseId: course.id, isSaved: false });
+    };
 
-    const isBusy = isRemoving || isMoving
+    const isBusy = isRemoving || isMoving;
 
     return (
         <li className="flex gap-4 py-5 first:pt-0 last:pb-0">
@@ -87,5 +87,5 @@ export function CartItem({ course }: CartItemProps) {
                 </p>
             </div>
         </li>
-    )
+    );
 }

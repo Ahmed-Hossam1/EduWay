@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/apiClient";
+import { apiClient } from "@/lib/axios/apiClient";
 
 type CheckoutResponse = {
     url: string; // the Stripe payment page

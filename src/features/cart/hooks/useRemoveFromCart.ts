@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { removeId, useOptimisticMutation } from "@/hooks/useOptimisticMutation";
 import { removeFromCartService } from "../services/cart";
 import { cartQueryKey } from "./useCart";

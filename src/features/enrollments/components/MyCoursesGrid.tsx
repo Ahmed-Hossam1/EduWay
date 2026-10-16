@@ -1,18 +1,18 @@
-import { use } from "react"
-import Link from "next/link"
-import { GraduationCap } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-import { EnrolledCourse } from "../types"
-import { MyCourseCard } from "./MyCourseCard"
+import { use } from "react";
+import Link from "next/link";
+import { GraduationCap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { EnrolledCourse } from "../types";
+import { MyCourseCard } from "./MyCourseCard";
 
 type MyCoursesGridProps = {
-    myCoursesPromise: Promise<EnrolledCourse[]>
-}
+    myCoursesPromise: Promise<EnrolledCourse[]>;
+};
 
 // Streamed with <Suspense>: use() waits for the promise
 export function MyCoursesGrid({ myCoursesPromise }: MyCoursesGridProps) {
-    const myCourses = use(myCoursesPromise)
+    const myCourses = use(myCoursesPromise);
 
     if (myCourses.length === 0) {
         return (
@@ -26,13 +26,11 @@ export function MyCoursesGrid({ myCoursesPromise }: MyCoursesGridProps) {
                 </EmptyHeader>
                 <EmptyContent>
                     <Button rounded="full" asChild>
-                      <Link href="/courses">
-                          Browse courses
-                      </Link>
+                        <Link href="/courses">Browse courses</Link>
                     </Button>
                 </EmptyContent>
             </Empty>
-        )
+        );
     }
 
     return (
@@ -47,5 +45,5 @@ export function MyCoursesGrid({ myCoursesPromise }: MyCoursesGridProps) {
                 ))}
             </div>
         </>
-    )
+    );
 }

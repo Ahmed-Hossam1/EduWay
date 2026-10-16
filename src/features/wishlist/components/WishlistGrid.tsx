@@ -1,27 +1,27 @@
-"use client"
-import { use } from "react"
-import Link from "next/link"
-import { Heart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-import { CourseCard } from "@/features/courses/components/CourseCard"
-import { Course } from "@/features/courses/types"
-import { useWishlist } from "../hooks/useWishlist"
-import { useRemoveAllWishlist } from "../hooks/useRemoveAllWishlist"
+"use client";
+import { use } from "react";
+import Link from "next/link";
+import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { CourseCard } from "@/features/courses/components/CourseCard";
+import { Course } from "@/features/courses/types";
+import { useWishlist } from "../hooks/useWishlist";
+import { useRemoveAllWishlist } from "../hooks/useRemoveAllWishlist";
 
 type WishlistGridProps = {
-    coursesPromise: Promise<Course[]>
-}
+    coursesPromise: Promise<Course[]>;
+};
 
 export function WishlistGrid({ coursesPromise }: WishlistGridProps) {
     // the full courses come from the server (streamed)...
-    const courses = use(coursesPromise)
+    const courses = use(coursesPromise);
 
     // ...and the ids from the React Query cache → when a heart is clicked here,
     // the cache changes right away (optimistic) and the card disappears without a reload
-    const { data: savedIds } = useWishlist()
-    const { mutate: removeAll } = useRemoveAllWishlist()
-    const visibleCourses = savedIds ? courses.filter((course) => savedIds.includes(course.id)) : courses
+    const { data: savedIds } = useWishlist();
+    const { mutate: removeAll } = useRemoveAllWishlist();
+    const visibleCourses = savedIds ? courses.filter((course) => savedIds.includes(course.id)) : courses;
 
     if (visibleCourses.length === 0) {
         return (
@@ -31,23 +31,22 @@ export function WishlistGrid({ coursesPromise }: WishlistGridProps) {
                         <Heart />
                     </EmptyMedia>
                     <EmptyTitle>Your wishlist is empty</EmptyTitle>
-                    <EmptyDescription>Save courses you like with the heart icon and find them here later.</EmptyDescription>
+                    <EmptyDescription>
+                        Save courses you like with the heart icon and find them here later.
+                    </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
                     <Button rounded="full" asChild>
-                      <Link href="/courses">
-                          Browse courses
-                      </Link>
+                        <Link href="/courses">Browse courses</Link>
                     </Button>
                 </EmptyContent>
             </Empty>
-        )
+        );
     }
 
     return (
         <>
             <div className="flex justify-between items-center">
-
                 <p className="text-sm text-muted-foreground">
                     <span className="font-semibold text-foreground">{visibleCourses.length}</span> saved courses
                 </p>
@@ -62,5 +61,5 @@ export function WishlistGrid({ coursesPromise }: WishlistGridProps) {
                 ))}
             </div>
         </>
-    )
+    );
 }

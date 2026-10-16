@@ -3,8 +3,8 @@ import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type Params = {
-    params: Promise<{ courseId: string }>
-}
+    params: Promise<{ courseId: string }>;
+};
 
 // DELETE /api/cart/:courseId → removes the course from the logged-in user's cart
 export async function DELETE(_request: Request, { params }: Params) {
@@ -14,14 +14,12 @@ export async function DELETE(_request: Request, { params }: Params) {
     }
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const { error } = await supabase
-        .from("cart_items")
-        .delete()
-        .eq("user_id", user.id)
-        .eq("course_id", courseId);
+    const { error } = await supabase.from("cart_items").delete().eq("user_id", user.id).eq("course_id", courseId);
 
     if (error) {
         console.error("Remove from cart error:", error);

@@ -1,60 +1,48 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Input from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getErrorMessage } from "@/lib/axios/getErrorMessage";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { loginInputs } from "../data/login-inputs";
+import { loginInputs } from "../data/loginInputs";
 import { useLogin } from "../hooks/useLogin";
 import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 import { loginSchema, LoginSchemaType } from "../schemas/loginSchema";
-import { AuthTabs } from "../../shared/components";
-import { SocialLogin } from "../../oauth/components";
-import { useRouter } from "next/navigation";
+import { AuthTabs } from "../../shared/components/AuthTabs";
+import { SocialLogin } from "../../oauth/components/SocialLogin";
 
-function LoginForm() {
-    const { handleSubmit, register, formState: { errors, } } = useForm<LoginSchemaType>({
-        resolver: zodResolver(loginSchema)
-    })
-    const { mutateAsync, isPending } = useLogin()
+export function LoginForm() {
+    const {
+        handleSubmit,
+        register,
+        formState: { errors },
+    } = useForm<LoginSchemaType>({
+        resolver: zodResolver(loginSchema),
+    });
+    // the toast + the redirect are inside useLogin
+    const { mutate: login, isPending } = useLogin();
     // any sign-in running (email or Google / GitHub) → the button can't be clicked
-    const isAuthBusy = useIsAuthBusy()
-    const router = useRouter()
-    const onSubmit = async (data: LoginSchemaType) => {
-        try {
-            const response = await mutateAsync(data)
-            toast.success("Login successful")
-            setTimeout(() => {
-                router.push(response.nextRoute)
-            }, 400)
-        } catch (err) {
-            console.error(err)
-            toast.error(getErrorMessage(err, "Failed to login"))
-        }
-    }
+    const isAuthBusy = useIsAuthBusy();
+
+    const onSubmit = (data: LoginSchemaType) => login(data);
     return (
         <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-7 shadow-lg sm:max-w-md sm:p-9">
             {/* Header */}
             <div className="text-center">
                 <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-[1.75rem]">
-                    Welcome back to{" "}
-                    <span className="text-primary">EduWay</span>
+                    Welcome back to <span className="text-primary">EduWay</span>
                 </h2>
 
-                <p className="mt-2 text-sm text-muted-foreground">
-                    Sign in to continue your learning journey
-                </p>
+                <p className="mt-2 text-sm text-muted-foreground">Sign in to continue your learning journey</p>
             </div>
 
             {/* Auth tabs */}
             <AuthTabs activeTab="login" />
 
             {/* Form */}
-            <form className="mt-6 space-y-4" >
+            <form className="mt-6 space-y-4">
                 {loginInputs.map((input) => {
                     const IconComponent = input.icon;
                     return (
@@ -77,11 +65,7 @@ function LoginForm() {
 
                 {/* Options row */}
                 <div className="flex items-center justify-between pt-0.5">
-                    <label
-                        htmlFor="remember-me"
-                        className="flex cursor-pointer items-start gap-2.5 pt-0.5 text-sm"
-
-                    >
+                    <label htmlFor="remember-me" className="flex cursor-pointer items-start gap-2.5 pt-0.5 text-sm">
                         <Checkbox />
                         <span>Remember me</span>
                     </label>
@@ -101,7 +85,8 @@ function LoginForm() {
                     isLoading={isPending}
                     disabled={isAuthBusy}
                     size="lg"
-                    rounded="xl" className="mt-2 h-11 w-full font-semibold"
+                    rounded="xl"
+                    className="mt-2 h-11 w-full font-semibold"
                 >
                     {isPending ? (
                         "Signing in..."
@@ -137,5 +122,3 @@ function LoginForm() {
         </div>
     );
 }
-
-export default LoginForm;

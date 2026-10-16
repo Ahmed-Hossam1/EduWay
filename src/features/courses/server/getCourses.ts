@@ -31,7 +31,7 @@ const isInDurationRange = (durationSeconds: number, ranges: CourseDurationFilter
  */
 export const getCourses = async (
     params: GetCoursesParams,
-    pageSize: number = COURSES_PAGE_SIZE
+    pageSize: number = COURSES_PAGE_SIZE,
 ): Promise<CoursesResponse> => {
     // Default values when the param is not in the URL
     const { q, category, level, price, duration, rating, instructorId, sort = "popular", page = 1 } = params;
@@ -40,11 +40,13 @@ export const getCourses = async (
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from("courses")
-        .select(`
+        .select(
+            `
             *,
             instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
             course_categories ( category:categories ( id, name, slug ) )
-        `)
+        `,
+        )
         .eq("status", "published");
 
     if (error) throw error;

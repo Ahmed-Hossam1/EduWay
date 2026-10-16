@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/apiClient";
+import { apiClient } from "@/lib/axios/apiClient";
 import { OnboardingFormValues } from "../schemas/onboardingSchema";
 
 type SubmitOnboardingResponse = {

@@ -23,7 +23,9 @@ export async function POST() {
     try {
         // 1- Is the user logged in?
         const supabase = await createSupabaseServerClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
         // 2- His cart (RLS → only his rows) + the courses he already owns
@@ -91,7 +93,7 @@ export async function POST() {
             line_items: courses.map((course) => ({
                 quantity: 1,
                 price_data: {
-                    currency: currency.toLowerCase(),        // Stripe wants "usd"
+                    currency: currency.toLowerCase(), // Stripe wants "usd"
                     unit_amount: Math.round(course.price * 100), // 49.99 → 4999 cents
                     product_data: {
                         name: course.title,

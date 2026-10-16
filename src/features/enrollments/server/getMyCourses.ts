@@ -15,20 +15,24 @@ type EnrollmentRow = {
  */
 export const getMyCourses = async (): Promise<EnrolledCourse[]> => {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return [];
 
     // 1- his enrollments + the full course (same shape as the courses list)
     const { data: enrollments, error } = await supabase
         .from("enrollments")
-        .select(`
+        .select(
+            `
             status, enrolled_at,
             course:courses (
                 *,
                 instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
                 course_categories ( category:categories ( id, name, slug ) )
             )
-        `)
+        `,
+        )
         .eq("user_id", user.id)
         .neq("status", "refunded")
         .order("enrolled_at", { ascending: false });
@@ -55,9 +59,8 @@ export const getMyCourses = async (): Promise<EnrolledCourse[]> => {
         .map((item) => {
             const course = flattenCourse(item.course!); // course_categories → categories
             const completedLessons = completedByCourse[course.id] ?? 0;
-            const progressPercent = course.lessons_count > 0
-                ? Math.round((completedLessons / course.lessons_count) * 100)
-                : 0;
+            const progressPercent =
+                course.lessons_count > 0 ? Math.round((completedLessons / course.lessons_count) * 100) : 0;
 
             return {
                 course,

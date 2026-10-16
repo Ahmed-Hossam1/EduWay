@@ -7,63 +7,61 @@ import { SocialLinksSection } from "./SocialLinksSection";
 import { VerificationSection } from "./VerificationSection";
 
 interface TeacherStepThreeFormProps {
-  onBack?: () => void;
-  isSubmitting?: boolean; // true while POST /api/onboarding is running
-  className?: string;
+    onBack?: () => void;
+    isSubmitting?: boolean; // true while POST /api/onboarding is running
+    className?: string;
 }
 
 // Step 3 · Profile & verification. Part of the ONE onboarding <form> (TeacherOnboardingContainer).
 // "Finish" submits the form → everything is checked again and saved.
-export function TeacherStepThreeForm({
-  onBack,
-  isSubmitting,
-  className,
-}: TeacherStepThreeFormProps) {
-  return (
-    <div className={`flex flex-col gap-8 ${className || ""}`}>
-      {/* ── Section 1: Profile Photo ── */}
-      <ProfilePhotoUpload />
+export function TeacherStepThreeForm({ onBack, isSubmitting, className }: TeacherStepThreeFormProps) {
+    return (
+        <div className={`flex flex-col gap-8 ${className || ""}`}>
+            {/* ── Section 1: Profile Photo ── */}
+            <ProfilePhotoUpload />
 
-      {/* ── Section 2: Social / Professional Links (Data-Driven) ── */}
-      <SocialLinksSection />
+            {/* ── Section 2: Social / Professional Links (Data-Driven) ── */}
+            <SocialLinksSection />
 
-      {/* ── Section 3: Verification & Accuracy Confirmation ── */}
-      <VerificationSection />
+            {/* ── Section 3: Verification & Accuracy Confirmation ── */}
+            <VerificationSection />
 
-      {/* ── Section 4: Action Navigation Buttons ── */}
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-4 border-t border-border/60">
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          onClick={onBack}
-          disabled={isSubmitting}
-          rounded="xl" className="w-full sm:w-auto text-sm font-semibold gap-2 border-border hover:bg-muted"
-        >
-          <ArrowLeft className="size-4" />
-          <span>Back to Teaching Information</span>
-        </Button>
+            {/* ── Section 4: Action Navigation Buttons ── */}
+            <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-4 border-t border-border/60">
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    onClick={onBack}
+                    disabled={isSubmitting}
+                    rounded="xl"
+                    className="w-full sm:w-auto text-sm font-semibold gap-2 border-border hover:bg-muted"
+                >
+                    <ArrowLeft className="size-4" />
+                    <span>Back to Teaching Information</span>
+                </Button>
 
-        <Button
-          type="submit"
-          size="lg"
-          isLoading={isSubmitting}
-          rounded="xl" className="w-full sm:w-auto text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
-        >
-          {isSubmitting ? (
-            "Submitting..."
-          ) : (
-            <>
-              <Sparkles className="size-4" />
-              Finish
-            </>
-          )}
-        </Button>
-      </div>
+                <Button
+                    type="submit"
+                    size="lg"
+                    isLoading={isSubmitting}
+                    rounded="xl"
+                    className="w-full sm:w-auto text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
+                >
+                    {isSubmitting ? (
+                        "Submitting..."
+                    ) : (
+                        <>
+                            <Sparkles className="size-4" />
+                            Finish
+                        </>
+                    )}
+                </Button>
+            </div>
 
-      <p className="text-center text-xs text-muted-foreground">
-        Step 3 of 3 — Upon finishing, your instructor profile will be submitted for verification.
-      </p>
-    </div>
-  );
+            <p className="text-center text-xs text-muted-foreground">
+                Step 3 of 3 — Upon finishing, your instructor profile will be submitted for verification.
+            </p>
+        </div>
+    );
 }

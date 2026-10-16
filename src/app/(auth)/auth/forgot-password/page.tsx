@@ -1,5 +1,5 @@
-import ForgotPasswordForm from "@/features/auth/forgot-password/components/ForgotPasswordForm";
-import { AuthHeader } from "@/features/auth/shared/components";
+import { ForgotPasswordForm } from "@/features/auth/forgot-password/components/ForgotPasswordForm";
+import { AuthHeader } from "@/features/auth/shared/components/AuthHeader";
 
 export const metadata = {
     title: "Forgot Password",

@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Loading state of the cart page: rows on the left, summary on the right
 export function CartListSkeleton() {
@@ -18,5 +18,5 @@ export function CartListSkeleton() {
             </div>
             <Skeleton className="h-72 rounded-2xl" />
         </div>
-    )
+    );
 }

@@ -1,19 +1,19 @@
-"use client"
-import { CheckCircle2 } from "lucide-react"
-import { AddToCartButton } from "@/features/cart/components/AddToCartButton"
-import { WishlistButton } from "@/features/wishlist/components/WishlistButton"
-import { useEnrollments } from "../hooks/useEnrollments"
-import { EnrollButton } from "./EnrollButton"
+"use client";
+import { CheckCircle2 } from "lucide-react";
+import { AddToCartButton } from "@/features/cart/components/AddToCartButton";
+import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
+import { useEnrollments } from "../hooks/useEnrollments";
+import { EnrollButton } from "./EnrollButton";
 
 type CoursePurchaseActionsProps = {
-    courseId: string
-    price: number
-}
+    courseId: string;
+    price: number;
+};
 
 // The buttons of the course price card. Enrolled → only "Go to course" (no cart / wishlist).
 export function CoursePurchaseActions({ courseId, price }: CoursePurchaseActionsProps) {
-    const { data: enrolledIds = [] } = useEnrollments()
-    const isEnrolled = enrolledIds.includes(courseId)
+    const { data: enrolledIds = [] } = useEnrollments();
+    const isEnrolled = enrolledIds.includes(courseId);
 
     if (isEnrolled) {
         return (
@@ -24,7 +24,7 @@ export function CoursePurchaseActions({ courseId, price }: CoursePurchaseActions
                 </p>
                 <EnrollButton courseId={courseId} price={price} />
             </div>
-        )
+        );
     }
 
     return (
@@ -33,5 +33,5 @@ export function CoursePurchaseActions({ courseId, price }: CoursePurchaseActions
             {price > 0 && <AddToCartButton courseId={courseId} />}
             <WishlistButton courseId={courseId} variant="full" />
         </div>
-    )
+    );
 }

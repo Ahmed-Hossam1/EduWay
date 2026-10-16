@@ -1,6 +1,6 @@
-"use client"
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 /**
  * When Google / GitHub sign-in fails, Supabase can't always send the user back to our
@@ -13,27 +13,28 @@ import { useRouter } from "next/navigation"
  * it sends the user to the OAuth failure page. Renders nothing.
  */
 export function OAuthErrorRedirect() {
-    const router = useRouter()
+    const router = useRouter();
 
     useEffect(() => {
         // the error can be in the query (?...) or in the hash (#...) → read both
-        const query = new URLSearchParams(window.location.search)
-        const hash = new URLSearchParams(window.location.hash.slice(1)) // "#a=1" → "a=1"
+        const query = new URLSearchParams(window.location.search);
+        const hash = new URLSearchParams(window.location.hash.slice(1)); // "#a=1" → "a=1"
 
         // only Supabase errors have error_description
         // (our own /auth/oauth-error?error=... doesn't, so no loop)
-        const description = query.get("error_description") ?? hash.get("error_description")
-        if (!description) return
+        const description = query.get("error_description") ?? hash.get("error_description");
+        if (!description) return;
 
-        const supabaseCode = query.get("error_code") ?? hash.get("error_code") ?? query.get("error") ?? hash.get("error") ?? ""
-        console.error("OAuth sign-in error:", supabaseCode, description)
+        const supabaseCode =
+            query.get("error_code") ?? hash.get("error_code") ?? query.get("error") ?? hash.get("error") ?? "";
+        console.error("OAuth sign-in error:", supabaseCode, description);
 
         // Supabase code → our code (see OAUTH_ERROR_MESSAGES)
-        const errorCode = supabaseCode === "access_denied" ? "oauth_cancelled" : supabaseCode
+        const errorCode = supabaseCode === "access_denied" ? "oauth_cancelled" : supabaseCode;
 
         // replace (not push) → the Back button doesn't come back to the broken URL
-        router.replace(`/auth/oauth-error?error=${encodeURIComponent(errorCode)}`)
-    }, [router])
+        router.replace(`/auth/oauth-error?error=${encodeURIComponent(errorCode)}`);
+    }, [router]);
 
-    return null
+    return null;
 }

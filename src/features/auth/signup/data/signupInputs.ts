@@ -44,4 +44,3 @@ export const signupInputs: AuthInputConfig<keyof signupSchemaType>[] = [
         halfWidth: false,
     },
 ];
-

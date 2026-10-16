@@ -1,22 +1,22 @@
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, CheckCircle2, ImageOff } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { getInstructorName } from "@/features/courses/utils/format"
-import { EnrolledCourse } from "../types"
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, ImageOff } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { getInstructorName } from "@/features/courses/utils/format";
+import { EnrolledCourse } from "../types";
 
 type MyCourseCardProps = {
-    enrolledCourse: EnrolledCourse
-}
+    enrolledCourse: EnrolledCourse;
+};
 
 // One course on "My courses": thumbnail · title · instructor · progress bar · Start / Continue
 export function MyCourseCard({ enrolledCourse }: MyCourseCardProps) {
-    const { course, status, completedLessons, progressPercent } = enrolledCourse
-    const isCompleted = status === "completed" || progressPercent === 100
-    const hasStarted = completedLessons > 0
+    const { course, status, completedLessons, progressPercent } = enrolledCourse;
+    const isCompleted = status === "completed" || progressPercent === 100;
+    const hasStarted = completedLessons > 0;
 
     return (
         <Card className="group pt-0">
@@ -62,16 +62,13 @@ export function MyCourseCard({ enrolledCourse }: MyCourseCardProps) {
 
             <CardFooter>
                 {/* TODO (lesson player phase): link to the next lesson instead of the course page */}
-                <Button
-                    variant={hasStarted ? "default" : "outline"}
-                    rounded="lg"
-                    className="w-full" asChild>
-                  <Link href={`/courses/${course.slug}`}>
-                    {isCompleted ? "Review course" : hasStarted ? "Continue learning" : "Start learning"}
-                    <ArrowRight />
-                  </Link>
+                <Button variant={hasStarted ? "default" : "outline"} rounded="lg" className="w-full" asChild>
+                    <Link href={`/courses/${course.slug}`}>
+                        {isCompleted ? "Review course" : hasStarted ? "Continue learning" : "Start learning"}
+                        <ArrowRight />
+                    </Link>
                 </Button>
             </CardFooter>
         </Card>
-    )
+    );
 }

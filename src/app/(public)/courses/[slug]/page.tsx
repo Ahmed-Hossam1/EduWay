@@ -5,8 +5,8 @@ import { getCourseBySlug } from "@/features/course-details/server/getCourseBySlu
 import { getRelatedCourses } from "@/features/course-details/server/getRelatedCourses";
 
 type Params = {
-    params: Promise<{ slug: string }>
-}
+    params: Promise<{ slug: string }>;
+};
 
 // SEO: title, description and preview image come from the course itself
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
             title: course.title,
             description: course.short_description ?? undefined,
             images: course.thumbnail_url ? [course.thumbnail_url] : undefined,
-        }
+        },
     };
 }
 

@@ -5,7 +5,6 @@ export const experienceValues = ["beginner", "intermediate", "expert", "veteran"
 
 const currentYear = new Date().getFullYear();
 
-
 // Step 1 · About you
 export const stepOneSchema = z.object({
     firstName: z
@@ -33,7 +32,6 @@ export const stepOneSchema = z.object({
         .max(1000, "Bio should be at most 1000 characters long"),
 });
 
-
 // Step 2 · Teaching information
 
 // One certificate. year is text in the form ("2024") and can stay empty.
@@ -51,7 +49,7 @@ export const certificationSchema = z.object({
         .trim()
         .refine(
             (year) => year === "" || (/^\d{4}$/.test(year) && Number(year) >= 1950 && Number(year) <= currentYear),
-            `Enter a year between 1950 and ${currentYear}`
+            `Enter a year between 1950 and ${currentYear}`,
         ),
 });
 
@@ -73,36 +71,34 @@ export const stepTwoSchema = z.object({
     teachingLanguages: z.array(z.string()).min(1, "Choose at least one language"),
 });
 
-
 // Step 3 · Profile & verification
 export const stepThreeSchema = z.object({
     // the photo link (Cloudinary). Empty = no photo
-    avatarUrl: z
-        .string()
-        .trim()
-        .url("Enter a valid image link")
-        .optional(),
+    avatarUrl: z.string().trim().url("Enter a valid image link").optional(),
 
     // required
     linkedinUrl: z
         .union([
             z.literal(""),
-            z.string().url().refine((val) => val.includes("linkedin.com"), "Enter a valid LinkedIn link (https://linkedin.com/in/)"),
+            z
+                .string()
+                .url()
+                .refine(
+                    (val) => val.includes("linkedin.com"),
+                    "Enter a valid LinkedIn link (https://linkedin.com/in/)",
+                ),
         ])
         .optional(),
     // optional: empty, or a correct link
     websiteUrl: z
-        .union([
-            z.literal(""),
-            z.url("Enter a valid URL"),
-        ])
+        .union([z.literal(""), z.url("Enter a valid URL")])
 
         .optional(),
 
     githubUrl: z
         .union([
             z.literal(""),
-            z.url().refine((val) => val.includes("github.com"), "Enter a valid GitHub link (https://github.com/...")
+            z.url().refine((val) => val.includes("github.com"), "Enter a valid GitHub link (https://github.com/..."),
         ])
 
         .optional(),
@@ -117,7 +113,6 @@ export const stepThreeSchema = z.object({
     // the checkbox must be checked
     confirmed: z.boolean().refine((checked) => checked, "Please confirm that your information is accurate"),
 });
-
 
 // combine the all 3 schemas in one schema to be
 // used by the form and by POST /api/onboarding

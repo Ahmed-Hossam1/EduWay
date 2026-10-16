@@ -12,10 +12,12 @@ export const getOrderBySession = async (sessionId: string): Promise<Order | null
 
     const { data, error } = await supabase
         .from("orders")
-        .select(`
+        .select(
+            `
             id, status, total, currency, created_at,
             order_items ( price, course:courses ( id, title, slug, thumbnail_url ) )
-        `)
+        `,
+        )
         .eq("stripe_session_id", sessionId)
         .maybeSingle();
 

@@ -1,4 +1,4 @@
-import apiClient from "@/lib/axios/apiClient";
+import { apiClient } from "@/lib/axios/apiClient";
 import { EnrollmentIdsResponse } from "../types";
 
 // The browser talks to /api/enrollments (the route checks the user and calls Supabase)

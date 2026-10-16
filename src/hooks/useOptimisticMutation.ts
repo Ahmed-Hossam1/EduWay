@@ -1,6 +1,6 @@
-"use client"
-import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
+"use client";
+import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 // ─────────────────────────────────────────────────────────────────────
 // Small helpers for updateCache: add / remove one id in a cached list of ids.
@@ -18,7 +18,7 @@ import { toast } from "sonner"
 // addId(["b"], "a")        → ["a", "b"]
 // addId(["a", "b"], "a")   → ["a", "b"]   (already there → same list)
 // addId(undefined, "a")    → ["a"]
-export const addId = (ids: string[] = [], id: string) => (ids.includes(id) ? ids : [id, ...ids])
+export const addId = (ids: string[] = [], id: string) => (ids.includes(id) ? ids : [id, ...ids]);
 
 // Remove the id from the list.
 // The list is not loaded yet (undefined) → stays undefined
@@ -26,17 +26,16 @@ export const addId = (ids: string[] = [], id: string) => (ids.includes(id) ? ids
 // removeId(["a", "b"], "a")  → ["b"]
 // removeId(["b"], "a")       → ["b"]   (not there → same items)
 // removeId(undefined, "a")   → undefined
-export const removeId = (ids: string[] | undefined, id: string) => ids?.filter((item) => item !== id)
+export const removeId = (ids: string[] | undefined, id: string) => ids?.filter((item) => item !== id);
 
 type OptimisticMutationOptions<TVariables> = {
-    mutationFn: (variables: TVariables) => Promise<unknown>
-    queryKeys: QueryKey[] // the cached lists of ids this change touches (cart, wishlist...)
+    mutationFn: (variables: TVariables) => Promise<unknown>;
+    queryKeys: QueryKey[]; // the cached lists of ids this change touches (cart, wishlist...)
     // the new list for ONE cached list: called once for every queryKey
-    updateCache: (oldIds: string[] | undefined, variables: TVariables, queryKey: QueryKey) => string[] | undefined
-    successMessage?: string // not given => no success toast
-    errorMessage: string
-}
-
+    updateCache: (oldIds: string[] | undefined, variables: TVariables, queryKey: QueryKey) => string[] | undefined;
+    successMessage?: string; // not given => no success toast
+    errorMessage: string;
+};
 
 /**
  * A reusable hook for optimistic updates on one or more cached lists of IDs.
@@ -91,7 +90,7 @@ type OptimisticMutationOptions<TVariables> = {
  * Example 3 — REMOVE ALL (mutate() takes nothing → <void>)
  *
  *   useOptimisticMutation<void>({
- *     mutationFn: RemoveAllCart,
+ *     mutationFn: removeAllFromCartService,
  *     queryKeys: [cartQueryKey],
  *     updateCache: () => [],
  *     successMessage: "Removed all from cart",
@@ -147,7 +146,7 @@ export function useOptimisticMutation<TVariables = string>({
     successMessage,
     errorMessage,
 }: OptimisticMutationOptions<TVariables>) {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn,
@@ -156,37 +155,37 @@ export function useOptimisticMutation<TVariables = string>({
         onMutate: async (variables) => {
             // stop the running fetches of these lists, so they can't overwrite our change
             for (const queryKey of queryKeys) {
-                await queryClient.cancelQueries({ queryKey })
+                await queryClient.cancelQueries({ queryKey });
             }
 
             // keep the old lists (same order as queryKeys), to undo if the request fails
-            const previousLists = queryKeys.map((queryKey) => queryClient.getQueryData<string[]>(queryKey))
+            const previousLists = queryKeys.map((queryKey) => queryClient.getQueryData<string[]>(queryKey));
 
             // change every list with the function we got from outside
             for (const queryKey of queryKeys) {
-                queryClient.setQueryData<string[]>(queryKey, (oldIds) => updateCache(oldIds, variables, queryKey))
+                queryClient.setQueryData<string[]>(queryKey, (oldIds) => updateCache(oldIds, variables, queryKey));
             }
 
-            return { previousLists }
+            return { previousLists };
         },
 
         // 2- the request failed: put every old list back
         onError: (_error, _variables, context) => {
             queryKeys.forEach((queryKey, index) => {
-                queryClient.setQueryData(queryKey, context?.previousLists[index])
-            })
-            toast.error(errorMessage)
+                queryClient.setQueryData(queryKey, context?.previousLists[index]);
+            });
+            toast.error(errorMessage);
         },
 
         onSuccess: (_data, variables) => {
-            if (successMessage) toast.success(successMessage)
+            if (successMessage) toast.success(successMessage);
         },
 
         // 3- in the end: get the real lists from the database
         onSettled: () => {
             for (const queryKey of queryKeys) {
-                queryClient.invalidateQueries({ queryKey })
+                queryClient.invalidateQueries({ queryKey });
             }
         },
-    })
+    });
 }

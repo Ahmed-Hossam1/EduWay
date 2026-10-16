@@ -2,8 +2,7 @@ import { Logo } from "@/components/layout/Logo";
 import Image from "next/image";
 import { heroFeatures } from "../data/heroFeatures";
 
-
-export default function SignUpHero() {
+export function SignupHero() {
     return (
         <div className="relative hidden min-h-screen overflow-hidden lg:flex lg:w-1/2">
             {/* Background image */}
@@ -45,8 +44,7 @@ export default function SignUpHero() {
                     </h1>
 
                     <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70 sm:text-base">
-                        Join thousands of learners and take the next step toward a
-                        brighter future with EduWay.
+                        Join thousands of learners and take the next step toward a brighter future with EduWay.
                     </p>
 
                     <div className="mt-8 space-y-5">
@@ -58,12 +56,8 @@ export default function SignUpHero() {
                                         <Icon className="size-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-semibold text-white">
-                                            {feature.title}
-                                        </h3>
-                                        <p className="text-xs text-white/60">
-                                            {feature.description}
-                                        </p>
+                                        <h3 className="text-sm font-semibold text-white">{feature.title}</h3>
+                                        <p className="text-xs text-white/60">{feature.description}</p>
                                     </div>
                                 </div>
                             );
@@ -74,12 +68,10 @@ export default function SignUpHero() {
                 {/* Quote */}
                 <div className="max-w-md border-t border-white/10 pt-4">
                     <p className="text-xs italic leading-relaxed text-white/60 sm:text-sm">
-                        &ldquo;Education is the most powerful weapon you can use to change
-                        your life.&rdquo;
+                        &ldquo;Education is the most powerful weapon you can use to change your life.&rdquo;
                     </p>
                     <p className="mt-1.5 text-xs text-white/50">
-                        — Nelson{" "}
-                        <span className="font-medium text-white/80">Mandela</span>
+                        — Nelson <span className="font-medium text-white/80">Mandela</span>
                     </p>
                 </div>
             </div>

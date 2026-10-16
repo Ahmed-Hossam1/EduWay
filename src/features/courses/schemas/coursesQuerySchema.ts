@@ -11,7 +11,14 @@ export const coursesDurationValues = ["0-3", "3-10", "10-plus"] as const;
 const commaList = z
     .string()
     .optional()
-    .transform((value) => (value ? value.split(",").map((v) => v.trim()).filter(Boolean) : undefined));
+    .transform((value) =>
+        value
+            ? value
+                  .split(",")
+                  .map((v) => v.trim())
+                  .filter(Boolean)
+            : undefined,
+    );
 
 // Validates the search params of /courses and /api/courses
 // The result matches GetCoursesParams, so it can go straight into getCourses()

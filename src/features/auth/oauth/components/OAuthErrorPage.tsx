@@ -2,7 +2,7 @@ import Link from "next/link";
 import { RotateCcw, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { AuthHeader } from "../../shared/components";
+import { AuthHeader } from "../../shared/components/AuthHeader";
 
 type OAuthErrorPageProps = {
     message: string; // what went wrong (from OAUTH_ERROR_MESSAGES)

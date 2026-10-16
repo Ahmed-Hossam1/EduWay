@@ -5,7 +5,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 // GET /api/wishlist → { courseIds: ["...", "..."] }  (the logged-in user's saved courses)
 export async function GET() {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { data, error } = await supabase
@@ -30,7 +32,9 @@ export async function POST(request: NextRequest) {
     if (!result.success) return NextResponse.json({ message: "A valid courseId is required" }, { status: 400 });
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     // upsert + ignoreDuplicates = "insert ... on conflict do nothing"
@@ -38,7 +42,7 @@ export async function POST(request: NextRequest) {
         .from("wishlist_items")
         .upsert(
             { user_id: user.id, course_id: result.data.courseId },
-            { onConflict: "user_id,course_id", ignoreDuplicates: true }
+            { onConflict: "user_id,course_id", ignoreDuplicates: true },
         );
 
     if (error) {
@@ -52,13 +56,12 @@ export async function POST(request: NextRequest) {
 // REMOVE ALL
 export async function DELETE() {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const { error } = await supabase
-        .from("wishlist_items")
-        .delete()
-        .eq("user_id", user.id);
+    const { error } = await supabase.from("wishlist_items").delete().eq("user_id", user.id);
 
     if (error) {
         console.error("Remove all from wishlist error:", error);

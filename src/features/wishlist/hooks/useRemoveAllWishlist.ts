@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useOptimisticMutation } from "@/hooks/useOptimisticMutation";
 import { removeAllFromWishlistService } from "../services/wishlist";
 import { wishlistQueryKey } from "./useWishlist";

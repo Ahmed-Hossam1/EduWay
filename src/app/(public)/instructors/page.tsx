@@ -8,8 +8,8 @@ export const metadata = {
 };
 
 type Params = {
-    searchParams: Promise<Record<string, string | string[] | undefined>>
-}
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
 export default async function Instructors({ searchParams }: Params) {
     const params = await searchParams;

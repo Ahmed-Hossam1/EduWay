@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import { useOptimisticMutation } from "@/hooks/useOptimisticMutation";
-import { RemoveAllCart } from "../services/cart";
+import { removeAllFromCartService } from "../services/cart";
 import { cartQueryKey } from "./useCart";
 
 /**
@@ -9,7 +9,7 @@ import { cartQueryKey } from "./useCart";
  */
 export const useRemoveAllCart = () =>
     useOptimisticMutation<void>({
-        mutationFn: RemoveAllCart,
+        mutationFn: removeAllFromCartService,
         queryKeys: [cartQueryKey],
         updateCache: () => [],
         successMessage: "Removed all from cart",

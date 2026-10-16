@@ -8,22 +8,22 @@ export const useLogout = () => {
         mutationFn: () => supabaseClient.auth.signOut(),
         onMutate: async () => {
             await queryClient.cancelQueries({ queryKey: ["profile"] });
-            const prevProfile = queryClient.getQueryData(["profile"])
+            const prevProfile = queryClient.getQueryData(["profile"]);
             queryClient.setQueryData(["profile"], null);
             queryClient.removeQueries({ queryKey: ["wishlist"] });
             queryClient.removeQueries({ queryKey: ["cart"] });
             queryClient.removeQueries({ queryKey: ["enrollments"] });
 
-            return { prevProfile }
+            return { prevProfile };
         },
         onError: (err, variables, context) => {
-            queryClient.setQueryData(["profile"], context?.prevProfile)
+            queryClient.setQueryData(["profile"], context?.prevProfile);
         },
         onSuccess: () => {
-            location.href = "/"
+            location.href = "/";
         },
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["profile"] })
-        }
-    })
-}
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
+        },
+    });
+};
