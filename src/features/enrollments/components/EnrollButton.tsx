@@ -37,9 +37,11 @@ export function EnrollButton({ courseId, price, className }: EnrollButtonProps) 
     // TODO (lesson player phase): link to the lesson page instead of My courses
     if (enrolledIds.includes(courseId)) {
         return (
-            <Button size="lg" rounded="xl" className={buttonClass} nativeButton={false} render={<Link href="/student/my-courses" />}>
-                Go to course
-                <ArrowRight />
+            <Button size="lg" rounded="xl" className={buttonClass} asChild>
+              <Link href="/student/my-courses">
+                  Go to course
+                  <ArrowRight />
+              </Link>
             </Button>
         )
     }

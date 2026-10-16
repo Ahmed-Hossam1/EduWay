@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getErrorMessage } from "@/lib/axios/getErrorMessage";
 import { ArrowRight, CircleAlert } from "lucide-react";
@@ -109,21 +108,18 @@ function LoginForm({ errorMessage }: LoginFormProps) {
                 <Button
                     onClick={handleSubmit(onSubmit)}
                     variant="default"
-                    disabled={isPending}
+                    isLoading={isPending}
                     size="lg"
                     rounded="xl" className="mt-2 h-11 w-full font-semibold"
                 >
-                    {isPending ?
+                    {isPending ? (
+                        "Signing in..."
+                    ) : (
                         <>
-                            <span>Signing in...</span>
-                            <Spinner className="size-4" />
+                            Sign in
+                            <ArrowRight className="size-4" />
                         </>
-                        :
-                        <>
-                            <span>sign in</span>
-                            < ArrowRight className="size-4" />
-                        </>
-                    }
+                    )}
                 </Button>
             </form>
             {/* Divider */}

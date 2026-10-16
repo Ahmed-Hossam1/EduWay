@@ -7,8 +7,6 @@ import { toast } from "sonner";
 
 
 export default function SocialLogin() {
-
-
     // Handles OAuth login using Supabase Auth
     async function handleOAuth(provider: Provider) {
         try {

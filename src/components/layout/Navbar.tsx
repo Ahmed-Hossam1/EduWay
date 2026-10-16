@@ -114,11 +114,15 @@ export function Navbar() {
           ) : (
             <>
               {/* render={<Link />} → the Button IS the link (no <button> inside <a>) */}
-              <Button variant="outline" rounded="full" className="px-5" nativeButton={false} render={<Link href="/auth/login" />}>
-                Log in
+              <Button variant="outline" rounded="full" className="px-5" asChild>
+                <Link href="/auth/login">
+                  Log in
+                </Link>
               </Button>
-              <Button rounded="full" className="px-5 shadow-sm" nativeButton={false} render={<Link href="/auth/signup" />}>
-                Sign up
+              <Button rounded="full" className="px-5 shadow-sm" asChild>
+                <Link href="/auth/signup">
+                  Sign up
+                </Link>
               </Button>
             </>
           )}
@@ -183,11 +187,15 @@ export function Navbar() {
               {!isPending && !profile && (
                 <div className="mt-auto flex flex-col gap-2.5 p-4">
                   <Separator className="mb-2" />
-                  <Button variant="outline" rounded="full" nativeButton={false} render={<Link href="/auth/login" onClick={closeMobileMenu} />}>
-                    Log in
+                  <Button variant="outline" rounded="full" asChild>
+                    <Link href="/auth/login" onClick={closeMobileMenu}>
+                      Log in
+                    </Link>
                   </Button>
-                  <Button rounded="full" nativeButton={false} render={<Link href="/auth/signup" onClick={closeMobileMenu} />}>
-                    Sign up
+                  <Button rounded="full" asChild>
+                    <Link href="/auth/signup" onClick={closeMobileMenu}>
+                      Sign up
+                    </Link>
                   </Button>
                 </div>
               )}

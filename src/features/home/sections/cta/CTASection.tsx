@@ -49,12 +49,11 @@ export function CTASection() {
             <div className="shrink-0">
               <Button
                 rounded="full"
-                className="bg-white text-primary hover:bg-white/90 font-bold px-8 py-3.5 h-auto text-sm sm:text-base shadow-xl hover:scale-105 transition-all"
-                nativeButton={false}
-                render={<Link href="/auth/signup" />}
-              >
-                <span>Create Free Account</span>
-                <ArrowRight className="size-4 ml-2" />
+                className="bg-white text-primary hover:bg-white/90 font-bold px-8 py-3.5 h-auto text-sm sm:text-base shadow-xl hover:scale-105 transition-all" asChild>
+                <Link href="/auth/signup">
+                  <span>Create Free Account</span>
+                  <ArrowRight className="size-4 ml-2" />
+                </Link>
               </Button>
             </div>
           </div>

@@ -25,8 +25,10 @@ export function MyCoursesGrid({ myCoursesPromise }: MyCoursesGridProps) {
                     <EmptyDescription>Enroll in a free course or buy one, and it will show up here.</EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
-                    <Button rounded="full" nativeButton={false} render={<Link href="/courses" />}>
-                        Browse courses
+                    <Button rounded="full" asChild>
+                      <Link href="/courses">
+                          Browse courses
+                      </Link>
                     </Button>
                 </EmptyContent>
             </Empty>

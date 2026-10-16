@@ -4,7 +4,6 @@ import { ArrowRight, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Spinner } from "@/components/ui/spinner"
 import { formatPrice } from "@/features/courses/utils/format"
 import { useCheckout } from "@/features/checkout/hooks/useCheckout"
 
@@ -43,14 +42,11 @@ export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
                     size="lg"
                     rounded="xl"
                     className="h-11 w-full font-semibold"
-                    disabled={isRedirecting}
+                    isLoading={isRedirecting}
                     onClick={() => startCheckout()}
                 >
                     {isRedirecting ? (
-                        <>
-                            <Spinner className="size-4" />
-                            Redirecting to payment...
-                        </>
+                        "Redirecting to payment..."
                     ) : (
                         <>
                             Checkout
@@ -58,8 +54,10 @@ export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
                         </>
                     )}
                 </Button>
-                <Button variant="ghost" rounded="xl" className="w-full" nativeButton={false} render={<Link href="/courses" />}>
-                    Continue shopping
+                <Button variant="ghost" rounded="xl" className="w-full" asChild>
+                  <Link href="/courses">
+                      Continue shopping
+                  </Link>
                 </Button>
                 <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Lock className="size-3.5" />

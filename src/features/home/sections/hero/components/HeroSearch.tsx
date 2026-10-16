@@ -53,9 +53,11 @@ export function HeroSearch() {
           Popular:
         </span>
         {heroPopularTopics.map((topic) => (
-          <Link key={topic} className="border hover:bg-primary hover:text-primary-foreground hover:transition border-border/60 transition-all font-medium" href={`/courses?q=${topic}`}>
-            {topic}
-          </Link>
+          <Button key={topic.slug} asChild variant="outline" size="lg" rounded="full" aria-label="Search courses" className="h-auto bg-background/80hover:border-primary/50 hover:text-primary">
+            <Link href={`/courses?category=${topic.slug}`}>
+              {topic.name}
+            </Link>
+          </Button>
         ))}
       </div>
     </div>

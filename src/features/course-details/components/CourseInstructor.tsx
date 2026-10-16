@@ -47,12 +47,11 @@ export function CourseInstructor({ instructor }: CourseInstructorProps) {
         <Button
           variant="outline"
           rounded="full"
-          className="w-fit"
-          nativeButton={false}
-          render={<Link href={`/instructors/${instructor.id}`} />}
-        >
-          View profile
-          <ArrowRight />
+          className="w-fit" asChild>
+          <Link href={`/instructors/${instructor.id}`}>
+            View profile
+            <ArrowRight />
+          </Link>
         </Button>
       </Card>
     </section>

@@ -27,12 +27,11 @@ export function AddToCartButton({ courseId }: AddToCartButtonProps) {
                 variant="outline"
                 size="lg"
                 rounded="xl"
-                className="h-11 w-full font-semibold"
-                nativeButton={false}
-                render={<Link href="/cart" />}
-            >
+                className="h-11 w-full font-semibold" asChild>
+              <Link href="/cart">
                 <ShoppingCart />
                 Go to cart
+              </Link>
             </Button>
         )
     }

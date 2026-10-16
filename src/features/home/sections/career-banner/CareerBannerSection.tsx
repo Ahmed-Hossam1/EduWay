@@ -35,23 +35,21 @@ export function CareerBannerSection() {
               <div className="flex flex-wrap items-center gap-4">
                 <Button
                   rounded="full"
-                  className="bg-primary hover:bg-primary-hover text-primary-foreground font-semibold px-8 py-3 h-auto text-sm shadow-lg shadow-primary/30"
-                  nativeButton={false}
-                  render={<Link href="/auth/signup" />}
-                >
-                  <span>Get Started</span>
-                  <ArrowRight className="size-4 ml-1.5" />
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground font-semibold px-8 py-3 h-auto text-sm shadow-lg shadow-primary/30" asChild>
+                  <Link href="/auth/signup">
+                    <span>Get Started</span>
+                    <ArrowRight className="size-4 ml-1.5" />
+                  </Link>
                 </Button>
 
                 <Button
                   variant="outline"
                   rounded="full"
-                  className="border-white/25 bg-white/5 hover:bg-white/10 text-white font-semibold px-6 py-3 h-auto text-sm backdrop-blur-xs"
-                  nativeButton={false}
-                  render={<Link href="/preview" />}
-                >
-                  <Play className="size-4 mr-2 fill-white" />
-                  <span>Watch Video</span>
+                  className="border-white/25 bg-white/5 hover:bg-white/10 text-white font-semibold px-6 py-3 h-auto text-sm backdrop-blur-xs" asChild>
+                  <Link href="/preview">
+                    <Play className="size-4 mr-2 fill-white" />
+                    <span>Watch Video</span>
+                  </Link>
                 </Button>
               </div>
 

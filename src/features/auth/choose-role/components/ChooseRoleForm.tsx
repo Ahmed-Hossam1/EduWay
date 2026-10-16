@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { AuthRole } from "@/features/auth/shared/types";
 import { getErrorMessage } from "@/lib/axios/getErrorMessage";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -47,18 +46,12 @@ export default function ChooseRoleForm() {
             <Button
                 id="choose-role-submit"
                 size="lg"
-                disabled={!selectedRole || isPending}
+                disabled={!selectedRole}
+                isLoading={isPending}
                 onClick={handleSubmit}
                 rounded="xl" className="w-full text-base font-semibold transition-all duration-200"
             >
-                {isPending ? (
-                    <>
-                        <Loader2 className="mr-2 size-4 animate-spin" aria-hidden="true" />
-                        Setting up your account…
-                    </>
-                ) : (
-                    "Continue"
-                )}
+                {isPending ? "Setting up your account…" : "Continue"}
             </Button>
 
             <p className="text-center text-xs text-muted-foreground">

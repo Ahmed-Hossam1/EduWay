@@ -25,12 +25,11 @@ export function InstructorSocialLinks({ profile }: InstructorSocialLinksProps) {
           key={link.label}
           variant="outline"
           size="sm"
-          rounded="full"
-          nativeButton={false}
-          render={<a href={link.url!} target="_blank" rel="noopener noreferrer" />}
-        >
-          <link.icon className="size-4" />
-          {link.label}
+          rounded="full" asChild>
+          <a href={link.url!} target="_blank" rel="noopener noreferrer">
+            <link.icon className="size-4" />
+            {link.label}
+          </a>
         </Button>
       ))}
     </div>

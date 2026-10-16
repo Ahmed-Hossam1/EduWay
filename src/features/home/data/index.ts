@@ -51,11 +51,23 @@ export const HeroFloatingCard4Images: HeroFloatingCard[] = [{
 
 ]
 
-export const heroPopularTopics: string[] = [
-  "Web Development",
-  "Data Science",
-  "UI/UX Design",
-  "Digital Marketing",
+export const heroPopularTopics: { name: string, slug: string }[] = [
+  {
+    name: "Web Development",
+    slug: "web-dev",
+  },
+  {
+    name: "Data Science",
+    slug: "data-science",
+  },
+  {
+    name: "UI/UX Design",
+    slug: "ui-ux-design",
+  },
+  {
+    name: "Digital Marketing",
+    slug: "digital-marketing",
+  },
 ];
 
 export const heroBenefits = [

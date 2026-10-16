@@ -82,25 +82,33 @@ export function CheckoutSuccessPage({ order }: CheckoutSuccessPageProps) {
         <CardFooter className="flex-col gap-2 sm:flex-row">
           {order.status === "paid" && (
             <>
-              <Button rounded="xl" className="h-11 w-full sm:flex-1" nativeButton={false} render={<Link href="/student/my-courses" />}>
-                Go to my courses
+              <Button rounded="xl" className="h-11 w-full sm:flex-1" asChild>
+                <Link href="/student/my-courses">
+                  Go to my courses
+                </Link>
               </Button>
-              <Button variant="outline" rounded="xl" className="h-11 w-full sm:flex-1" nativeButton={false} render={<Link href="/courses" />}>
-                Browse more courses
+              <Button variant="outline" rounded="xl" className="h-11 w-full sm:flex-1" asChild>
+                <Link href="/courses">
+                  Browse more courses
+                </Link>
               </Button>
             </>
           )}
 
           {order.status === "pending" && (
             // a normal <a> (not Link) => a real reload => the server checks the payment again
-            <Button rounded="xl" className="h-11 w-full" nativeButton={false} render={<a href="" />}>
-              Refresh
+            <Button rounded="xl" className="h-11 w-full" asChild>
+              <a href="">
+                Refresh
+              </a>
             </Button>
           )}
 
           {order.status === "failed" && (
-            <Button rounded="xl" className="h-11 w-full" nativeButton={false} render={<Link href="/cart" />}>
-              Back to cart
+            <Button rounded="xl" className="h-11 w-full" asChild>
+              <Link href="/cart">
+                Back to cart
+              </Link>
             </Button>
           )}
         </CardFooter>

@@ -37,8 +37,10 @@ export function CartList({ coursesPromise }: CartListProps) {
                     <EmptyDescription>Find a course you like and add it to your cart.</EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
-                    <Button rounded="full" nativeButton={false} render={<Link href="/courses" />}>
-                        Browse courses
+                    <Button rounded="full" asChild>
+                      <Link href="/courses">
+                          Browse courses
+                      </Link>
                     </Button>
                 </EmptyContent>
             </Empty>

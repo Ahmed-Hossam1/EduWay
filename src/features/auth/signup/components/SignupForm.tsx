@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Input from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getErrorMessage } from "@/lib/axios/getErrorMessage";
 import { ArrowRight } from "lucide-react";
@@ -114,20 +113,16 @@ function SignupForm() {
                     variant="default"
                     size="lg"
                     rounded="xl" className="mt-2 h-11 w-full font-semibold"
-                    disabled={isPending}
+                    isLoading={isPending}
                 >
-                    {isPending ?
+                    {isPending ? (
+                        "Creating account..."
+                    ) : (
                         <>
-                            <span>Creating account...</span>
-                            <Spinner className="size-4" />
-
-                        </>
-                        :
-                        <>
-                            <span>Create Account</span>
+                            Create Account
                             <ArrowRight className="size-4" />
                         </>
-                    }
+                    )}
                 </Button>
             </form>
             {/* Divider */}

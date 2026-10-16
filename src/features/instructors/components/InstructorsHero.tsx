@@ -115,12 +115,11 @@ export function InstructorsHero() {
 
               <Button
                 variant="secondary"
-                className="mt-7 h-11 w-full font-semibold"
-                nativeButton={false}
-                render={<Link href="/auth/signup" />}
-              >
-                Become an instructor
-                <ArrowRight />
+                className="mt-7 h-11 w-full font-semibold" asChild>
+                <Link href="/auth/signup">
+                  Become an instructor
+                  <ArrowRight />
+                </Link>
               </Button>
             </Card>
           </div>

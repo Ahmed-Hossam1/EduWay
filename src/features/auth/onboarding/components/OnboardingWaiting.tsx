@@ -56,11 +56,15 @@ export function OnboardingWaiting({ firstName }: { firstName: string }) {
           </ol>
 
           <div className="mt-8 flex flex-col gap-2 sm:flex-row">
-            <Button rounded="xl" className="h-11 w-full sm:flex-1" nativeButton={false} render={<Link href="/courses" />}>
-              Browse courses
+            <Button rounded="xl" className="h-11 w-full sm:flex-1" asChild>
+              <Link href="/courses">
+                Browse courses
+              </Link>
             </Button>
-            <Button variant="outline" rounded="xl" className="h-11 w-full sm:flex-1" nativeButton={false} render={<Link href="/" />}>
-              Back to home
+            <Button variant="outline" rounded="xl" className="h-11 w-full sm:flex-1" asChild>
+              <Link href="/">
+                Back to home
+              </Link>
             </Button>
           </div>
         </Card>

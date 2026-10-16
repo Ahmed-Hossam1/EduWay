@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { SocialLinksSection } from "./SocialLinksSection";
@@ -48,11 +47,17 @@ export function TeacherStepThreeForm({
         <Button
           type="submit"
           size="lg"
-          disabled={isSubmitting}
+          isLoading={isSubmitting}
           rounded="xl" className="w-full sm:w-auto text-base font-semibold gap-2 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
         >
-          {isSubmitting ? <Spinner className="size-4" /> : <Sparkles className="size-4" />}
-          <span>{isSubmitting ? "Submitting..." : "Finish"}</span>
+          {isSubmitting ? (
+            "Submitting..."
+          ) : (
+            <>
+              <Sparkles className="size-4" />
+              Finish
+            </>
+          )}
         </Button>
       </div>
 

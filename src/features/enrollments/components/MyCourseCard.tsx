@@ -65,12 +65,11 @@ export function MyCourseCard({ enrolledCourse }: MyCourseCardProps) {
                 <Button
                     variant={hasStarted ? "default" : "outline"}
                     rounded="lg"
-                    className="w-full"
-                    nativeButton={false}
-                    render={<Link href={`/courses/${course.slug}`} />}
-                >
+                    className="w-full" asChild>
+                  <Link href={`/courses/${course.slug}`}>
                     {isCompleted ? "Review course" : hasStarted ? "Continue learning" : "Start learning"}
                     <ArrowRight />
+                  </Link>
                 </Button>
             </CardFooter>
         </Card>
