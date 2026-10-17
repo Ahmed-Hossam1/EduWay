@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, Heart, ShoppingCart } from "lucide-react";
+import { Menu, Heart, ShoppingCart, LayoutDashboard } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,7 +13,8 @@ import { Logo } from "./Logo";
 import { NavbarSearch } from "./NavbarSearch";
 import { navItems } from "@/config/navigation";
 import { useProfile } from "@/features/profile/hooks/useProfile";
-import { UserMenu } from "@/features/profile/components/UserMenu";
+import { StudentMenu } from "@/features/profile/components/StudentMenu";
+import { TeacherMenu } from "@/features/profile/components/TeacherMenu";
 import { useWishlist } from "@/features/wishlist/hooks/useWishlist";
 import { useCart } from "@/features/cart/hooks/useCart";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +38,27 @@ export function Navbar() {
     const isActiveLink = (href: string, pathName: string): boolean => {
         return href.split("/")[1] === pathName.split("/")[1];
     };
+
+    // Only an approved teacher gets the teacher navbar (Dashboard, no wishlist / cart).
+    // Everyone else (students, teachers still in onboarding / waiting) gets the student one.
+    const isApprovedTeacher = profile?.role === "teacher" && profile.status === "approved";
+
+    // The avatar menu: the same choice on desktop and mobile
+    let userMenu = null;
+    if (profile && isApprovedTeacher) {
+        userMenu = (
+            <TeacherMenu
+                userId={profile.id}
+                firstName={profile.first_name}
+                lastName={profile.last_name}
+                avatarUrl={profile.avatar_url}
+            />
+        );
+    } else if (profile) {
+        userMenu = (
+            <StudentMenu firstName={profile.first_name} lastName={profile.last_name} avatarUrl={profile.avatar_url} />
+        );
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/80">
@@ -66,7 +88,17 @@ export function Navbar() {
                     {/* Search icon  panel with the input + trending course names */}
                     <NavbarSearch className={navbarIconClass} />
 
-                    {profile && (
+                    {/* Teacher: a Dashboard button instead of the heart + cart */}
+                    {isApprovedTeacher && (
+                        <Button variant="outline" rounded="full" className="px-4" asChild>
+                            <Link href="/teacher/dashboard">
+                                <LayoutDashboard />
+                                Dashboard
+                            </Link>
+                        </Button>
+                    )}
+
+                    {profile && !isApprovedTeacher && (
                         <Link
                             href="/student/wishlist"
                             aria-label={wishlistIds.length > 0 ? `Wishlist (${wishlistIds.length})` : "Wishlist"}
@@ -81,29 +113,28 @@ export function Navbar() {
                         </Link>
                     )}
 
-                    <Link
-                        href="/cart"
-                        aria-label={cartIds.length > 0 ? `Cart (${cartIds.length})` : "Cart"}
-                        className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
-                    >
-                        <ShoppingCart />
-                        {cartIds.length > 0 && (
-                            <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] tabular-nums">
-                                {cartIds.length > 99 ? "99+" : cartIds.length}
-                            </Badge>
-                        )}
-                    </Link>
+                    {/* the cart is for guests and students (a guest sees an empty cart) */}
+                    {!isApprovedTeacher && (
+                        <Link
+                            href="/cart"
+                            aria-label={cartIds.length > 0 ? `Cart (${cartIds.length})` : "Cart"}
+                            className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
+                        >
+                            <ShoppingCart />
+                            {cartIds.length > 0 && (
+                                <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] tabular-nums">
+                                    {cartIds.length > 99 ? "99+" : cartIds.length}
+                                </Badge>
+                            )}
+                        </Link>
+                    )}
 
                     <AnimatedThemeToggler className={navbarIconClass} />
 
                     {isPending ? (
                         <Skeleton className="size-8 rounded-full" />
                     ) : profile ? (
-                        <UserMenu
-                            firstName={profile.first_name}
-                            lastName={profile.last_name}
-                            avatarUrl={profile.avatar_url}
-                        />
+                        userMenu
                     ) : (
                         <>
                             {/* render={<Link />} → the Button IS the link (no <button> inside <a>) */}
@@ -120,13 +151,7 @@ export function Navbar() {
                 {/* Mobile: theme + avatar + menu */}
                 <div className="flex md:hidden items-center gap-1">
                     <AnimatedThemeToggler className={navbarIconClass} />
-                    {profile && (
-                        <UserMenu
-                            firstName={profile.first_name}
-                            lastName={profile.last_name}
-                            avatarUrl={profile.avatar_url}
-                        />
-                    )}
+                    {userMenu}
 
                     <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                         <SheetTrigger
@@ -162,7 +187,17 @@ export function Navbar() {
 
                             <div className="flex flex-col gap-1 px-4">
                                 <Separator className="mb-2" />
-                                {profile && (
+                                {isApprovedTeacher && (
+                                    <Link
+                                        href="/teacher/dashboard"
+                                        onClick={closeMobileMenu}
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
+                                    >
+                                        <LayoutDashboard className="size-5" /> Dashboard
+                                    </Link>
+                                )}
+
+                                {profile && !isApprovedTeacher && (
                                     <Link
                                         href="/student/wishlist"
                                         onClick={closeMobileMenu}
@@ -175,14 +210,16 @@ export function Navbar() {
                                     </Link>
                                 )}
 
-                                <Link
-                                    href="/cart"
-                                    onClick={closeMobileMenu}
-                                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
-                                >
-                                    <ShoppingCart className="size-5" /> Cart
-                                    {cartIds.length > 0 && <Badge className="ml-auto">{cartIds.length}</Badge>}
-                                </Link>
+                                {!isApprovedTeacher && (
+                                    <Link
+                                        href="/cart"
+                                        onClick={closeMobileMenu}
+                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
+                                    >
+                                        <ShoppingCart className="size-5" /> Cart
+                                        {cartIds.length > 0 && <Badge className="ml-auto">{cartIds.length}</Badge>}
+                                    </Link>
+                                )}
                             </div>
 
                             {!isPending && !profile && (
