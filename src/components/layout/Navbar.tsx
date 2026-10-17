@@ -52,11 +52,17 @@ export function Navbar() {
                 firstName={profile.first_name}
                 lastName={profile.last_name}
                 avatarUrl={profile.avatar_url}
+                role={profile.role}
             />
         );
     } else if (profile) {
         userMenu = (
-            <StudentMenu firstName={profile.first_name} lastName={profile.last_name} avatarUrl={profile.avatar_url} />
+            <StudentMenu
+                firstName={profile.first_name}
+                lastName={profile.last_name}
+                avatarUrl={profile.avatar_url}
+                role={profile.role}
+            />
         );
     }
 
@@ -112,8 +118,8 @@ export function Navbar() {
                         </Link>
                     )}
 
-                    {/* the cart is for guests and students (a guest sees an empty cart) */}
-                    {!isApprovedTeacher && (
+                    {/* the cart is for logged-in students only (not for guests or approved teachers) */}
+                    {profile && !isApprovedTeacher && (
                         <Link
                             href="/cart"
                             aria-label={cartIds.length > 0 ? `Cart (${cartIds.length})` : "Cart"}

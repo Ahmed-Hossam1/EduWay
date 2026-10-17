@@ -4,12 +4,13 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuLinkItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BookCopy, IdCard, LayoutDashboard, LogOut, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { BookCopy, IdCard, LayoutDashboard, LogOut, Plus, UserCog, Wallet } from "lucide-react";
 import { useLogout } from "../hooks/useLogout";
+import { UserRole } from "../types";
 import { UserAvatar } from "./UserAvatar";
 import { UserMenuHeader } from "./UserMenuHeader";
 
@@ -18,12 +19,12 @@ type TeacherMenuProps = {
     firstName: string | null;
     lastName: string | null;
     avatarUrl: string | null;
+    role: UserRole;
 };
 
 // The avatar menu for approved teachers (no wishlist / cart: a teacher sells courses, he doesn't buy them)
-export function TeacherMenu({ userId, firstName, lastName, avatarUrl }: TeacherMenuProps) {
+export function TeacherMenu({ userId, firstName, lastName, avatarUrl, role }: TeacherMenuProps) {
     const { mutate: logout } = useLogout();
-    const router = useRouter();
 
     return (
         <DropdownMenu>
@@ -34,32 +35,43 @@ export function TeacherMenu({ userId, firstName, lastName, avatarUrl }: TeacherM
                 <UserAvatar firstName={firstName} lastName={lastName} avatarUrl={avatarUrl} />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="w-56">
-                <UserMenuHeader firstName={firstName} lastName={lastName} avatarUrl={avatarUrl} />
+            <DropdownMenuContent align="end" className="w-60">
+                <UserMenuHeader firstName={firstName} lastName={lastName} avatarUrl={avatarUrl} role={role} />
                 <DropdownMenuSeparator />
 
                 {/* What the teacher does: teach */}
-                <DropdownMenuItem onClick={() => router.push("/teacher/dashboard")}>
+                <DropdownMenuLinkItem href="/teacher/dashboard">
                     <LayoutDashboard />
                     Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/teacher/courses")}>
+                </DropdownMenuLinkItem>
+                <DropdownMenuLinkItem href="/teacher/courses">
                     <BookCopy />
                     My courses
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/teacher/courses/new")}>
+                </DropdownMenuLinkItem>
+                <DropdownMenuLinkItem href="/teacher/courses/new">
                     <Plus />
                     Create course
-                </DropdownMenuItem>
+                </DropdownMenuLinkItem>
+                {/* TODO: the earnings page comes later (with the teacher dashboard) */}
+                <DropdownMenuLinkItem href="/teacher/earnings">
+                    <Wallet />
+                    Earnings
+                </DropdownMenuLinkItem>
                 <DropdownMenuSeparator />
 
-                {/* How students see the teacher */}
-                <DropdownMenuItem onClick={() => router.push(`/instructors/${userId}`)}>
+                {/* The account: how students see the teacher + settings */}
+                <DropdownMenuLinkItem href={`/instructors/${userId}`}>
                     <IdCard />
                     My public page
-                </DropdownMenuItem>
+                </DropdownMenuLinkItem>
+                {/* TODO: the settings page comes later */}
+                <DropdownMenuLinkItem href="/account/settings">
+                    <UserCog />
+                    Profile settings
+                </DropdownMenuLinkItem>
                 <DropdownMenuSeparator />
 
+                {/* Log out is an action, not a page → a normal item */}
                 <DropdownMenuItem variant="destructive" onClick={() => logout()}>
                     <LogOut />
                     Log out
