@@ -1,61 +1,41 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import Input from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
+import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { type AxiosError } from "axios";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { AuthTabs, SocialLogin } from "../../shared/components";
-import { signupInputs } from "../data/AuthInputConfig";
+import { AuthTabs } from "../../shared/components/AuthTabs";
+import { SocialLogin } from "../../oauth/components/SocialLogin";
+import { signupInputs } from "../data/signupInputs";
 import { useSignup } from "../hooks/useSignup";
+import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 import { signupSchema, signupSchemaType } from "../schemas/signupSchema";
 
-
-function SignupForm() {
-    const { register, handleSubmit, formState: { errors } } = useForm<signupSchemaType>({
+export function SignupForm() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<signupSchemaType>({
         resolver: zodResolver(signupSchema),
-
     });
-    const { mutateAsync, isPending } = useSignup()
+    // the toast + the redirect are inside useSignup
+    const { mutate: signup, isPending } = useSignup();
+    // any sign-in running (email or Google / GitHub) → the button can't be clicked
+    const isAuthBusy = useIsAuthBusy();
 
-    const router = useRouter()
-
-    //  submit handler for sign up form     
-    const onSubmit = async (data: signupSchemaType) => {
-        try {
-            const response = await mutateAsync(data)
-            toast.success("Account created successfully")
-            setTimeout(() => {
-                router.push(response.nextRoute)
-            }, 400)
-        } catch (err) {
-            console.error(err)
-            if (axios.isAxiosError(err)) {
-                const axiosError = err as AxiosError<{ message: string }>
-                const message = axiosError.response?.data?.message ?? "Failed to create account"
-                toast.error(message)
-            } else {
-                toast.error("Something went wrong. Please try again.")
-            }
-        }
-    };
+    const onSubmit = (data: signupSchemaType) => signup(data);
 
     return (
         <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-7 shadow-lg sm:max-w-md sm:p-9">
             {/* Header */}
             <div className="text-center">
                 <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-[1.75rem]">
-                    Create your{" "}
-                    <span className="text-primary">EduWay</span> account
+                    Create your <span className="text-primary">EduWay</span> account
                 </h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                    Join thousands of learners today
-                </p>
+                <p className="mt-2 text-sm text-muted-foreground">Join thousands of learners today</p>
             </div>
 
             {/* Auth tabs */}
@@ -68,10 +48,7 @@ function SignupForm() {
                     {signupInputs.map((input) => {
                         const IconComponent = input.icon;
                         return (
-                            <div
-                                key={input.name}
-                                className={input.halfWidth ? "col-span-1" : "col-span-2"}
-                            >
+                            <div key={input.name} className={input.halfWidth ? "col-span-1" : "col-span-2"}>
                                 <Input
                                     id={input.id || input.name}
                                     type={input.type}
@@ -91,24 +68,15 @@ function SignupForm() {
                 </div>
 
                 {/* Terms and Privacy */}
-                <label
-                    htmlFor="terms"
-                    className="flex cursor-pointer items-start gap-2.5 pt-0.5 text-sm"
-                >
+                <label htmlFor="terms" className="flex cursor-pointer items-start gap-2.5 pt-0.5 text-sm">
                     <Checkbox />
                     <span>
                         I agree to the{" "}
-                        <Link
-                            href="/terms"
-                            className="font-medium text-primary hover:underline"
-                        >
+                        <Link href="/terms" className="font-medium text-primary hover:underline">
                             Terms of Service
                         </Link>{" "}
                         and{" "}
-                        <Link
-                            href="/privacy"
-                            className="font-medium text-primary hover:underline"
-                        >
+                        <Link href="/privacy" className="font-medium text-primary hover:underline">
                             Privacy Policy
                         </Link>
                     </span>
@@ -119,21 +87,19 @@ function SignupForm() {
                     type="submit"
                     variant="default"
                     size="lg"
-                    className="mt-2 h-11 w-full rounded-xl font-semibold"
-                    disabled={isPending}
+                    rounded="xl"
+                    className="mt-2 h-11 w-full font-semibold"
+                    isLoading={isPending}
+                    disabled={isAuthBusy}
                 >
-                    {isPending ?
+                    {isPending ? (
+                        "Creating account..."
+                    ) : (
                         <>
-                            <span>Creating account...</span>
-                            <Spinner className="size-4" />
-
-                        </>
-                        :
-                        <>
-                            <span>Create Account</span>
+                            Create Account
                             <ArrowRight className="size-4" />
                         </>
-                    }
+                    )}
                 </Button>
             </form>
             {/* Divider */}
@@ -151,7 +117,7 @@ function SignupForm() {
             <p className="mt-7 text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
                 <Link
-                    href="/login"
+                    href="/auth/login"
                     className="font-semibold text-primary transition-colors hover:text-primary-hover hover:underline"
                 >
                     Sign in
@@ -160,5 +126,3 @@ function SignupForm() {
         </div>
     );
 }
-
-export default SignupForm;

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Logo } from "@/components/layout/Logo";
 
-export default function AuthHeader() {
+export function AuthHeader() {
     return (
         <div className="flex items-center justify-between px-6 pt-6 sm:px-10 lg:px-12">
             <Link

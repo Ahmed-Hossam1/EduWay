@@ -1,11 +1,7 @@
-export interface SubjectCategory {
-  id: string;
-  label: string;
-  description: string;
-}
+import { experienceValues } from "../../schemas/onboardingSchema";
 
 export interface ExperienceLevel {
-  id: string;
-  label: string;
-  description: string;
+    id: (typeof experienceValues)[number];
+    label: string;
+    description: string;
 }

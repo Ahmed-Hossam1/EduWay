@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Logo } from "@/components/layout/Logo";
 import { loginFeaturesData } from "../data/loginFeaturesData";
 
-export default function LoginHero() {
+export function LoginHero() {
     return (
         <div className="relative hidden min-h-screen overflow-hidden lg:flex lg:w-1/2">
             {/* Background image */}
@@ -43,8 +43,8 @@ export default function LoginHero() {
                     </h1>
 
                     <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70 sm:text-base">
-                        Access high-quality courses, learn from experts, and build the
-                        skills you need for a brighter future.
+                        Access high-quality courses, learn from experts, and build the skills you need for a brighter
+                        future.
                     </p>
 
                     <div className="mt-8 space-y-5">
@@ -56,12 +56,8 @@ export default function LoginHero() {
                                         <IconComponent className="size-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-semibold text-white">
-                                            {feature.title}
-                                        </h3>
-                                        <p className="text-xs text-white/60">
-                                            {feature.description}
-                                        </p>
+                                        <h3 className="text-sm font-semibold text-white">{feature.title}</h3>
+                                        <p className="text-xs text-white/60">{feature.description}</p>
                                     </div>
                                 </div>
                             );
@@ -72,12 +68,10 @@ export default function LoginHero() {
                 {/* Quote */}
                 <div className="max-w-md border-t border-white/10 pt-4">
                     <p className="text-xs italic leading-relaxed text-white/60 sm:text-sm">
-                        &ldquo;Education is the most powerful weapon you can use to change your
-                        life.&rdquo;
+                        &ldquo;Education is the most powerful weapon you can use to change your life.&rdquo;
                     </p>
                     <p className="mt-1.5 text-xs text-white/50">
-                        — Nelson{" "}
-                        <span className="font-medium text-white/80">Mandela</span>
+                        — Nelson <span className="font-medium text-white/80">Mandela</span>
                     </p>
                 </div>
             </div>

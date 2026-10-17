@@ -4,4 +4,4 @@ export type LoginFeaturesType = {
     title: string;
     description: string;
     icon: LucideIcon;
-}
+};

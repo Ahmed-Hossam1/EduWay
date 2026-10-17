@@ -2,6 +2,7 @@ import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { COURSES_PAGE_SIZE } from "../schemas/coursesQuerySchema";
 import { Course, CourseDurationFilter, CoursesResponse, CourseSort, GetCoursesParams } from "../types";
+import { CourseRow, flattenCourse } from "../utils/flattenCourse";
 
 // A sort function for every sort option
 const sorters: Record<CourseSort, (a: Course, b: Course) => number> = {
@@ -30,29 +31,28 @@ const isInDurationRange = (durationSeconds: number, ranges: CourseDurationFilter
  */
 export const getCourses = async (
     params: GetCoursesParams,
-    pageSize: number = COURSES_PAGE_SIZE
+    pageSize: number = COURSES_PAGE_SIZE,
 ): Promise<CoursesResponse> => {
     // Default values when the param is not in the URL
-    const { q, category, level, price, duration, rating, sort = "popular", page = 1 } = params;
+    const { q, category, level, price, duration, rating, instructorId, sort = "popular", page = 1 } = params;
 
     // 1- Get all published courses + their instructor + their categories
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase
         .from("courses")
-        .select(`
+        .select(
+            `
             *,
-            instructor:profiles ( id, first_name, last_name, avatar_url ),
+            instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
             course_categories ( category:categories ( id, name, slug ) )
-        `)
+        `,
+        )
         .eq("status", "published");
 
     if (error) throw error;
 
     // course_categories: [{ category: {...} }]  →  categories: [{...}]
-    const allCourses: Course[] = data.map(({ course_categories, ...course }) => ({
-        ...course,
-        categories: course_categories.map((item: { category: Course["categories"][number] }) => item.category),
-    }));
+    const allCourses: Course[] = (data as unknown as CourseRow[]).map(flattenCourse);
 
     // 2- Filter: a course stays only if it passes every filter the user chose
     const filtered = allCourses.filter((course) => {
@@ -74,6 +74,9 @@ export const getCourses = async (
 
         // rating: 4 → only courses rated 4 or more
         if (rating && course.rating_avg < rating) return false;
+
+        // instructor: only the courses of this teacher
+        if (instructorId && course.instructor.id !== instructorId) return false;
 
         return true;
     });

@@ -6,7 +6,7 @@ export interface AuthTabsProps {
     activeTab: "login" | "signup";
 }
 
-export default function AuthTabs({ activeTab }: AuthTabsProps) {
+export function AuthTabs({ activeTab }: AuthTabsProps) {
     return (
         <div className="mt-6 grid grid-cols-2 gap-1 rounded-xl border border-border bg-muted/50 p-1">
             {activeTab === "login" ? (
@@ -14,17 +14,18 @@ export default function AuthTabs({ activeTab }: AuthTabsProps) {
                     type="button"
                     variant="default"
                     size="default"
-                    className="h-8 w-full rounded-lg text-sm font-semibold"
+                    rounded="lg"
+                    className="h-8 w-full text-sm font-semibold"
                     aria-current="page"
                 >
                     Sign In
                 </Button>
             ) : (
                 <Link
-                    href="/login"
+                    href="/auth/login"
                     className={cn(
                         buttonVariants({ variant: "ghost", size: "default" }),
-                        "h-8 w-full rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground"
+                        "h-8 w-full rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground",
                     )}
                 >
                     Sign In
@@ -36,17 +37,18 @@ export default function AuthTabs({ activeTab }: AuthTabsProps) {
                     type="button"
                     variant="default"
                     size="default"
-                    className="h-8 w-full rounded-lg text-sm font-semibold"
+                    rounded="lg"
+                    className="h-8 w-full text-sm font-semibold"
                     aria-current="page"
                 >
                     Sign Up
                 </Button>
             ) : (
                 <Link
-                    href="/signup"
+                    href="/auth/signup"
                     className={cn(
                         buttonVariants({ variant: "ghost", size: "default" }),
-                        "h-8 w-full rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground"
+                        "h-8 w-full rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground",
                     )}
                 >
                     Sign Up

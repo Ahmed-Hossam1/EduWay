@@ -8,24 +8,30 @@ export async function GET(request: Request) {
 
     try {
         // OAuth callback must contain a temporary authorization code.
+        // No code = Google / GitHub (or Supabase) sent an error instead, e.g. ?error=access_denied
         if (!code) {
-            return NextResponse.redirect(
-                new URL("/login?error=oauth_callback", request.url)
+            const providerError = requestUrl.searchParams.get("error");
+            console.error(
+                "OAuth callback without code:",
+                providerError,
+                requestUrl.searchParams.get("error_description"),
             );
+
+            // the user pressed "Cancel" on the Google / GitHub page
+            const errorCode = providerError === "access_denied" ? "oauth_cancelled" : "oauth_callback";
+
+            return NextResponse.redirect(new URL(`/auth/oauth-error?error=${errorCode}`, request.url));
         }
 
         const supabase = await createSupabaseServerClient();
 
         // Exchange the OAuth code for a Supabase session.
-        const { error: exchangeError } =
-            await supabase.auth.exchangeCodeForSession(code);
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
         if (exchangeError) {
             console.error("OAuth exchange error:", exchangeError);
 
-            return NextResponse.redirect(
-                new URL("/login?error=oauth_exchange", request.url)
-            );
+            return NextResponse.redirect(new URL("/auth/oauth-error?error=oauth_exchange", request.url));
         }
 
         // Get the authenticated user from the newly created session.
@@ -37,9 +43,7 @@ export async function GET(request: Request) {
         if (userError || !user) {
             console.error("Get user error:", userError);
 
-            return NextResponse.redirect(
-                new URL("/login?error=user_not_found", request.url)
-            );
+            return NextResponse.redirect(new URL("/auth/oauth-error?error=user_not_found", request.url));
         }
 
         // Check if this OAuth user already has a profile.
@@ -52,9 +56,7 @@ export async function GET(request: Request) {
         if (profileError) {
             console.error("Profile lookup error:", profileError);
 
-            return NextResponse.redirect(
-                new URL("/login?error=profile_error", request.url)
-            );
+            return NextResponse.redirect(new URL("/auth/oauth-error?error=profile_error", request.url));
         }
 
         // New OAuth user:
@@ -63,23 +65,16 @@ export async function GET(request: Request) {
         // The profile will be created later by:
         // POST /api/auth/select-role
         if (!profile) {
-            return NextResponse.redirect(
-                new URL("/choose-role", request.url)
-            );
+            return NextResponse.redirect(new URL("/account/choose-role", request.url));
         }
 
         // get the next route based on the role and status of the user
-        const nextRoute = getAuthRedirectRoute(profile.role, profile.status)
+        const nextRoute = getAuthRedirectRoute(profile.role, profile.status);
 
-        return NextResponse.redirect(
-            new URL(nextRoute, request.url)
-        );
-
+        return NextResponse.redirect(new URL(nextRoute, request.url));
     } catch (error) {
         console.error("OAuth callback error:", error);
 
-        return NextResponse.redirect(
-            new URL("/login?error=oauth_callback", request.url)
-        );
+        return NextResponse.redirect(new URL("/auth/oauth-error?error=oauth_callback", request.url));
     }
 }

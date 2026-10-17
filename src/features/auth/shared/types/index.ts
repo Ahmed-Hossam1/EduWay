@@ -13,7 +13,7 @@ export interface AuthInputConfig<T extends string = string> {
     halfWidth?: boolean;
 }
 
+// What login / signup / choose-role answer: where to go next
 export interface AuthResponse {
     nextRoute: string;
-    success: boolean
 }
