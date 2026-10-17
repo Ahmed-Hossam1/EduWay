@@ -14,4 +14,4 @@ export interface Profile {
 }
 
 // The small part of the profile that /api/auth/me returns (navbar, avatar, ...)
-export type ProfileSummary = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url" | "role">;
+export type ProfileSummary = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url" | "role" | "status">;
