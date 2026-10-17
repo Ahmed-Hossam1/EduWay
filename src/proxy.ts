@@ -1,8 +1,11 @@
+import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
+import { canAccessRoute, isProtectedRoute } from "@/lib/authorization/paths";
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
-// Routes that require a logged-in user (any path that starts with one of these)
-const protectedRoutes = ["/account", "/teacher", "/admin", "/learn", "/student"];
+// Routes that require a logged-in user (any path that starts with one of these).
+// The role pages (/student, /cart, /teacher, /admin) are protected too: see lib/authorization/paths.ts
+const protectedRoutes = ["/account", "/learn"];
 
 export async function proxy(request: NextRequest) {
     // 1- The response we will return if the user is allowed to continue.
@@ -43,13 +46,30 @@ export async function proxy(request: NextRequest) {
 
     // 4- Not logged in + trying to open a protected route => go to /login
     const pathname = request.nextUrl.pathname;
-    const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
+    const protectedPage = isProtectedRoute(pathname);
+    const isProtected = protectedPage || protectedRoutes.some((route) => pathname.startsWith(route));
 
     if (!user && isProtected) {
         const loginUrl = new URL("/auth/login", request.url);
         return NextResponse.redirect(loginUrl);
     }
-    // 5- Otherwise let the request pass
+
+    // 5- Logged in + a page for some roles only => does his role (and status) allow it?
+    //    (one small query, only on the role pages)
+    if (user && protectedPage) {
+        const { data: profile } = await supabase.from("profiles").select("role, status").eq("id", user.id).single();
+
+        const role = profile?.role ?? null;
+        const status = profile?.status ?? null;
+
+        if (!canAccessRoute(role, status, pathname)) {
+            // send him to his own home: student => "/", waiting teacher => /account/waiting, ...
+            const homeUrl = new URL(getAuthRedirectRoute(role ?? "", status ?? ""), request.url);
+            return NextResponse.redirect(homeUrl);
+        }
+    }
+
+    // 6- Otherwise let the request pass
     return response;
 }
 
