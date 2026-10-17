@@ -72,11 +72,10 @@ export function Navbar() {
                         <Link
                             key={item.label}
                             href={item.href}
-                            className={`text-sm font-medium transition-colors hover:text-primary ${
-                                isActiveLink(item.href, pathName)
-                                    ? "text-primary font-semibold"
-                                    : "text-muted-foreground"
-                            }`}
+                            className={`text-sm font-medium transition-colors hover:text-primary ${isActiveLink(item.href, pathName)
+                                ? "text-primary font-semibold"
+                                : "text-muted-foreground"
+                                }`}
                         >
                             {item.label}
                         </Link>
@@ -174,11 +173,10 @@ export function Navbar() {
                                         key={item.label}
                                         href={item.href}
                                         onClick={closeMobileMenu}
-                                        className={`rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary ${
-                                            isActiveLink(item.href, pathName)
-                                                ? "text-primary font-semibold"
-                                                : "text-foreground"
-                                        }`}
+                                        className={`rounded-lg px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary ${isActiveLink(item.href, pathName)
+                                            ? "text-primary font-semibold"
+                                            : "text-foreground"
+                                            }`}
                                     >
                                         {item.label}
                                     </Link>
