@@ -3,9 +3,9 @@ import { canAccessRoute, isProtectedRoute } from "@/lib/authorization/paths";
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
-// Routes that require a logged-in user (any path that starts with one of these).
-// The role pages (/student, /cart, /teacher, /admin) are protected too: see lib/authorization/paths.ts
-const protectedRoutes = ["/account", "/learn"];
+// Routes that require a logged-in user, whatever his role (any path that starts with one of these).
+// The role pages (/student, /teacher, /admin) are protected too: see lib/authorization/paths.ts
+const protectedRoutes = ["/account", "/learn", "/wishlist"];
 
 export async function proxy(request: NextRequest) {
     // 1- The response we will return if the user is allowed to continue.
@@ -49,6 +49,7 @@ export async function proxy(request: NextRequest) {
     const protectedPage = isProtectedRoute(pathname);
     const isProtected = protectedPage || protectedRoutes.some((route) => pathname.startsWith(route));
 
+    // not logged in
     if (!user && isProtected) {
         const loginUrl = new URL("/auth/login", request.url);
         return NextResponse.redirect(loginUrl);

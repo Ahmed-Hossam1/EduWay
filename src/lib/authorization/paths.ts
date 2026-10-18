@@ -1,11 +1,15 @@
 import { ProfileStatus, UserRole } from "@/features/profile/types";
 
-// Pages that only some roles can open (a path covers its sub-pages: "/student" → "/student/wishlist").
+// The student pages: learning (my courses, checkout).
+// /cart is public and /wishlist is for any logged-in user (see protectedRoutes in proxy.ts)
+const studentRoutes = ["/student"];
+
+// Pages that only some roles can open (a path covers its sub-pages: "/student" → "/student/my-courses").
 // A page that is NOT here is public (/, /courses, /categories, ...).
 const roleRoutes: Record<UserRole, string[]> = {
-    student: ["/student", "/cart"],
-    teacher: ["/teacher"],
-    admin: ["/admin"],
+    student: studentRoutes,
+    teacher: ["/teacher", ...studentRoutes], // a teacher can learn too (buy and follow other courses)
+    admin: ["/admin"], // the admin can open everything (see canAccessRoute)
 };
 
 // "/teacher" matches "/teacher" and "/teacher/dashboard", but not "/teachers"
@@ -23,9 +27,10 @@ export function isProtectedRoute(pathname: string): boolean {
  * Can a user with this role + status open this page?
  *
  *   canAccessRoute("student", "approved", "/courses")           → true  (public page)
- *   canAccessRoute("student", "approved", "/student/wishlist")  → true
+ *   canAccessRoute("student", "approved", "/student/my-courses") → true
  *   canAccessRoute("student", "approved", "/teacher/dashboard") → false
  *   canAccessRoute("teacher", "waiting",  "/teacher/dashboard") → false (not approved yet)
+ *   canAccessRoute("teacher", "waiting",  "/student/my-courses") → true (he can still learn)
  */
 export function canAccessRoute(role: UserRole | null, status: ProfileStatus | null, pathname: string): boolean {
     // public page → everyone
@@ -37,8 +42,10 @@ export function canAccessRoute(role: UserRole | null, status: ProfileStatus | nu
     // the admin can open everything
     if (role === "admin") return true;
 
-    // a teacher must be approved first
-    if (role === "teacher" && status !== "approved") return false;
+    // a teacher who is not approved yet can only learn (no teacher pages)
+    if (role === "teacher" && status !== "approved") {
+        return studentRoutes.some((route) => matchesRoute(pathname, route));
+    }
 
     return roleRoutes[role].some((route) => matchesRoute(pathname, route));
 }

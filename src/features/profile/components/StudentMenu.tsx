@@ -43,7 +43,7 @@ export function StudentMenu({ firstName, lastName, avatarUrl, role }: StudentMen
                     <BookOpen />
                     My learning
                 </DropdownMenuLinkItem>
-                <DropdownMenuLinkItem href="/student/wishlist">
+                <DropdownMenuLinkItem href="/wishlist">
                     <Heart />
                     Wishlist
                 </DropdownMenuLinkItem>

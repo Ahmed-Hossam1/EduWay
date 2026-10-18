@@ -93,7 +93,7 @@ export function Navbar() {
                     {/* Search icon  panel with the input + trending course names */}
                     <NavbarSearch className={navbarIconClass} />
 
-                    {/* Teacher: a Dashboard button instead of the heart + cart */}
+                    {/* Teacher: a Dashboard button (next to the heart + cart) */}
                     {isApprovedTeacher && (
                         <Button variant="outline" rounded="full" className="px-4" asChild>
                             <Link href="/teacher/dashboard">
@@ -103,9 +103,9 @@ export function Navbar() {
                         </Button>
                     )}
 
-                    {profile && !isApprovedTeacher && (
+                    {profile && (
                         <Link
-                            href="/student/wishlist"
+                            href="/wishlist"
                             aria-label={wishlistIds.length > 0 ? `Wishlist (${wishlistIds.length})` : "Wishlist"}
                             className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
                         >
@@ -118,21 +118,19 @@ export function Navbar() {
                         </Link>
                     )}
 
-                    {/* the cart is for logged-in students only (not for guests or approved teachers) */}
-                    {profile && !isApprovedTeacher && (
-                        <Link
-                            href="/cart"
-                            aria-label={cartIds.length > 0 ? `Cart (${cartIds.length})` : "Cart"}
-                            className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
-                        >
-                            <ShoppingCart />
-                            {cartIds.length > 0 && (
-                                <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] tabular-nums">
-                                    {cartIds.length > 99 ? "99+" : cartIds.length}
-                                </Badge>
-                            )}
-                        </Link>
-                    )}
+                    {/* the cart is public: guests see it too (an empty cart) */}
+                    <Link
+                        href="/cart"
+                        aria-label={cartIds.length > 0 ? `Cart (${cartIds.length})` : "Cart"}
+                        className={cn(navbarIconClass, "relative hidden lg:inline-flex")}
+                    >
+                        <ShoppingCart />
+                        {cartIds.length > 0 && (
+                            <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] tabular-nums">
+                                {cartIds.length > 99 ? "99+" : cartIds.length}
+                            </Badge>
+                        )}
+                    </Link>
 
                     <AnimatedThemeToggler className={navbarIconClass} />
 
@@ -201,9 +199,9 @@ export function Navbar() {
                                     </Link>
                                 )}
 
-                                {profile && !isApprovedTeacher && (
+                                {profile && (
                                     <Link
-                                        href="/student/wishlist"
+                                        href="/wishlist"
                                         onClick={closeMobileMenu}
                                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
                                     >
@@ -214,16 +212,14 @@ export function Navbar() {
                                     </Link>
                                 )}
 
-                                {!isApprovedTeacher && (
-                                    <Link
-                                        href="/cart"
-                                        onClick={closeMobileMenu}
-                                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
-                                    >
-                                        <ShoppingCart className="size-5" /> Cart
-                                        {cartIds.length > 0 && <Badge className="ml-auto">{cartIds.length}</Badge>}
-                                    </Link>
-                                )}
+                                <Link
+                                    href="/cart"
+                                    onClick={closeMobileMenu}
+                                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-foreground transition-colors hover:bg-muted hover:text-primary"
+                                >
+                                    <ShoppingCart className="size-5" /> Cart
+                                    {cartIds.length > 0 && <Badge className="ml-auto">{cartIds.length}</Badge>}
+                                </Link>
                             </div>
 
                             {!isPending && !profile && (

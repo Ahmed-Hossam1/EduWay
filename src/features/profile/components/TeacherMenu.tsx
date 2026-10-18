@@ -8,7 +8,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BookCopy, IdCard, LayoutDashboard, LogOut, Plus, UserCog, Wallet } from "lucide-react";
+import { BookCopy, BookOpen, Heart, IdCard, LayoutDashboard, LogOut, Plus, ShoppingCart, UserCog, Wallet } from "lucide-react";
 import { useLogout } from "../hooks/useLogout";
 import { UserRole } from "../types";
 import { UserAvatar } from "./UserAvatar";
@@ -22,7 +22,7 @@ type TeacherMenuProps = {
     role: UserRole;
 };
 
-// The avatar menu for approved teachers (no wishlist / cart: a teacher sells courses, he doesn't buy them)
+// The avatar menu for approved teachers: teaching first, then learning (a teacher can buy courses too)
 export function TeacherMenu({ userId, firstName, lastName, avatarUrl, role }: TeacherMenuProps) {
     const { mutate: logout } = useLogout();
 
@@ -56,6 +56,21 @@ export function TeacherMenu({ userId, firstName, lastName, avatarUrl, role }: Te
                 <DropdownMenuLinkItem href="/teacher/earnings">
                     <Wallet />
                     Earnings
+                </DropdownMenuLinkItem>
+                <DropdownMenuSeparator />
+
+                {/* What the teacher learns: the same pages as a student */}
+                <DropdownMenuLinkItem href="/student/my-courses">
+                    <BookOpen />
+                    My learning
+                </DropdownMenuLinkItem>
+                <DropdownMenuLinkItem href="/wishlist">
+                    <Heart />
+                    Wishlist
+                </DropdownMenuLinkItem>
+                <DropdownMenuLinkItem href="/cart">
+                    <ShoppingCart />
+                    Cart
                 </DropdownMenuLinkItem>
                 <DropdownMenuSeparator />
 
