@@ -20,6 +20,7 @@ export const useLogout = () => {
             queryClient.setQueryData(["profile"], context?.prevProfile);
         },
         onSuccess: () => {
+            // a full page reload on purpose: every cache and every server component starts clean after logout
             location.href = "/";
         },
         onSettled: () => {

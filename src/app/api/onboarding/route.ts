@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
             teaching_languages: data.teachingLanguages,
             university: data.university || null,
             company: data.company || null,
-            linkedin_url: data.linkedinUrl,
+            linkedin_url: data.linkedinUrl || null,
             website_url: data.websiteUrl || null,
             github_url: data.githubUrl || null,
             twitter_url: data.twitterUrl || null,

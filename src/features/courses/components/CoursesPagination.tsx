@@ -8,7 +8,6 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useCoursesSearchParams } from "../hooks/useCoursesSearchParams";
 import { CoursesResponse } from "../types";
 import { use } from "react";
 
@@ -19,9 +18,7 @@ type props = {
 export function CoursesPagination({ coursesPromise }: props) {
     const courses = use(coursesPromise);
     const { page, totalPages } = courses;
-    const { updateParams } = useCoursesSearchParams();
 
-    const currentPage = Number(page);
     return (
         <Pagination>
             <PaginationContent>

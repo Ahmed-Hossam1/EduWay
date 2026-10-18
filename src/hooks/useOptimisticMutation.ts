@@ -177,7 +177,7 @@ export function useOptimisticMutation<TVariables = string>({
             toast.error(errorMessage);
         },
 
-        onSuccess: (_data, variables) => {
+        onSuccess: () => {
             if (successMessage) toast.success(successMessage);
         },
 

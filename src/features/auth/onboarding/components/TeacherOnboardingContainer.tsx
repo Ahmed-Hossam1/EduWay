@@ -14,7 +14,6 @@ import { TeacherStepThreeForm } from "../step-three/components/TeacherStepThreeF
 import { onboardingSchema, OnboardingFormValues, STEP_FIELDS } from "../schemas/onboardingSchema";
 import { useSubmitOnboarding } from "../hooks/useSubmitOnboarding";
 import { CategoryOption } from "../types/index";
-import { useRouter } from "next/navigation";
 
 type Step = 1 | 2 | 3;
 
