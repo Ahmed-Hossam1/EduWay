@@ -44,6 +44,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: "An account with this email already exists" }, { status: 409 });
         }
 
+        // "Confirm email" is on in Supabase → no session yet:
+        // the user must click the link in his email first (then /api/auth/confirm logs him in)
+        if (!data.session) {
+            return NextResponse.json({ needsConfirmation: true, email }, { status: 201 });
+        }
+
         // getting profile after creating account to decide where to redirect user to
         const { role, status } = await getProfileByIdService(data.user.id);
 

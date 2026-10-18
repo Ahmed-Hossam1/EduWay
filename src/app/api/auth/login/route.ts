@@ -33,6 +33,14 @@ export async function POST(request: Request) {
         if (error) {
             console.error("Login error:", error.code, error.message);
 
+            // right password, but he didn't click the link in the confirmation email yet
+            if (error.code === "email_not_confirmed") {
+                return NextResponse.json(
+                    { message: "Please confirm your email first", code: "email_not_confirmed" },
+                    { status: 403 },
+                );
+            }
+
             return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
         }
 

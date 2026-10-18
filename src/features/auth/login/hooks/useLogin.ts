@@ -4,11 +4,13 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/axios/getErrorMessage";
 import { AUTH_MUTATION_KEY } from "../../shared/hooks/useIsAuthBusy";
 import { loginService } from "../services/login";
+import { isEmailNotConfirmed } from "../../confirm-email/utils/isEmailNotConfirmed";
 
 /**
  * Email + password login:
  *   success → toast, then go where the server says (nextRoute: home, onboarding, waiting...)
  *   error   → toast with the server message
+ *             (except "email not confirmed": LoginForm shows a box with "Resend confirmation email")
  *
  *   const { mutate: login, isPending } = useLogin();
  *   login({ email, password });
@@ -28,6 +30,10 @@ export const useLogin = () => {
 
         onError: (error) => {
             console.error(error);
+
+            // LoginForm shows <EmailNotConfirmedNotice /> instead of a toast
+            if (isEmailNotConfirmed(error)) return;
+
             toast.error(getErrorMessage(error, "Failed to login"));
         },
     });

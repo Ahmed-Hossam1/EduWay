@@ -12,17 +12,26 @@ import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 import { loginSchema, LoginSchemaType } from "../schemas/loginSchema";
 import { AuthTabs } from "../../shared/components/AuthTabs";
 import { SocialLogin } from "../../oauth/components/SocialLogin";
+import { EmailNotConfirmedNotice } from "../../confirm-email/components/EmailNotConfirmedNotice";
+import { isEmailNotConfirmed } from "../../confirm-email/utils/isEmailNotConfirmed";
 
-export function LoginForm() {
+type LoginFormProps = {
+    confirmLinkExpired?: boolean; // came back from an old / used confirm-signup link (/api/auth/confirm)
+};
+
+export function LoginForm({ confirmLinkExpired = false }: LoginFormProps) {
     const {
         handleSubmit,
         register,
+        getValues,
         formState: { errors },
     } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema),
     });
     // the toast + the redirect are inside useLogin
-    const { mutate: login, isPending } = useLogin();
+    const { mutate: login, isPending, error } = useLogin();
+    // right password, but the email is not confirmed yet → show the box with "Resend"
+    const emailNotConfirmed = isEmailNotConfirmed(error);
     // any sign-in running (email or Google / GitHub) → the button can't be clicked
     const isAuthBusy = useIsAuthBusy();
 
@@ -41,8 +50,18 @@ export function LoginForm() {
             {/* Auth tabs */}
             <AuthTabs activeTab="login" />
 
+            {/* Came back from an expired / used confirmation link */}
+            {confirmLinkExpired && !emailNotConfirmed && (
+                <p className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-center text-sm text-destructive">
+                    Your confirmation link expired or was already used. Sign in to get a new one.
+                </p>
+            )}
+
             {/* Form */}
             <form className="mt-6 space-y-4">
+                {/* Email not confirmed yet → resend the link */}
+                {emailNotConfirmed && <EmailNotConfirmedNotice email={getValues("email")} />}
+
                 {loginInputs.map((input) => {
                     const IconComponent = input.icon;
                     return (

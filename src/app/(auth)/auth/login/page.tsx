@@ -7,8 +7,15 @@ export const metadata = {
     description: "Sign in to your EduWay account and continue your learning journey.",
 };
 
+type Params = {
+    searchParams: Promise<{ error?: string }>;
+};
+
 // Google / GitHub sign-in errors have their own page: /auth/oauth-error
-export default function LoginPage() {
+// ?error=confirm_link_expired → an old / used confirm-signup link (from /api/auth/confirm)
+export default async function LoginPage({ searchParams }: Params) {
+    const { error } = await searchParams;
+
     return (
         <main className="min-h-screen w-full bg-background text-foreground">
             <div className="flex min-h-screen flex-col lg:flex-row">
@@ -20,7 +27,7 @@ export default function LoginPage() {
                     <AuthHeader />
 
                     <div className="my-auto flex w-full justify-center px-6 py-10 sm:px-10 lg:px-12">
-                        <LoginForm />
+                        <LoginForm confirmLinkExpired={error === "confirm_link_expired"} />
                     </div>
                 </div>
             </div>

@@ -12,6 +12,7 @@ import { signupInputs } from "../data/signupInputs";
 import { useSignup } from "../hooks/useSignup";
 import { useIsAuthBusy } from "../../shared/hooks/useIsAuthBusy";
 import { signupSchema, signupSchemaType } from "../schemas/signupSchema";
+import { CheckEmailView } from "../../confirm-email/components/CheckEmailView";
 
 export function SignupForm() {
     const {
@@ -22,11 +23,16 @@ export function SignupForm() {
         resolver: zodResolver(signupSchema),
     });
     // the toast + the redirect are inside useSignup
-    const { mutate: signup, isPending } = useSignup();
+    const { mutate: signup, isPending, data } = useSignup();
     // any sign-in running (email or Google / GitHub) → the button can't be clicked
     const isAuthBusy = useIsAuthBusy();
 
-    const onSubmit = (data: signupSchemaType) => signup(data);
+    const onSubmit = (values: signupSchemaType) => signup(values);
+
+    // Account created, but the email must be confirmed first → "Check your inbox"
+    if (data?.needsConfirmation) {
+        return <CheckEmailView email={data.email} />;
+    }
 
     return (
         <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-7 shadow-lg sm:max-w-md sm:p-9">

@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { signupSchemaType } from "../schemas/signupSchema";
-import { AuthResponse } from "../../shared/types";
+import { SignupResponse } from "../types";
 
-export const signupService = async (data: signupSchemaType): Promise<AuthResponse> => {
-    return await apiClient.post<AuthResponse>("/auth/signup", data);
+export const signupService = async (data: signupSchemaType): Promise<SignupResponse> => {
+    return await apiClient.post<SignupResponse>("/auth/signup", data);
 };

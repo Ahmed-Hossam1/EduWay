@@ -11,7 +11,7 @@ const ALLOWED_TYPES: EmailOtpType[] = ["recovery", "email"];
  *
  * The links in our emails come here (see supabase/email-templates):
  *   - reset password → type=recovery
- *   - confirm signup → type=email (next step)
+ *   - confirm signup → type=email (next=/account/choose-role)
  *
  * verifyOtp checks the one-time token and logs the user in (session cookies),
  * then we send him to `next`.
@@ -30,7 +30,8 @@ export async function GET(request: NextRequest) {
     const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
 
     // where to go if the link is wrong / expired / already used
-    const failUrl = type === "recovery" ? "/auth/forgot-password?error=link_expired" : "/auth/login";
+    const failUrl =
+        type === "recovery" ? "/auth/forgot-password?error=link_expired" : "/auth/login?error=confirm_link_expired";
 
     if (!tokenHash || !type || !ALLOWED_TYPES.includes(type)) {
         return NextResponse.redirect(new URL(failUrl, request.url));

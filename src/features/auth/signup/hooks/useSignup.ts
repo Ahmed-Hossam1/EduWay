@@ -7,10 +7,11 @@ import { signupService } from "../services/signup";
 
 /**
  * Create an account (email + password):
- *   success → toast, then go where the server says (nextRoute: usually choose-role)
+ *   success + email to confirm → no redirect: the form shows "Check your inbox" (it reads data)
+ *   success                    → toast, then go where the server says (nextRoute: usually choose-role)
  *   error   → toast with the server message (e.g. "An account with this email already exists")
  *
- *   const { mutate: signup, isPending } = useSignup();
+ *   const { mutate: signup, isPending, data } = useSignup();
  *   signup(formValues);
  */
 export const useSignup = () => {
@@ -21,6 +22,9 @@ export const useSignup = () => {
         mutationFn: signupService,
 
         onSuccess: (response) => {
+            // "Confirm email" is on → stay here, SignupForm shows <CheckEmailView />
+            if (response.needsConfirmation) return;
+
             toast.success("Account created successfully");
             // a short wait so the toast is seen before the page changes
             setTimeout(() => router.push(response.nextRoute), 300);
