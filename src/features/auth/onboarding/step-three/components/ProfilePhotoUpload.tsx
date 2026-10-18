@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Camera, ImagePlus, User, X } from "lucide-react";
+import { CldUploadWidget } from "next-cloudinary";
 import { useController } from "react-hook-form";
 import { OnboardingFormValues } from "../../schemas/onboardingSchema";
 import { FieldError } from "../../components/FieldError";
@@ -14,7 +15,6 @@ interface ProfilePhotoUploadProps {
 
 export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
     // field.value = the photo link ("" = no photo). Starts with the Google / GitHub photo if he has one.
-    // TODO (Cloudinary): after the upload, call field.onChange(uploadedImageUrl)
     const { field, fieldState } = useController<OnboardingFormValues, "avatarUrl">({ name: "avatarUrl" });
     const photoUrl = field.value;
 
@@ -58,24 +58,50 @@ export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 pt-1">
-                        {/* Visual only for now → Cloudinary upload later */}
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            rounded="lg"
-                            className="gap-1.5 border-border hover:border-primary/50 hover:bg-accent/50 text-xs font-medium cursor-pointer"
+                        {/* Cloudinary upload window: our button opens it, the image link goes to the form */}
+                        <CldUploadWidget
+                            uploadPreset="EduWay"
+                            options={{
+                                sources: ["local", "google_drive", "dropbox", "url"], // local = computer or phone
+                                multiple: false,
+                                maxFiles: 1,
+                                clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
+                                maxFileSize: 5_000_000, // 5 MB (in bytes)
+                                cropping: true,
+                                croppingAspectRatio: 1, // a square photo (shown in a circle)
+                                showSkipCropButton: false,
+                                singleUploadAutoClose: true, // close the window when the upload is done
+                            }}
+                            onSuccess={(result) => {
+                                // result.info is an object on success → save the image link in the form
+                                if (result.info && typeof result.info !== "string") {
+                                    field.onChange(result.info.secure_url);
+                                }
+                            }}
                         >
-                            <ImagePlus className="size-3.5" />
-                            Upload Image
-                        </Button>
+                            {({ open, isLoading }) => (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    rounded="lg"
+                                    isLoading={isLoading}
+                                    onClick={() => open()}
+                                    className="gap-1.5 border-border hover:border-primary/50 hover:bg-accent/50 text-xs font-medium"
+                                >
+                                    <ImagePlus className="size-3.5" />
+                                    {photoUrl ? "Change Image" : "Upload Image"}
+                                </Button>
+                            )}
+                        </CldUploadWidget>
+
                         {photoUrl && (
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => field.onChange("")}
-                                className="gap-1.5 text-xs text-muted-foreground hover:text-destructive cursor-pointer"
+                                className="gap-1.5 text-xs text-muted-foreground hover:text-destructive"
                             >
                                 <X className="size-3.5" />
                                 Remove

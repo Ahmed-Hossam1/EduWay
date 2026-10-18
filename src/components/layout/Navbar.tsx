@@ -53,6 +53,7 @@ export function Navbar() {
                 lastName={profile.last_name}
                 avatarUrl={profile.avatar_url}
                 role={profile.role}
+                status={profile.status}
             />
         );
     } else if (profile) {
@@ -62,6 +63,7 @@ export function Navbar() {
                 lastName={profile.last_name}
                 avatarUrl={profile.avatar_url}
                 role={profile.role}
+                status={profile.status}
             />
         );
     }

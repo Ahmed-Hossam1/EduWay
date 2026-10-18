@@ -73,8 +73,8 @@ export const stepTwoSchema = z.object({
 
 // Step 3 · Profile & verification
 export const stepThreeSchema = z.object({
-    // the photo link (Cloudinary). Empty = no photo
-    avatarUrl: z.string().trim().url("Enter a valid image link").optional(),
+    // the photo link: from the Cloudinary upload (or the Google / GitHub photo). Required
+    avatarUrl: z.string().trim().min(1, "Please upload a profile photo").url("Please upload a profile photo"),
 
     // required
     linkedinUrl: z

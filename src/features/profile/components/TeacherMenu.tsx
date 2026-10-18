@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BookCopy, BookOpen, Heart, IdCard, LayoutDashboard, LogOut, Plus, ShoppingCart, UserCog, Wallet } from "lucide-react";
 import { useLogout } from "../hooks/useLogout";
-import { UserRole } from "../types";
+import { ProfileStatus, UserRole } from "../types";
 import { UserAvatar } from "./UserAvatar";
 import { UserMenuHeader } from "./UserMenuHeader";
 
@@ -20,10 +20,11 @@ type TeacherMenuProps = {
     lastName: string | null;
     avatarUrl: string | null;
     role: UserRole;
+    status: ProfileStatus | null;
 };
 
 // The avatar menu for approved teachers: teaching first, then learning (a teacher can buy courses too)
-export function TeacherMenu({ userId, firstName, lastName, avatarUrl, role }: TeacherMenuProps) {
+export function TeacherMenu({ userId, firstName, lastName, avatarUrl, role, status }: TeacherMenuProps) {
     const { mutate: logout } = useLogout();
 
     return (
@@ -36,7 +37,13 @@ export function TeacherMenu({ userId, firstName, lastName, avatarUrl, role }: Te
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-60">
-                <UserMenuHeader firstName={firstName} lastName={lastName} avatarUrl={avatarUrl} role={role} />
+                <UserMenuHeader
+                    firstName={firstName}
+                    lastName={lastName}
+                    avatarUrl={avatarUrl}
+                    role={role}
+                    status={status}
+                />
                 <DropdownMenuSeparator />
 
                 {/* What the teacher does: teach */}

@@ -44,10 +44,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: "Failed to assign role" }, { status: 500 });
     }
 
+
     // Profile already has a role
     if (!data) {
         return NextResponse.json({ message: "Role already assigned" }, { status: 409 });
     }
+
 
     const nextRoute = role === "teacher" ? "/account/onboarding" : "/";
 

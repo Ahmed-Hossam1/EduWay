@@ -6,11 +6,12 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 const ALLOWED_TYPES: EmailOtpType[] = ["recovery", "email"];
 
 /**
- * confirm token that sent to user email to confirm reset password
+ * confirm token that sent to user email to confirm signup or confirm reset password
+ * GET /api/auth/confirm?token_hash=...&type=email&next=/account/choose-role
  * GET /api/auth/confirm?token_hash=...&type=recovery&next=/auth/reset-password
  *
  * The links in our emails come here (see supabase/email-templates):
- *   - reset password → type=recovery
+ *   - reset password → type=recovery (next=/auth/reset-password)
  *   - confirm signup → type=email (next=/account/choose-role)
  *
  * verifyOtp checks the one-time token and logs the user in (session cookies),
