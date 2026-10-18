@@ -60,7 +60,7 @@ export function TeacherMenu({ userId, firstName, lastName, avatarUrl, role }: Te
                 <DropdownMenuSeparator />
 
                 {/* What the teacher learns: the same pages as a student */}
-                <DropdownMenuLinkItem href="/student/my-courses">
+                <DropdownMenuLinkItem href="/my-learning">
                     <BookOpen />
                     My learning
                 </DropdownMenuLinkItem>

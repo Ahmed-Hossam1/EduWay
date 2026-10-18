@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Routes that require a logged-in user, whatever his role (any path that starts with one of these).
 // The role pages (/student, /teacher, /admin) are protected too: see lib/authorization/paths.ts
-const protectedRoutes = ["/account", "/learn", "/wishlist"];
+const protectedRoutes = ["/account", "/learn", "/wishlist", "/my-learning"];
 
 export async function proxy(request: NextRequest) {
     // 1- The response we will return if the user is allowed to continue.

@@ -1,10 +1,10 @@
 import { ProfileStatus, UserRole } from "@/features/profile/types";
 
-// The student pages: learning (my courses, checkout).
-// /cart is public and /wishlist is for any logged-in user (see protectedRoutes in proxy.ts)
+// The student pages (the checkout).
+// /cart is public; /wishlist and /my-learning are for any logged-in user (see protectedRoutes in proxy.ts)
 const studentRoutes = ["/student"];
 
-// Pages that only some roles can open (a path covers its sub-pages: "/student" → "/student/my-courses").
+// Pages that only some roles can open (a path covers its sub-pages: "/student" → "/student/checkout/success").
 // A page that is NOT here is public (/, /courses, /categories, ...).
 const roleRoutes: Record<UserRole, string[]> = {
     student: studentRoutes,
@@ -27,10 +27,10 @@ export function isProtectedRoute(pathname: string): boolean {
  * Can a user with this role + status open this page?
  *
  *   canAccessRoute("student", "approved", "/courses")           → true  (public page)
- *   canAccessRoute("student", "approved", "/student/my-courses") → true
+ *   canAccessRoute("student", "approved", "/student/checkout/success") → true
  *   canAccessRoute("student", "approved", "/teacher/dashboard") → false
  *   canAccessRoute("teacher", "waiting",  "/teacher/dashboard") → false (not approved yet)
- *   canAccessRoute("teacher", "waiting",  "/student/my-courses") → true (he can still learn)
+ *   canAccessRoute("teacher", "waiting",  "/student/checkout/success") → true (he can still buy)
  */
 export function canAccessRoute(role: UserRole | null, status: ProfileStatus | null, pathname: string): boolean {
     // public page → everyone

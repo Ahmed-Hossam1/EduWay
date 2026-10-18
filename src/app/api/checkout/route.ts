@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/stripe";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isCourseOwner } from "@/lib/authorization/ownership";
 
 // One cart row with its course (what we read from Supabase)
 type CartRow = {
@@ -53,7 +54,7 @@ export async function POST() {
             .filter((course) => course !== null)
             .filter((course) => course.status === "published")
             .filter((course) => course.price > 0)
-            .filter((course) => course.instructor_id !== user.id)
+            .filter((course) => !isCourseOwner(user.id, course)) // a teacher can not buy his own course
             .filter((course) => !ownedIds.includes(course.id));
 
         if (courses.length === 0) {

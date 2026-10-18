@@ -103,7 +103,7 @@ export function CheckoutSuccessPage({ order }: CheckoutSuccessPageProps) {
                     {order.status === "paid" && (
                         <>
                             <Button rounded="xl" className="h-11 w-full sm:flex-1" asChild>
-                                <Link href="/student/my-courses">Go to my courses</Link>
+                                <Link href="/my-learning">Go to my courses</Link>
                             </Button>
                             <Button variant="outline" rounded="xl" className="h-11 w-full sm:flex-1" asChild>
                                 <Link href="/courses">Browse more courses</Link>

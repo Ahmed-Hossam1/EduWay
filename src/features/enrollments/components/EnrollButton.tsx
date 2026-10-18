@@ -38,7 +38,7 @@ export function EnrollButton({ courseId, price, className }: EnrollButtonProps) 
     if (enrolledIds.includes(courseId)) {
         return (
             <Button size="lg" rounded="xl" className={buttonClass} asChild>
-                <Link href="/student/my-courses">
+                <Link href="/my-learning">
                     Go to course
                     <ArrowRight />
                 </Link>

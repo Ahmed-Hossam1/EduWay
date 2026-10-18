@@ -39,7 +39,7 @@ export function StudentMenu({ firstName, lastName, avatarUrl, role }: StudentMen
                 <DropdownMenuSeparator />
 
                 {/* What the student does: learn + buy */}
-                <DropdownMenuLinkItem href="/student/my-courses">
+                <DropdownMenuLinkItem href="/my-learning">
                     <BookOpen />
                     My learning
                 </DropdownMenuLinkItem>
