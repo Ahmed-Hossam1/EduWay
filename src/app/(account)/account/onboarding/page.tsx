@@ -1,6 +1,7 @@
 import { TeacherOnboardingContainer } from "@/features/auth/onboarding/components/TeacherOnboardingContainer";
 import { getOnboardingDefaults } from "@/features/auth/onboarding/server/getOnboardingDefaults";
 import { getCategoryOptions } from "@/features/auth/onboarding/server/getCategoryOptions";
+import { getSavedOnboardingAnswers } from "@/features/auth/onboarding/server/getSavedOnboardingAnswers";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
 import { getProfileByIdService } from "@/features/profile/server/getProfileById";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -30,8 +31,10 @@ export default async function OnboardingPage() {
         redirect(getAuthRedirectRoute(profile.role, profile.status));
     }
 
-    // 3- The name + photo he already gave us, and the categories from the database
-    const defaultValues = getOnboardingDefaults(user, profile);
+    // 3- The name + photo he already gave us (+ his old answers if he applies again),
+    //    and the categories from the database
+    const saved = await getSavedOnboardingAnswers(user.id);
+    const defaultValues = getOnboardingDefaults(user, profile, saved);
     const categories = await getCategoryOptions();
 
     return <TeacherOnboardingContainer defaultValues={defaultValues} categories={categories} />;

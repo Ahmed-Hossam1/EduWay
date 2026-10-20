@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { OnboardingRejected } from "@/features/auth/onboarding/components/OnboardingRejected";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
+import { getLatestApplication } from "@/features/auth/onboarding/server/getLatestApplication";
 import { getProfileByIdService } from "@/features/profile/server/getProfileById";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -24,5 +25,9 @@ export default async function RejectedPage() {
         redirect(getAuthRedirectRoute(profile.role, profile.status));
     }
 
-    return <OnboardingRejected firstName={profile.first_name ?? ""} />;
+    // the admin's reason is on his LAST application
+    const application = await getLatestApplication(user.id);
+    const reason = application?.status === "rejected" ? application.reason : null;
+
+    return <OnboardingRejected firstName={profile.first_name ?? ""} reason={reason} />;
 }

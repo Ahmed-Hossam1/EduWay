@@ -5,10 +5,11 @@ import { onboardingSchema } from "@/features/auth/onboarding/schemas/onboardingS
 
 // POST /api/onboarding  { ...all 3 steps } -> { nextRoute: "/account/waiting" }
 // Saves the teacher profile and sends it for review (status: onboarding -> waiting).
+// Every submit adds a NEW row in instructor_applications (pending) → the admin keeps the history.
 export async function POST(request: NextRequest) {
     try {
         // 1- Check the data again with the SAME schema as the form (never trust the browser)
-        const body = await request.json().catch(() => null);
+        const body = await request.json()
         const result = onboardingSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json(
@@ -90,7 +91,14 @@ export async function POST(request: NextRequest) {
             if (certificationsError) throw certificationsError;
         }
 
-        // 4.3- LAST: the name + photo, and status → waiting.
+        // 4.3- A new application for the admin (first time, or "Apply again" after a rejection)
+        const { error: applicationError } = await admin.from("instructor_applications").insert({
+            profile_id: user.id, // status = "pending" and submitted_at = now() by default
+        });
+
+        if (applicationError) throw applicationError;
+
+        // 4.4- LAST: the name + photo, and status → waiting.
         //      (if anything above failed, he is still "onboarding" and can try again)
         const { error: updateError } = await admin
             .from("profiles")

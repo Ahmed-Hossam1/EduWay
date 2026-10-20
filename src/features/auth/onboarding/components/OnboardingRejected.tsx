@@ -1,20 +1,21 @@
 import Link from "next/link";
-import { BookOpen, FileText, Mail, XCircle } from "lucide-react";
+import { BookOpen, FileText, MessageSquareWarning, RotateCw, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { OnboardingHeader } from "./OnboardingHeader";
+import { ReapplyButton } from "./ReapplyButton";
 
 // What the teacher can do now
 const NEXT_STEPS = [
     {
         icon: FileText,
-        title: "Check your profile",
-        description: "A clear bio, real skills and proof of your experience help a lot.",
+        title: "Fix your profile",
+        description: "Read the reason above and update the parts our team asked for.",
     },
     {
-        icon: Mail,
-        title: "Talk to our team",
-        description: "Contact us to know why, or to ask for a second review.",
+        icon: RotateCw,
+        title: "Apply again",
+        description: "Your old answers are saved: change what you need and send it again.",
     },
     {
         icon: BookOpen,
@@ -23,8 +24,13 @@ const NEXT_STEPS = [
     },
 ];
 
+type OnboardingRejectedProps = {
+    firstName: string;
+    reason: string | null; // the admin's reason (null if we don't have one)
+};
+
 // /account/rejected — an admin reviewed the teacher profile and didn't approve it
-export function OnboardingRejected({ firstName }: { firstName: string }) {
+export function OnboardingRejected({ firstName, reason }: OnboardingRejectedProps) {
     return (
         <main className="min-h-screen w-full bg-background text-foreground flex flex-col">
             <OnboardingHeader />
@@ -40,8 +46,19 @@ export function OnboardingRejected({ firstName }: { firstName: string }) {
                     </h1>
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                         Our team reviewed your application and couldn&apos;t approve it this time. This is not the end:
-                        here is what you can do next.
+                        you can fix it and apply again.
                     </p>
+
+                    {/* The reason from the admin */}
+                    {reason && (
+                        <div className="mt-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-left dark:border-rose-900/60 dark:bg-rose-950/30">
+                            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-700 dark:text-rose-300">
+                                <MessageSquareWarning className="size-4" />
+                                Reason from our team
+                            </p>
+                            <p className="mt-2 text-sm leading-relaxed whitespace-pre-line text-foreground">{reason}</p>
+                        </div>
+                    )}
 
                     {/* Next steps */}
                     <ol className="mt-7 space-y-4 text-left">
@@ -59,11 +76,9 @@ export function OnboardingRejected({ firstName }: { firstName: string }) {
                     </ol>
 
                     <div className="mt-8 flex flex-col gap-2 sm:flex-row">
-                        <Button rounded="xl" className="h-11 w-full sm:flex-1" asChild>
-                            <Link href="/contact">Contact support</Link>
-                        </Button>
+                        <ReapplyButton />
                         <Button variant="outline" rounded="xl" className="h-11 w-full sm:flex-1" asChild>
-                            <Link href="/courses">Browse courses</Link>
+                            <Link href="/contact">Contact support</Link>
                         </Button>
                     </div>
                 </Card>
