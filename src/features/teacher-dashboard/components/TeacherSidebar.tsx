@@ -53,23 +53,14 @@ export function TeacherSidebar({ userId, firstName, lastName, avatarUrl }: Teach
                         <SidebarMenu>
                             {group.items.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    {item.soon ? (
-                                        // not built yet → faded + "Soon", not a link
-                                        <SidebarMenuButton disabled tooltip={`${item.label} (soon)`}>
-                                            <item.icon />
-                                            <span>{item.label}</span>
-                                        </SidebarMenuButton>
-                                    ) : (
-                                        <SidebarMenuButton
-                                            isActive={pathname === item.href}
-                                            tooltip={item.label}
-                                            render={<Link href={item.href} />}
-                                        >
-                                            <item.icon />
-                                            <span>{item.label}</span>
-                                        </SidebarMenuButton>
-                                    )}
-                                    {item.soon && <SidebarMenuBadge className="text-[10px]">Soon</SidebarMenuBadge>}
+                                    <SidebarMenuButton
+                                        isActive={pathname === item.href}
+                                        tooltip={item.label}
+                                        render={<Link href={item.href} />}
+                                    >
+                                        <item.icon />
+                                        <span>{item.label}</span>
+                                    </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>

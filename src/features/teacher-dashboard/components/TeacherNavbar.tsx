@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Logo } from "@/components/layout/Logo";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ReactNode } from "react";
 
 type TeacherNavbarProps = {
     firstName: string | null;
@@ -24,7 +24,7 @@ export function TeacherNavbar({ firstName, notifications }: TeacherNavbarProps) 
             </div>
 
             <div className="ml-auto flex items-center gap-1">
-                <AnimatedThemeToggler className="flex size-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground" />
+                <AnimatedThemeToggler className="flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground" />
                 {notifications}
             </div>
         </header>
