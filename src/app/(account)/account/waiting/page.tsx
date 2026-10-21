@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { OnboardingWaiting } from "@/features/auth/onboarding/components/OnboardingWaiting";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
 import { getProfileByIdService } from "@/features/profile/server/getProfileById";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/getAuthUser";
 
 export const metadata: Metadata = {
     title: "Profile under review",
@@ -11,11 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function WaitingPage() {
-    const supabase = await createSupabaseServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    const user = await getAuthUser(); // not logged in → /auth/login
 
     const profile = await getProfileByIdService(user.id);
 

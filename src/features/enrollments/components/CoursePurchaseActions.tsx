@@ -4,16 +4,23 @@ import { AddToCartButton } from "@/features/cart/components/AddToCartButton";
 import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
 import { useEnrollments } from "../hooks/useEnrollments";
 import { EnrollButton } from "./EnrollButton";
+import { CourseOwnerNotice } from "./CourseOwnerNotice";
+import { useIsCourseOwner } from "../hooks/useIsCourseOwner";
 
 type CoursePurchaseActionsProps = {
     courseId: string;
     price: number;
+    instructorId: string; // to know if the user is the teacher of this course
 };
 
 // The buttons of the course price card. Enrolled → only "Go to course" (no cart / wishlist).
-export function CoursePurchaseActions({ courseId, price }: CoursePurchaseActionsProps) {
+export function CoursePurchaseActions({ courseId, price, instructorId }: CoursePurchaseActionsProps) {
     const { data: enrolledIds = [] } = useEnrollments();
     const isEnrolled = enrolledIds.includes(courseId);
+    const isOwner = useIsCourseOwner(instructorId);
+
+    // his own course → no buy / cart / wishlist
+    if (isOwner) return <CourseOwnerNotice />;
 
     if (isEnrolled) {
         return (

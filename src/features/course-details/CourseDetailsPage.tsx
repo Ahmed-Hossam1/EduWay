@@ -73,7 +73,12 @@ export function CourseDetailsPage({ course, relatedCoursesPromise }: CourseDetai
             </div>
 
             {/* mobile bar to show enroll button */}
-            <CourseMobileBar courseId={course.id} price={course.price} currency={course.currency} />
+            <CourseMobileBar
+                courseId={course.id}
+                price={course.price}
+                currency={course.currency}
+                instructorId={course.instructor.id}
+            />
         </div>
     );
 }

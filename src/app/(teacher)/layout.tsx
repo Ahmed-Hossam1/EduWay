@@ -7,7 +7,7 @@ import { TeacherSidebar } from "@/features/teacher-dashboard/components/TeacherS
 import { TeacherNavbar } from "@/features/teacher-dashboard/components/TeacherNavbar";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
 import { getProfileByIdService } from "@/features/profile/server/getProfileById";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/getAuthUser";
 
 type TeacherLayoutProps = {
     children: ReactNode; // the page (/teacher/dashboard, /teacher/courses...)
@@ -20,11 +20,7 @@ type TeacherLayoutProps = {
  */
 export default async function TeacherLayout({ children, notifications }: TeacherLayoutProps) {
     // 1- A second check after proxy.ts: only an approved teacher stays here
-    const supabase = await createSupabaseServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    const user = await getAuthUser(); // not logged in → /auth/login (cached: the page reuses it)
 
     const profile = await getProfileByIdService(user.id);
     if (profile.role !== "teacher" || profile.status !== "approved") {

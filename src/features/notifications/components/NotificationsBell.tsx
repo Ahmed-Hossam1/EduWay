@@ -4,10 +4,9 @@ import Link from "next/link";
 import { Bell, BellOff, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, timeAgo } from "@/lib/utils";
 import { MyNotifications } from "../types";
 import { notificationIcons } from "../data/notificationIcons";
-import { timeAgo } from "../utils/timeAgo";
 import { useMarkAllRead } from "../hooks/useMarkAllRead";
 import { use } from "react";
 

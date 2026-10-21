@@ -4,7 +4,7 @@ import { OnboardingRejected } from "@/features/auth/onboarding/components/Onboar
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
 import { getLatestApplication } from "@/features/auth/onboarding/server/getLatestApplication";
 import { getProfileByIdService } from "@/features/profile/server/getProfileById";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/getAuthUser";
 
 export const metadata: Metadata = {
     title: "Profile not approved",
@@ -12,11 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RejectedPage() {
-    const supabase = await createSupabaseServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    const user = await getAuthUser(); // not logged in → /auth/login
 
     const profile = await getProfileByIdService(user.id);
 

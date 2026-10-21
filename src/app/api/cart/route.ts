@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isCourseOwner } from "@/lib/authorization/ownership";
 import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -38,6 +39,12 @@ export async function POST(request: NextRequest) {
     if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { courseId } = result.data;
+
+    // 0- a teacher can't buy his own course → don't let it into the cart at all
+    const { data: course } = await supabase.from("courses").select("instructor_id").eq("id", courseId).single();
+    if (course && isCourseOwner(user.id, course)) {
+        return NextResponse.json({ message: "You can't buy your own course" }, { status: 403 });
+    }
 
     // 1- add to the cart (double click → no duplicate, no error)
     //    RLS refuses free / unpublished courses

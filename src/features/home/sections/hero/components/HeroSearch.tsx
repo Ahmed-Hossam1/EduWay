@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useQueryParams } from "@/hooks/useQueryParams";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,14 +9,12 @@ import { FormEvent, useState } from "react";
 import { heroPopularTopics } from "../../../data";
 
 export function HeroSearch() {
-    const params = useQueryParams();
-    const [searchValue, setSearchValue] = useState<string>(params.get("q") || "");
+    const [searchValue, setSearchValue] = useState<string>("");
     const router = useRouter();
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
         if (!searchValue) return;
-        params.set("q", searchValue);
         router.push(`/courses?q=${searchValue}`);
     };
 

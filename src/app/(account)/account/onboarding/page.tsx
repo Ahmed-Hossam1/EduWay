@@ -4,7 +4,7 @@ import { getCategoryOptions } from "@/features/auth/onboarding/server/getCategor
 import { getSavedOnboardingAnswers } from "@/features/auth/onboarding/server/getSavedOnboardingAnswers";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
 import { getProfileByIdService } from "@/features/profile/server/getProfileById";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getAuthUser } from "@/lib/supabase/getAuthUser";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -16,11 +16,7 @@ export const metadata: Metadata = {
 
 export default async function OnboardingPage() {
     // 1- Who is he? (proxy.ts already sends guests to /auth/login)
-    const supabase = await createSupabaseServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    const user = await getAuthUser(); // not logged in → /auth/login
 
     const profile = await getProfileByIdService(user.id);
 

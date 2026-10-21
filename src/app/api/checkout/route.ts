@@ -58,7 +58,15 @@ export async function POST() {
             .filter((course) => !ownedIds.includes(course.id));
 
         if (courses.length === 0) {
-            return NextResponse.json({ message: "Your cart has no courses to buy" }, { status: 400 });
+            // his own course is in the cart (added before the cart API refused it) → tell him clearly
+            const hasOwnCourse = (cartRows as unknown as CartRow[]).some(
+                (row) => row.course !== null && isCourseOwner(user.id, row.course),
+            );
+            const message = hasOwnCourse
+                ? "You can't buy your own course. Remove it from your cart."
+                : "Your cart has no courses to buy";
+
+            return NextResponse.json({ message }, { status: 400 });
         }
 
         // one Stripe payment = one currency

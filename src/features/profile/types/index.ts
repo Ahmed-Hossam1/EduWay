@@ -14,4 +14,6 @@ export interface Profile {
 }
 
 // The small part of the profile that /api/auth/me returns (navbar, avatar, ...)
-export type ProfileSummary = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url" | "role" | "status">;
+export type ProfileSummary = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url" | "role" | "status"> & {
+    headline: string | null; // the teacher headline (null for a student, or a teacher who didn't fill it)
+};
