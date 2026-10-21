@@ -9,6 +9,7 @@ import { MyNotifications } from "../types";
 import { notificationIcons } from "../data/notificationIcons";
 import { timeAgo } from "../utils/timeAgo";
 import { useMarkAllRead } from "../hooks/useMarkAllRead";
+import { use } from "react";
 
 type NotificationsBellProps = {
     notifications: MyNotifications;

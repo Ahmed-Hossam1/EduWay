@@ -1,5 +1,7 @@
-import { NotificationsBell } from "@/features/notifications/components/NotificationsBell";
+import { NotificationsBellSkeleton } from "@/features/notifications/components/NotificationsBellSkeleton";
+import NotificationsBellWithData from "@/features/notifications/components/NotificationsBellWithData";
 import { getMyNotifications } from "@/features/notifications/server/getMyNotifications";
+import { Suspense } from "react";
 
 /**
  * The @notifications slot (a parallel route): the bell in the dashboard navbar.
@@ -9,11 +11,18 @@ import { getMyNotifications } from "@/features/notifications/server/getMyNotific
  *   It doesn't exist → after a refresh the whole page would be a 404.
  *   default.tsx = "use me for every URL" → one file for all the dashboard pages.
  *
- * Its own loading.tsx / error.tsx: if the notifications are slow or fail,
- * only the bell waits / shows the problem, the dashboard keeps working.
+ * Why <Suspense> here and not a loading.tsx?
+ *   loading.tsx only wraps a slot's page.tsx, NOT its default.tsx → it never showed,
+ *   and the WHOLE dashboard waited for the notifications.
+ *   With <Suspense> the page shows right away and only the bell waits (skeleton → bell).
+ *
+ * error.tsx still works: if the notifications fail, only the bell shows the problem.
  */
-export default async function NotificationsSlot() {
-    const notifications = await getMyNotifications();
-
-    return <NotificationsBell notifications={notifications} />;
+export default function NotificationsSlot() {
+    return (
+        <Suspense fallback={<NotificationsBellSkeleton />}>
+            <NotificationsBellWithData />
+        </Suspense>
+    );
 }
+
