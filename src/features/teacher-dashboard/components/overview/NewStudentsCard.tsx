@@ -1,7 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { NewStudent } from "../../types";
-import { cardHover } from "../../utils/cardStyles";
 import { use } from "react";
 
 type NewStudentsCardProps = {
@@ -13,7 +11,7 @@ export function NewStudentsCard({ studentsPromise }: NewStudentsCardProps) {
     const students = use(studentsPromise);
 
     return (
-        <Card className={cn(cardHover, "sm:col-span-2")}>
+        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2">
             <CardHeader>
                 <CardTitle className="font-bold">New students</CardTitle>
             </CardHeader>

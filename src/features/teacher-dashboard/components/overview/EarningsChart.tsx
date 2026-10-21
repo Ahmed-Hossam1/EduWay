@@ -1,0 +1,98 @@
+import { use } from "react";
+import { CircleCheck } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { EarningsOverview } from "../../types";
+import { formatMoney, toPoints } from "../../utils/chart";
+
+type EarningsChartProps = {
+    earningsPromise: Promise<EarningsOverview>;
+};
+
+// A small "+5.5%" / "-1.2%" pill (green up, red down)
+function ChangePill({ value }: { value: number }) {
+    const isUp = value >= 0;
+    return (
+        <span
+            className={cn(
+                "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
+                isUp
+                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300"
+                    : "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300",
+            )}
+        >
+            {isUp ? "+" : ""}
+            {value}%
+        </span>
+    );
+}
+
+const CHART_WIDTH = 600;
+const CHART_HEIGHT = 140;
+
+// Earnings of the last 6 months: an area chart + 2 small numbers
+export function EarningsChart({ earningsPromise }: EarningsChartProps) {
+    const earnings = use(earningsPromise); // waits inside the <Suspense> of TeacherOverview
+    const points = toPoints(
+        earnings.months.map((month) => month.value),
+        CHART_WIDTH,
+        CHART_HEIGHT,
+    );
+
+    return (
+        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2 xl:col-span-3">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-bold">
+                    Earnings
+                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+                        <CircleCheck className="size-3" />
+                        On track
+                    </span>
+                </CardTitle>
+                <CardDescription>Last 6 months</CardDescription>
+            </CardHeader>
+
+            <CardContent>
+                {/* the 2 small numbers */}
+                <div className="flex flex-wrap gap-3">
+                    <div className="rounded-xl border border-border px-3 py-2">
+                        <p className="text-[11px] text-muted-foreground">Completion</p>
+                        <p className="flex items-center gap-1.5 text-sm font-bold">
+                            {earnings.completionRate}% <ChangePill value={earnings.completionChange} />
+                        </p>
+                    </div>
+                    <div className="rounded-xl border border-border px-3 py-2">
+                        <p className="text-[11px] text-muted-foreground">Total revenue</p>
+                        <p className="flex items-center gap-1.5 text-sm font-bold">
+                            {formatMoney(earnings.totalRevenue)} <ChangePill value={earnings.revenueChange} />
+                        </p>
+                    </div>
+                </div>
+
+                {/* the chart: a filled area under a line */}
+                <svg
+                    viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
+                    className="mt-4 h-36 w-full overflow-visible"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                >
+                    <defs>
+                        <linearGradient id="earnings-area" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
+                        </linearGradient>
+                    </defs>
+                    <polygon points={`0,${CHART_HEIGHT} ${points} ${CHART_WIDTH},${CHART_HEIGHT}`} fill="url(#earnings-area)" />
+                    <polyline points={points} fill="none" className="stroke-primary" strokeWidth="3" strokeLinejoin="round" />
+                </svg>
+
+                {/* month names under the chart */}
+                <div className="mt-2 flex justify-between text-[11px] text-muted-foreground">
+                    {earnings.months.map((month) => (
+                        <span key={month.label}>{month.label}</span>
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
