@@ -27,8 +27,11 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get("type") as EmailOtpType | null;
     const next = searchParams.get("next") ?? "/";
 
-    // only our own pages: "/auth/reset-password" yes — "https://evil.com" or "//evil.com" no
-    const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
+    // only our own pages: "/auth/reset-password" yes — "https://evil.com", "//evil.com" or "/\evil.com" no.
+    // new URL() reads the link exactly like the browser does, then we keep it only if it stays on our site.
+    const nextUrl = new URL(next, request.url);
+    const isOurSite = nextUrl.origin === new URL(request.url).origin;
+    const safeNext = isOurSite ? nextUrl.pathname + nextUrl.search : "/";
 
     // where to go if the link is wrong / expired / already used
     const failUrl =

@@ -63,7 +63,7 @@ export async function GET(request: Request) {
         // No profile means the user still needs to choose a role.
         //
         // The profile will be created later by:
-        // POST /api/auth/select-role
+        // POST /api/auth/choose-role (the /account/choose-role page)
         if (!profile) {
             return NextResponse.redirect(new URL("/account/choose-role", request.url));
         }

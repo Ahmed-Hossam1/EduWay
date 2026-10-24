@@ -51,6 +51,7 @@ export const HeroFloatingCard4Images: HeroFloatingCard[] = [
     },
 ];
 
+// slug = the real category slug in the database (used in /courses?category=...)
 export const heroPopularTopics: { name: string; slug: string }[] = [
     {
         name: "Web Development",
@@ -58,15 +59,15 @@ export const heroPopularTopics: { name: string; slug: string }[] = [
     },
     {
         name: "Data Science",
-        slug: "data-science",
+        slug: "data-ai",
     },
     {
         name: "UI/UX Design",
-        slug: "ui-ux-design",
+        slug: "design",
     },
     {
         name: "Digital Marketing",
-        slug: "digital-marketing",
+        slug: "marketing",
     },
 ];
 
@@ -89,9 +90,10 @@ export const heroBenefits = [
     },
 ];
 
+// id = the real category slug in the database (LearningPathCard links to /courses?category=<id>)
 export const learningPaths: LearningPath[] = [
     {
-        id: "dev",
+        id: "web-dev",
         title: "Development",
         subtitle: "Web, Mobile & More",
         courseCount: "120+ courses",
@@ -99,7 +101,7 @@ export const learningPaths: LearningPath[] = [
         colorScheme: "purple",
     },
     {
-        id: "data-science",
+        id: "data-ai",
         title: "Data Science",
         subtitle: "Turn data into insights",
         courseCount: "80+ courses",
@@ -131,7 +133,7 @@ export const learningPaths: LearningPath[] = [
         colorScheme: "purple",
     },
     {
-        id: "it-software",
+        id: "cloud-devops",
         title: "IT & Software",
         subtitle: "Systems, Cloud & Security",
         courseCount: "35+ courses",
@@ -139,7 +141,7 @@ export const learningPaths: LearningPath[] = [
         colorScheme: "blue",
     },
     {
-        id: "personal-dev",
+        id: "personal-development",
         title: "Personal Development",
         subtitle: "Productivity & Soft Skills",
         courseCount: "50+ courses",
@@ -147,7 +149,7 @@ export const learningPaths: LearningPath[] = [
         colorScheme: "green",
     },
     {
-        id: "lifestyle",
+        id: "health-fitness",
         title: "Lifestyle",
         subtitle: "Health, Art & Hobbies",
         courseCount: "30+ courses",

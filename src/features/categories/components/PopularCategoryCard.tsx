@@ -3,7 +3,8 @@ import { ArrowRight, Flame } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { CategoryListItem } from "../types";
-import { formatCoursesCount, getCategoryStyle } from "../utils/getCategoryStyle";
+import { pluralize } from "@/lib/format";
+import { getCategoryStyle } from "../utils/getCategoryStyle";
 
 type PopularCategoryCardProps = {
     category: CategoryListItem;
@@ -44,7 +45,7 @@ export function PopularCategoryCard({ category, rank }: PopularCategoryCardProps
             <h3 className="mt-6 text-xl font-black tracking-tight text-foreground transition-colors group-hover:text-primary">
                 {category.name}
             </h3>
-            <p className="mt-1 text-sm text-muted-foreground">{formatCoursesCount(category.coursesCount)}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{category.coursesCount} {pluralize(category.coursesCount, "course")}</p>
 
             {/* Action */}
             <span className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-primary">

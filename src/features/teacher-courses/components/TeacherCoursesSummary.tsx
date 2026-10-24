@@ -1,6 +1,6 @@
 import { use } from "react";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { formatMoney } from "@/features/teacher-dashboard/utils/chart";
+import { formatMoney } from "@/lib/format";
 import { EarningsOverview, OverviewStats } from "@/features/teacher-dashboard/types";
 
 type TeacherCoursesSummaryProps = {
@@ -18,7 +18,7 @@ export function TeacherCoursesSummary({ statsPromise, earningsPromise }: Teacher
         { label: "Published", value: String(stats.publishedCourses) },
         { label: "Drafts", value: String(stats.draftCourses) },
         { label: "New students (30 days)", value: String(stats.studentsLast30Days) },
-        { label: "Total earnings", value: formatMoney(earnings.totalRevenue) },
+        { label: "Total earnings", value: formatMoney(earnings.totalRevenue, "USD", 0) },
     ];
 
     return (

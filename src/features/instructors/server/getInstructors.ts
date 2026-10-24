@@ -1,6 +1,7 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { GetInstructorsParams, InstructorListItem } from "../types";
+import { DEFAULT_INSTRUCTORS_SORT } from "../schemas/instructorsQuerySchema";
 
 /**
  * Server only: all approved teachers with their stats, after search and sort.
@@ -10,7 +11,7 @@ import { GetInstructorsParams, InstructorListItem } from "../types";
  * the search and the sort → we get the ready list.
  */
 export const getInstructors = async (params: GetInstructorsParams): Promise<InstructorListItem[]> => {
-    const { q, sort = "students" } = params;
+    const { q, sort = DEFAULT_INSTRUCTORS_SORT } = params;
 
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.rpc("get_instructors", {

@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CategoryRow } from "@/features/courses/types";
+import { flattenCourse } from "@/features/courses/utils/flattenCourse";
 import { CourseDetails, CourseTag, PrerequisiteCourse } from "../types";
 
 /**
@@ -42,12 +42,11 @@ export const getCourseBySlug = cache(async (slug: string): Promise<CourseDetails
     if (error) throw error;
     if (!data) return null;
 
-    // [{ category: {...} }] => [{...}]   (same for tags and prerequisites)
-    const { course_categories, course_tags, prerequisites, ...course } = data;
+    // [{ tag: {...} }] => [{...}]   (same for prerequisites; the categories use flattenCourse like the course lists)
+    const { course_tags, prerequisites, ...course } = data;
 
     return {
-        ...course,
-        categories: course_categories.map((item: { category: CategoryRow }) => item.category),
+        ...flattenCourse(course),
         tags: course_tags.map((item: { tag: CourseTag }) => item.tag),
         prerequisites: prerequisites.map((item: { course: PrerequisiteCourse }) => item.course),
     } as CourseDetails;

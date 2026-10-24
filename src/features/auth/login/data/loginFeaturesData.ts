@@ -1,7 +1,7 @@
 import { BarChart3, GraduationCap, Users } from "lucide-react";
-import { LoginFeaturesType } from "../types";
+import { AuthHeroFeature } from "../../shared/types";
 
-export const loginFeaturesData: LoginFeaturesType[] = [
+export const loginFeaturesData: AuthHeroFeature[] = [
     {
         title: "Learn Anytime",
         description: "Access courses at your own pace.",

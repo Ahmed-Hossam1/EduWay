@@ -1,7 +1,7 @@
 import { signupSchema } from "@/features/auth/signup/schemas/signupSchema";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
-import { getProfileByIdService } from "@/features/profile/server/getProfileById";
+import { getProfileById } from "@/features/profile/server/getProfileById";
 
 import { NextResponse } from "next/server";
 
@@ -51,17 +51,15 @@ export async function POST(request: Request) {
         }
 
         // getting profile after creating account to decide where to redirect user to
-        const { role, status } = await getProfileByIdService(data.user.id);
+        const { role, status } = await getProfileById(data.user.id);
 
         // get the next route based on the role and status of the user
         const nextRoute = getAuthRedirectRoute(role, status);
 
         return NextResponse.json({ nextRoute }, { status: 201 });
     } catch (error) {
+        // the real error stays in the server log; the user gets a simple message (no internal details)
         console.error("Signup API Error:", error);
-
-        const message = error instanceof Error ? error.message : "Failed to create account";
-
-        return NextResponse.json({ message }, { status: 400 });
+        return NextResponse.json({ message: "Something went wrong. Please try again." }, { status: 500 });
     }
 }

@@ -1,8 +1,9 @@
 import { use } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardAction, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { CardAction, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { DashboardCard } from "./DashboardCard";
 import { EarningsOverview, OverviewStats } from "../../types";
-import { formatMoney } from "../../utils/chart";
+import { formatMoney } from "@/lib/format";
 import { ChangePill } from "./ChangePill";
 
 type StatsCardsProps = {
@@ -23,7 +24,7 @@ export function StatsCards({ statsPromise, earningsPromise }: StatsCardsProps) {
     return (
         <>
             {/* Earnings this month + small bars (the last 6 months) */}
-            <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+            <DashboardCard>
                 <CardHeader>
                     <CardDescription>Earnings this month</CardDescription>
                     <CardAction>
@@ -31,7 +32,7 @@ export function StatsCards({ statsPromise, earningsPromise }: StatsCardsProps) {
                     </CardAction>
                 </CardHeader>
                 <CardContent className="flex items-end justify-between gap-3">
-                    <p className="text-2xl font-black tracking-tight">{formatMoney(thisMonth)}</p>
+                    <p className="text-2xl font-black tracking-tight">{formatMoney(thisMonth, "USD", 0)}</p>
                     <div className="flex h-8 items-end gap-1">
                         {monthValues.map((value, index) => (
                             <span
@@ -42,10 +43,10 @@ export function StatsCards({ statsPromise, earningsPromise }: StatsCardsProps) {
                         ))}
                     </div>
                 </CardContent>
-            </Card>
+            </DashboardCard>
 
             {/* New students (last 30 days vs the 30 days before) */}
-            <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+            <DashboardCard>
                 <CardHeader>
                     <CardDescription>New students</CardDescription>
                 </CardHeader>
@@ -55,10 +56,10 @@ export function StatsCards({ statsPromise, earningsPromise }: StatsCardsProps) {
                         Last 30 days · {stats.studentsPrevious30Days} the 30 days before
                     </p>
                 </CardContent>
-            </Card>
+            </DashboardCard>
 
             {/* Courses */}
-            <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+            <DashboardCard>
                 <CardHeader>
                     <CardDescription>Courses</CardDescription>
                 </CardHeader>
@@ -68,10 +69,10 @@ export function StatsCards({ statsPromise, earningsPromise }: StatsCardsProps) {
                         {stats.publishedCourses} published · {stats.draftCourses} drafts
                     </p>
                 </CardContent>
-            </Card>
+            </DashboardCard>
 
             {/* Enrollments this week (the purple card) */}
-            <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 bg-primary text-primary-foreground ring-0">
+            <DashboardCard className="bg-primary text-primary-foreground ring-0">
                 <CardHeader>
                     <CardDescription className="text-primary-foreground/80">Enrollments this week</CardDescription>
                     <CardAction>
@@ -82,7 +83,7 @@ export function StatsCards({ statsPromise, earningsPromise }: StatsCardsProps) {
                     <p className="text-2xl font-black tracking-tight">{stats.enrollmentsThisWeek}</p>
                     <p className="text-xs text-primary-foreground/80">Last 7 days</p>
                 </CardContent>
-            </Card>
+            </DashboardCard>
         </>
     );
 }

@@ -6,15 +6,20 @@ import { CareerBannerSection } from "./sections/career-banner/CareerBannerSectio
 import { StatisticsSection } from "./sections/statistics/StatisticsSection";
 import { TestimonialsSection } from "./sections/testimonials/TestimonialsSection";
 import { CTASection } from "./sections/cta/CTASection";
+import { Course } from "@/features/courses/types";
 
-// Navbar + Footer come from app/(main)/layout.tsx
-export function HomePage() {
+type HomePageProps = {
+    featuredCoursesPromise: Promise<Course[]>; // started in app/(public)/page.tsx (no await → streamed)
+};
+
+// Navbar + Footer come from app/(public)/layout.tsx
+export function HomePage({ featuredCoursesPromise }: HomePageProps) {
     return (
         <div className="bg-background text-foreground selection:bg-primary/20 selection:text-primary">
             <HeroSection />
             <TrustedCompaniesSection />
             <LearningPathSection />
-            <FeaturedCoursesSection />
+            <FeaturedCoursesSection coursesPromise={featuredCoursesPromise} />
             <CareerBannerSection />
             <StatisticsSection />
             <TestimonialsSection />

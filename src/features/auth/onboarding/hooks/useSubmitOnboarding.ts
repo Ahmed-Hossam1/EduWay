@@ -3,6 +3,7 @@ import { getErrorMessage } from "@/lib/axios/getErrorMessage";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { OnboardingFormValues } from "../schemas/onboardingSchema";
+import { profileQueryKey } from "@/features/profile/hooks/useProfile";
 import { submitOnboardingService } from "../services/submitOnboarding";
 
 /**
@@ -16,7 +17,7 @@ export const useSubmitOnboarding = () => {
         mutationFn: (values: OnboardingFormValues) => submitOnboardingService(values),
         onSuccess(response) {
             // the name / photo may have changed => the Navbar loads the profile again
-            queryClient.invalidateQueries({ queryKey: ["profile"] });
+            queryClient.invalidateQueries({ queryKey: profileQueryKey });
             toast.success("Your profile was submitted for review");
             router.push(response.nextRoute);
         },

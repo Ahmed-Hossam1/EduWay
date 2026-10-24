@@ -1,7 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
-import { getProfileByIdService } from "@/features/profile/server/getProfileById";
+import { getProfileById } from "@/features/profile/server/getProfileById";
 import { loginSchema } from "@/features/auth/login/schemas/loginSchema";
 
 export async function POST(request: Request) {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         }
 
         // Step 5: Get the user's profile to determine redirect
-        const { role, status } = await getProfileByIdService(data.user.id);
+        const { role, status } = await getProfileById(data.user.id);
 
         // get the next route based on the role and status of the user
         const nextRoute = getAuthRedirectRoute(role, status);

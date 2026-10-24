@@ -1,10 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle2, Clock, ImageOff, XCircle } from "lucide-react";
+import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "@/features/courses/utils/format";
+import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
 import { Order, OrderStatus } from "./types";
 
 // Icon + texts for every order status
@@ -62,19 +62,12 @@ export function CheckoutSuccessPage({ order }: CheckoutSuccessPageProps) {
                         {order.order_items.map((item) => (
                             <li key={item.course.id} className="flex items-center gap-4 py-4">
                                 <div className="relative aspect-16/10 w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
-                                    {item.course.thumbnail_url ? (
-                                        <Image
-                                            src={item.course.thumbnail_url}
-                                            alt={item.course.title}
-                                            fill
-                                            sizes="96px"
-                                            className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex size-full items-center justify-center text-muted-foreground">
-                                            <ImageOff className="size-5" />
-                                        </div>
-                                    )}
+                                    <CourseThumbnail
+                                        src={item.course.thumbnail_url}
+                                        alt={item.course.title}
+                                        sizes="96px"
+                                        iconClassName="size-5"
+                                    />
                                 </div>
                                 <Link
                                     href={`/courses/${item.course.slug}`}

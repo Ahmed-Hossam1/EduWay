@@ -1,10 +1,8 @@
 "use client";
 import { Heart } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useProfile } from "@/features/profile/hooks/useProfile";
+import { useRequireLogin } from "@/features/profile/hooks/useRequireLogin";
 import { useWishlist } from "../hooks/useWishlist";
 import { useToggleWishlist } from "../hooks/useToggleWishlist";
 
@@ -15,8 +13,7 @@ type WishlistButtonProps = {
 };
 
 export function WishlistButton({ courseId, variant = "icon", className }: WishlistButtonProps) {
-    const router = useRouter();
-    const { data: profile } = useProfile();
+    const requireLogin = useRequireLogin();
     const { data: savedIds = [] } = useWishlist();
     const { mutate: toggleWishlist, isPending } = useToggleWishlist();
 
@@ -25,11 +22,7 @@ export function WishlistButton({ courseId, variant = "icon", className }: Wishli
 
     const handleClick = () => {
         // guests have no wishlist → ask them to log in
-        if (!profile) {
-            toast.info("Log in to save courses to your wishlist");
-            router.push("/auth/login");
-            return;
-        }
+        if (!requireLogin("Log in to save courses to your wishlist")) return;
         toggleWishlist({ courseId, isSaved });
     };
 

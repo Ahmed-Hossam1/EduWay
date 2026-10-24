@@ -1,10 +1,8 @@
 import * as z from "zod";
+import { emailSchema } from "../../shared/schemas/emailSchema";
 
 export const loginSchema = z.object({
-    email: z.email({
-        pattern: /^(?!\.)(?!.*\.\.)([a-z0-9_'+\-\.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9\-]*\.)+[a-z]{2,}$/i,
-        error: "Enter a valid email address",
-    }),
+    email: emailSchema,
 
     password: z.string().min(1, "Password is required"),
 });

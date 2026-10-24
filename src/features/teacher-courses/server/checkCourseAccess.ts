@@ -1,7 +1,7 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { Permission, hasPermission } from "@/lib/authorization/permission";
 import { canManageCourse } from "@/lib/authorization/ownership";
 import { CourseStatus } from "@/features/courses/types";
@@ -32,11 +32,9 @@ const deny = (message: string, status: number): CourseAccess => ({
 export async function checkCourseAccess(courseId: string, permission: Permission): Promise<CourseAccess> {
     if (!z.uuid().safeParse(courseId).success) return deny("A valid courseId is required", 400);
 
-    const supabase = await createSupabaseServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return deny("Unauthorized", 401);
+    const auth = await requireUser();
+    if (!auth.ok) return { ok: false, response: auth.response }; // 401
+    const { supabase, user } = auth;
 
     const { data: profile } = await supabase.from("profiles").select("role, status").eq("id", user.id).single();
     const role = profile?.role ?? null;

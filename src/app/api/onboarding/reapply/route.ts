@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getProfileById } from "@/features/profile/server/getProfileById";
 
 // POST /api/onboarding/reapply → { nextRoute: "/account/onboarding" }
 // A rejected teacher wants to try again: status rejected → onboarding.
@@ -8,21 +9,12 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 export async function POST() {
     try {
         // 1- Logged in?
-        const supabase = await createSupabaseServerClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const auth = await requireUser();
+        if (!auth.ok) return auth.response;
+        const { user } = auth;
 
         // 2- Only a REJECTED teacher can apply again
-        const { data: profile, error: profileError } = await supabase
-            .from("profiles")
-            .select("role, status")
-            .eq("id", user.id)
-            .single();
-
-        if (profileError) throw profileError;
-
+        const profile = await getProfileById(user.id);
         if (profile.role !== "teacher" || profile.status !== "rejected") {
             return NextResponse.json({ message: "You can't apply again right now" }, { status: 403 });
         }

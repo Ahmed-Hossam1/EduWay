@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getFullName } from "@/lib/format";
 
 type UserAvatarProps = {
     firstName: string | null;
@@ -9,7 +10,7 @@ type UserAvatarProps = {
 
 // The user's photo, or the initials ("AH") when there is no photo
 export function UserAvatar({ firstName, lastName, avatarUrl, size = "default" }: UserAvatarProps) {
-    const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim();
+    const fullName = getFullName(firstName, lastName);
     const initials = `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
 
     return (

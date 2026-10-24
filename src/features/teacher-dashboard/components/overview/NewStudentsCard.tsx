@@ -1,6 +1,8 @@
 import { use } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardCard } from "./DashboardCard";
 import { timeAgo } from "@/lib/utils";
+import { getFullName } from "@/lib/format";
 import { UserAvatar } from "@/features/profile/components/UserAvatar";
 import { NewStudent } from "../../types";
 
@@ -13,7 +15,7 @@ export function NewStudentsCard({ studentsPromise }: NewStudentsCardProps) {
     const students = use(studentsPromise); // waits inside the <Suspense> of TeacherOverview
 
     return (
-        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2">
+        <DashboardCard className="sm:col-span-2">
             <CardHeader>
                 <CardTitle className="font-bold">New students</CardTitle>
             </CardHeader>
@@ -27,7 +29,7 @@ export function NewStudentsCard({ studentsPromise }: NewStudentsCardProps) {
                 <ul>
                     {students.map((enrollment) => {
                         const { student } = enrollment;
-                        const name = `${student?.first_name ?? ""} ${student?.last_name ?? ""}`.trim() || "A student";
+                        const name = getFullName(student?.first_name, student?.last_name, "A student");
 
                         return (
                             // unique: one student can join many courses
@@ -50,6 +52,6 @@ export function NewStudentsCard({ studentsPromise }: NewStudentsCardProps) {
                     })}
                 </ul>
             </CardContent>
-        </Card>
+        </DashboardCard>
     );
 }

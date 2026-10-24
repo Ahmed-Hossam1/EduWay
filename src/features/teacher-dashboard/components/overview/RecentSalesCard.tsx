@@ -1,6 +1,8 @@
 import { use } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardCard } from "./DashboardCard";
+import { formatMoney, getFullName } from "@/lib/format";
 import { RecentSale } from "../../types";
 
 type RecentSalesCardProps = {
@@ -12,7 +14,7 @@ export function RecentSalesCard({ salesPromise }: RecentSalesCardProps) {
     const sales = use(salesPromise); // waits inside the <Suspense> of TeacherOverview
 
     return (
-        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+        <DashboardCard>
             <CardHeader>
                 <CardTitle className="font-bold">Recent sales</CardTitle>
                 <CardAction>
@@ -26,9 +28,7 @@ export function RecentSalesCard({ salesPromise }: RecentSalesCardProps) {
 
                 <ul>
                     {sales.map((sale) => {
-                        const buyerName =
-                            `${sale.order.buyer?.first_name ?? ""} ${sale.order.buyer?.last_name ?? ""}`.trim() ||
-                            "A student";
+                        const buyerName = getFullName(sale.order.buyer?.first_name, sale.order.buyer?.last_name, "A student");
 
                         return (
                             // unique: one course in one order
@@ -42,13 +42,13 @@ export function RecentSalesCard({ salesPromise }: RecentSalesCardProps) {
                                     <p className="truncate text-xs text-muted-foreground">{sale.course.title}</p>
                                 </div>
                                 <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
-                                    +${sale.price.toFixed(2)}
+                                    +{formatMoney(sale.price)}
                                 </span>
                             </li>
                         );
                     })}
                 </ul>
             </CardContent>
-        </Card>
+        </DashboardCard>
     );
 }

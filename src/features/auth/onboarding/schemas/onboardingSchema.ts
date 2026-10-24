@@ -1,7 +1,5 @@
 import * as z from "zod";
-
-// Same values as the Postgres enum instructor_experience
-export const experienceValues = ["beginner", "intermediate", "expert", "veteran"] as const;
+import { experienceValues } from "@/features/instructors/data/experienceLevels";
 
 const currentYear = new Date().getFullYear();
 
@@ -23,13 +21,13 @@ export const stepOneSchema = z.object({
         .string()
         .trim()
         .min(5, "Professional title should be at least 5 characters long")
-        .max(120, "Professional title should be at most 80 characters long"),
+        .max(120, "Professional title should be at most 120 characters long"),
 
     bio: z
         .string()
         .trim()
         .min(30, "Bio should be at least 30 characters long")
-        .max(2000, "Bio should be at most 1000 characters long"),
+        .max(2000, "Bio should be at most 2000 characters long"),
 });
 
 // Step 2 · Teaching information

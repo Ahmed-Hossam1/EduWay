@@ -1,5 +1,7 @@
 import { BarChart3, GraduationCap, Users } from "lucide-react";
-export const heroFeatures = [
+import { AuthHeroFeature } from "../../shared/types";
+
+export const heroFeatures: AuthHeroFeature[] = [
     {
         title: "Learn from Experts",
         description: "Access high-quality courses from industry professionals.",

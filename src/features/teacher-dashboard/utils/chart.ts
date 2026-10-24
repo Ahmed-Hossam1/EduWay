@@ -21,7 +21,3 @@ export function formatMonth(month: string): string {
     return new Date(`${month}-01T00:00:00`).toLocaleString("en-US", { month: "short" });
 }
 
-// 4820 → "$4,820"
-export function formatMoney(value: number): string {
-    return value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-}

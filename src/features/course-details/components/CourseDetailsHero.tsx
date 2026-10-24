@@ -1,6 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
-import { BookOpen, CalendarClock, Clock, Globe, ImageOff, Users } from "lucide-react";
+import { BookOpen, CalendarClock, Clock, Globe, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,6 +11,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { RatingStars } from "@/components/shared/RatingStars";
+import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
 import { COURSE_BADGES, formatCompactNumber, formatDuration, getInstructorName } from "@/features/courses/utils/format";
 import { CourseDetails } from "../types";
 
@@ -134,20 +134,13 @@ export function CourseDetailsHero({ course }: CourseDetailsHeroProps) {
 
                 {/* Right: thumbnail */}
                 <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-muted shadow-xl ring-1 ring-foreground/10">
-                    {course.thumbnail_url ? (
-                        <Image
-                            src={course.thumbnail_url}
-                            alt={course.title}
-                            fill
-                            priority
-                            sizes="(max-width: 1024px) 100vw, 420px"
-                            className="object-cover"
-                        />
-                    ) : (
-                        <div className="flex size-full items-center justify-center text-muted-foreground">
-                            <ImageOff className="size-10" />
-                        </div>
-                    )}
+                    <CourseThumbnail
+                        src={course.thumbnail_url}
+                        alt={course.title}
+                        sizes="(max-width: 1024px) 100vw, 420px"
+                        priority
+                        iconClassName="size-10"
+                    />
                 </div>
             </div>
         </section>

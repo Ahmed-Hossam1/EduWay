@@ -1,6 +1,8 @@
 import { use } from "react";
 import { Sparkles, TrendingDown, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardCard } from "./DashboardCard";
+import { pluralize } from "@/lib/format";
 import { OverviewStats } from "../../types";
 
 type InsightCardProps = {
@@ -13,7 +15,7 @@ export function InsightCard({ statsPromise }: InsightCardProps) {
 
     const isUp = last30 >= before30;
     const TrendIcon = isUp ? TrendingUp : TrendingDown;
-    const students = `${last30} new ${last30 === 1 ? "student" : "students"}`;
+    const students = `${last30} new ${pluralize(last30, "student")}`;
 
     // nothing to compare with yet → just say how many
     const text =
@@ -22,7 +24,7 @@ export function InsightCard({ statsPromise }: InsightCardProps) {
             : `${students} in the last 30 days, ${isUp ? "up" : "down"} from ${before30} the 30 days before.`;
 
     return (
-        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2">
+        <DashboardCard className="sm:col-span-2">
             <CardHeader className="grid-cols-[auto_1fr] items-center gap-x-3">
                 <span className="row-span-2 flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Sparkles className="size-4" />
@@ -37,6 +39,6 @@ export function InsightCard({ statsPromise }: InsightCardProps) {
                     {text}
                 </p>
             </CardContent>
-        </Card>
+        </DashboardCard>
     );
 }

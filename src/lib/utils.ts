@@ -24,8 +24,14 @@ export function timeAgo(date: string): string {
     return new Date(date).toLocaleDateString("en", { day: "numeric", month: "short" });
 }
 
-export function isSafeQuery(schema: z.ZodTypeAny, params: unknown): unknown {
+/**
+ * Reads the search params of a page with its zod schema.
+ * A broken URL (?page=abc, ?sort=xyz) → the schema defaults instead of a crash.
+ * The result keeps the schema's type (z.infer), so the page gets typed values.
+ *
+ *   const query = parseSearchParams(coursesQuerySchema, await searchParams);
+ */
+export function parseSearchParams<T extends z.ZodType>(schema: T, params: unknown): z.infer<T> {
     const parsed = schema.safeParse(params);
-    const query = parsed.success ? parsed.data : schema.parse({});
-    return query;
+    return parsed.success ? parsed.data : schema.parse({});
 }

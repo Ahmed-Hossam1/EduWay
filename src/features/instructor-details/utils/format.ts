@@ -1,12 +1,5 @@
-import { InstructorExperience, InstructorStats } from "../types";
-
-// enum value → what the user sees (same text as the onboarding "Experience" step)
-export const EXPERIENCE_LABELS: Record<InstructorExperience, string> = {
-    beginner: "1–2 years of experience",
-    intermediate: "3–5 years of experience",
-    expert: "5–10 years of experience",
-    veteran: "10+ years of experience",
-};
+import { formatCompactNumber } from "@/features/courses/utils/format";
+import { InstructorStats } from "../types";
 
 // Only the course numbers we need for the stats
 type CourseNumbers = {
@@ -16,8 +9,9 @@ type CourseNumbers = {
 };
 
 /**
- * The teacher's numbers computed from his published courses.
- * Used by the instructor page and the instructors list.
+ * The teacher's numbers computed from his published courses (the instructor page).
+ * The /instructors list gets the same numbers from the database (get_instructors) —
+ * keep this formula the SAME as the SQL there: SUM of students / ratings + weighted average.
  */
 export const computeInstructorStats = (courses: CourseNumbers[]): InstructorStats => {
     // get total number of students and ratings from all courses
@@ -35,3 +29,16 @@ export const computeInstructorStats = (courses: CourseNumbers[]): InstructorStat
         ratingsCount,
     };
 };
+
+/**
+ * The stats as the UI shows them (the instructor card AND the instructor page use it).
+ *   { coursesCount: 3, studentsCount: 12400, averageRating: 4.73, ratingsCount: 210 }
+ *   → { courses: "3", students: "12.4K", rating: "4.7", ratings: "210" }
+ * No ratings yet → rating "—".
+ */
+export const formatInstructorStats = (stats: InstructorStats) => ({
+    courses: String(stats.coursesCount),
+    students: formatCompactNumber(stats.studentsCount),
+    rating: stats.ratingsCount > 0 ? stats.averageRating.toFixed(1) : "—",
+    ratings: formatCompactNumber(stats.ratingsCount),
+});

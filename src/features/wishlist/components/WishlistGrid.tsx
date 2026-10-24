@@ -1,8 +1,9 @@
 "use client";
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CourseCard } from "@/features/courses/components/CourseCard";
 import { Course } from "@/features/courses/types";
@@ -21,6 +22,8 @@ export function WishlistGrid({ coursesPromise }: WishlistGridProps) {
     // the cache changes right away (optimistic) and the card disappears without a reload
     const { data: savedIds } = useWishlist();
     const { mutate: removeAll } = useRemoveAllWishlist();
+    // "Remove all" asks first (it empties the whole wishlist)
+    const [confirmOpen, setConfirmOpen] = useState(false);
     const visibleCourses = savedIds ? courses.filter((course) => savedIds.includes(course.id)) : courses;
 
     if (visibleCourses.length === 0) {
@@ -51,9 +54,21 @@ export function WishlistGrid({ coursesPromise }: WishlistGridProps) {
                     <span className="font-semibold text-foreground">{visibleCourses.length}</span> saved courses
                 </p>
 
-                <Button variant="destructive" className="capitalize" onClick={() => removeAll()}>
+                <Button variant="destructive" className="capitalize" onClick={() => setConfirmOpen(true)}>
                     remove all
                 </Button>
+                <ConfirmDialog
+                    open={confirmOpen}
+                    onOpenChange={setConfirmOpen}
+                    title="Remove all saved courses?"
+                    description="Your wishlist will be empty. You can save the courses again later."
+                    confirmLabel="Remove all"
+                    destructive
+                    onConfirm={() => {
+                        removeAll(); // optimistic: the wishlist is empty right away
+                        setConfirmOpen(false);
+                    }}
+                />
             </div>
             <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {visibleCourses.map((course) => (

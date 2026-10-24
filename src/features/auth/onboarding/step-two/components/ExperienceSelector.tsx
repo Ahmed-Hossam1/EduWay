@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { useController } from "react-hook-form";
-import { EXPERIENCE_LEVELS } from "../data/teachingData";
+import { EXPERIENCE_LEVELS } from "@/features/instructors/data/experienceLevels";
 import { OnboardingFormValues } from "../../schemas/onboardingSchema";
 import { FieldError } from "../../components/FieldError";
 

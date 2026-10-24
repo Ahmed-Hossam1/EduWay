@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { passwordSchema } from "../../shared/schemas/passwordSchema";
+import { emailSchema } from "../../shared/schemas/emailSchema";
 
 export const signupSchema = z
     .object({
@@ -13,9 +14,7 @@ export const signupSchema = z
             .min(3, "last name should be at least 3 characters long")
             .max(25, "last name should be at most 25 characters long"),
 
-        email: z.email({
-            pattern: /^(?!\.)(?!.*\.\.)([a-z0-9_'+\-\.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9\-]*\.)+[a-z]{2,}$/i,
-        }),
+        email: emailSchema,
 
         password: passwordSchema,
 

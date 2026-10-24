@@ -1,7 +1,13 @@
 import { LucideIcon } from "lucide-react";
+import {
+    coursesDurationValues,
+    coursesLevelValues,
+    coursesPriceValues,
+    coursesSortValues,
+} from "../schemas/coursesQuerySchema";
 
 // Database enums
-export type CourseLevel = "beginner" | "intermediate" | "advanced";
+export type CourseLevel = (typeof coursesLevelValues)[number]; // "beginner" | "intermediate" | "advanced"
 export type CourseStatus = "draft" | "published" | "archived";
 export type CourseBadge = "bestseller" | "new" | "popular";
 
@@ -65,7 +71,7 @@ export type Course = Pick<
     categories: CategoryRow[];
 };
 
-// Response of getCourses() and /api/courses
+// Response of getCourses() (one page of courses + what the pagination needs)
 export interface CoursesResponse {
     courses: Course[];
     page: number;
@@ -88,7 +94,7 @@ export interface FilterGroup {
 }
 
 export interface SortOption {
-    value: string;
+    value: CourseSort;
     label: string;
 }
 
@@ -109,9 +115,10 @@ export interface PopularTopic {
 // Params the frontend sends to getCourses() (they come from the URL)
 // example: /courses?q=react&category=web-dev&level=beginner&price=free&duration=0-3&rating=4&sort=rating&page=2
 // ---------------------------------------------------------------------
-export type CourseSort = "popular" | "rating" | "newest" | "price-asc" | "price-desc";
-export type CoursePriceFilter = "free" | "paid";
-export type CourseDurationFilter = "0-3" | "3-10" | "10-plus"; // hours
+// derived from the arrays in coursesQuerySchema → one list of values for the URL, the types and the UI options
+export type CourseSort = (typeof coursesSortValues)[number]; // "popular" | "rating" | "newest" | "price-asc" | "price-desc"
+export type CoursePriceFilter = (typeof coursesPriceValues)[number]; // "free" | "paid"
+export type CourseDurationFilter = (typeof coursesDurationValues)[number]; // hours: "0-3" | "3-10" | "10-plus"
 
 export interface GetCoursesParams {
     q?: string; // search in the course title

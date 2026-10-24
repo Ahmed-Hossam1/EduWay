@@ -8,6 +8,7 @@ import { UrlPagination } from "@/components/shared/UrlPagination";
 import { TeacherCoursesResponse } from "../types";
 import { TeacherCourseRow } from "./TeacherCourseRow";
 import { cn } from "@/lib/utils";
+import { pluralize } from "@/lib/format";
 
 type TeacherCoursesListProps = {
     coursesPromise: Promise<TeacherCoursesResponse>;
@@ -83,7 +84,7 @@ export function TeacherCoursesList({ coursesPromise, hasFilters }: TeacherCourse
 
             <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
                 <p className="shrink-0 text-xs text-muted-foreground">
-                    {totalCount} {totalCount === 1 ? "course" : "courses"}
+                    {totalCount} {pluralize(totalCount, "course")}
                 </p>
                 <UrlPagination totalCount={totalCount} pageSize={pageSize} />
             </div>

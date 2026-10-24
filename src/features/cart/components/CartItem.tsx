@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
-import { Clock, Heart, ImageOff, Trash2 } from "lucide-react";
+import { Clock, Heart, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/features/courses/types";
+import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
 import { formatDuration, formatPrice, getInstructorName } from "@/features/courses/utils/format";
 import { useToggleWishlist } from "@/features/wishlist/hooks/useToggleWishlist";
 import { useRemoveFromCart } from "../hooks/useRemoveFromCart";
@@ -33,13 +33,7 @@ export function CartItem({ course }: CartItemProps) {
                 href={`/courses/${course.slug}`}
                 className="relative aspect-16/10 w-28 shrink-0 overflow-hidden rounded-lg bg-muted sm:w-40"
             >
-                {course.thumbnail_url ? (
-                    <Image src={course.thumbnail_url} alt={course.title} fill sizes="160px" className="object-cover" />
-                ) : (
-                    <span className="flex size-full items-center justify-center text-muted-foreground">
-                        <ImageOff className="size-6" />
-                    </span>
-                )}
+                <CourseThumbnail src={course.thumbnail_url} alt={course.title} sizes="160px" />
             </Link>
 
             {/* Info + actions */}

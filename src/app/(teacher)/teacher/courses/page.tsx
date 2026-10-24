@@ -5,6 +5,7 @@ import { teacherCoursesQuerySchema } from "@/features/teacher-courses/schemas/te
 import { getTeacherCourses } from "@/features/teacher-courses/server/getTeacherCourses";
 import { getOverviewStats } from "@/features/teacher-dashboard/server/getOverviewStats";
 import { getEarningsOverview } from "@/features/teacher-dashboard/server/getEarningsOverview";
+import { parseSearchParams } from "@/lib/utils";
 
 export const metadata: Metadata = {
     title: "My courses",
@@ -21,8 +22,7 @@ export default async function TeacherCourses({ searchParams }: Params) {
     const params = await searchParams;
 
     // a broken URL (?page=abc) falls back to the defaults instead of crashing
-    const parsed = teacherCoursesQuerySchema.safeParse(params);
-    const query = parsed.success ? parsed.data : teacherCoursesQuerySchema.parse({});
+    const query = parseSearchParams(teacherCoursesQuerySchema, params);
 
     // no await → the page shows right away, each part streams with its skeleton
     const statsPromise = getOverviewStats();

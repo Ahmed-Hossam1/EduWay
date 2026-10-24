@@ -1,20 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UrlSearchInput } from "@/components/shared/UrlSearchInput";
+import { UrlSortSelect } from "@/components/shared/UrlSortSelect";
 import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
 import { cn } from "@/lib/utils";
 import { STATUS_BADGES } from "../constant";
 import { teacherCoursesSortOptions, teacherCoursesStatusTabs } from "../data";
+import { DEFAULT_TEACHER_COURSES_SORT, DEFAULT_TEACHER_COURSES_STATUS } from "../schemas/teacherCoursesQuerySchema";
 
 // Status tabs + search + sort. Everything lives in the URL (?status=draft&q=react&sort=students)
 export function TeacherCoursesToolbar() {
     const { getValue, updateParams } = useUrlSearchParams();
 
     // nothing in the URL the defaults (same as teacherCoursesQuerySchema)
-    const currentStatus = getValue("status") ?? "all";
-    const currentSort = getValue("sort") ?? "newest";
+    const currentStatus = getValue("status") ?? DEFAULT_TEACHER_COURSES_STATUS;
 
     return (
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -45,22 +45,12 @@ export function TeacherCoursesToolbar() {
                     <UrlSearchInput placeholder="Search your courses" />
                 </div>
 
-                <Select
-                    items={teacherCoursesSortOptions}
-                    value={currentSort}
-                    onValueChange={(value) => updateParams({ sort: value as string })}
-                >
-                    <SelectTrigger aria-label="Sort courses" className="h-10 min-w-36 bg-background">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent align="end">
-                        {teacherCoursesSortOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <UrlSortSelect
+                    options={teacherCoursesSortOptions}
+                    defaultValue={DEFAULT_TEACHER_COURSES_SORT}
+                    label="Sort courses"
+                    className="h-10 min-w-36"
+                />
             </div>
         </div>
     );

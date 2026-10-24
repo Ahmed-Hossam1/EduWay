@@ -1,5 +1,4 @@
-// Same values as the Postgres enum instructor_experience
-export type InstructorExperience = "beginner" | "intermediate" | "expert" | "veteran";
+import { InstructorExperience } from "@/features/instructors/data/experienceLevels";
 
 // instructor_certifications row
 export interface InstructorCertification {

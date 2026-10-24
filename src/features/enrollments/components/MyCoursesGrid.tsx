@@ -3,6 +3,7 @@ import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { pluralize } from "@/lib/format";
 import { EnrolledCourse } from "../types";
 import { MyCourseCard } from "./MyCourseCard";
 
@@ -37,7 +38,7 @@ export function MyCoursesGrid({ myCoursesPromise }: MyCoursesGridProps) {
         <>
             <p className="text-sm text-muted-foreground">
                 <span className="font-semibold text-foreground">{myCourses.length}</span>{" "}
-                {myCourses.length === 1 ? "course" : "courses"}
+                {pluralize(myCourses.length, "course")}
             </p>
             <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {myCourses.map((enrolledCourse) => (

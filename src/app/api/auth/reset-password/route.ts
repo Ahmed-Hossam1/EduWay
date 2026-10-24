@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { resetPasswordSchema } from "@/features/auth/reset-password/schemas/resetPasswordSchema";
 
 // POST /api/auth/reset-password  { password, confirmPassword } → { nextRoute: "/auth/login" }
 // The user has a session here because the email link (/api/auth/confirm) logged him in.
 export async function POST(request: NextRequest) {
     try {
-
         // 1- Same rules as the form
         const body = await request.json().catch(() => null);
         const result = resetPasswordSchema.safeParse(body);
@@ -20,14 +19,12 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // 2- No session = the link was never opened, or it expired
-        const supabase = await createSupabaseServerClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) {
+        // 2- No session = the link was never opened, or it expired (own message instead of "Unauthorized")
+        const auth = await requireUser();
+        if (!auth.ok) {
             return NextResponse.json({ message: "Your reset link expired. Please request a new one." }, { status: 401 });
         }
+        const { supabase } = auth;
 
         // 3- Change the password
         const { error } = await supabase.auth.updateUser({

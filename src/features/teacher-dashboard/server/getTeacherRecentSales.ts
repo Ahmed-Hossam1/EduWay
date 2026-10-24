@@ -1,15 +1,18 @@
 import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getAuthUser } from "@/lib/supabase/getAuthUser";
 import { RecentSale } from "../types";
 
 /**
- * The last 5 paid sales of this teacher's courses (newest first).
+ * The last 5 paid sales of the logged-in teacher's courses (newest first).
  *
  * Admin client: the orders RLS lets only the BUYER read his order, not the teacher
  * (with the normal client, orders!inner would return nothing).
- * ⚠️ So .eq("course.instructor_id", teacherId) IS the security: he only gets the sales of HIS courses.
+ * ⚠️ So .eq("course.instructor_id", user.id) IS the security. The teacher id comes from the
+ * session here (never from a parameter), so nobody can ask for another teacher's sales.
  */
-export async function getTeacherRecentSales(teacherId: string): Promise<RecentSale[]> {
+export async function getTeacherRecentSales(): Promise<RecentSale[]> {
+    const user = await getAuthUser(); // cached: the layout asked already → no new request
     const admin = createSupabaseAdminClient();
 
     const { data, error } = await admin
@@ -20,7 +23,7 @@ export async function getTeacherRecentSales(teacherId: string): Promise<RecentSa
              order:orders!inner ( id, status, paid_at, buyer:profiles!orders_user_id_fkey ( first_name, last_name ) ),
              course:courses!inner ( id, title, thumbnail_url, instructor_id )`,
         )
-        .eq("course.instructor_id", teacherId)
+        .eq("course.instructor_id", user.id)
         .eq("order.status", "paid")
         .not("order.paid_at", "is", null)
         // "order(paid_at)" sorts the SALES by the order date
@@ -28,10 +31,8 @@ export async function getTeacherRecentSales(teacherId: string): Promise<RecentSa
         .order("order(paid_at)", { ascending: false })
         .limit(5);
 
-    if (error) {
-        throw new Error(`Failed to fetch recent sales: ${error.message}`);
-    }
+    if (error) throw error;
 
-    // the price comes as a string from numeric columns sometimes → always a number
-    return (data as unknown as RecentSale[]).map((sale) => ({ ...sale, price: Number(sale.price) }));
+    // price is a numeric column: Supabase already returns it as a number (checked: 24.99, not "24.99")
+    return data as unknown as RecentSale[];
 }

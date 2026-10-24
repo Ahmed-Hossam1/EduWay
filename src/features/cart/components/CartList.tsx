@@ -1,11 +1,13 @@
 "use client";
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Course } from "@/features/courses/types";
+import { pluralize } from "@/lib/format";
 import { useCart } from "../hooks/useCart";
 import { CartItem } from "./CartItem";
 import { CartSummary } from "./CartSummary";
@@ -20,6 +22,8 @@ export function CartList({ coursesPromise }: CartListProps) {
     const courses = use(coursesPromise);
 
     const { mutate: removeAllCart } = useRemoveAllCart();
+    // "Remove all" asks first (it empties the whole cart)
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
     // ...filtered by the ids in the React Query cache => "Remove" hides the row
     // and updates the total right away (optimistic), without a reload
@@ -52,11 +56,23 @@ export function CartList({ coursesPromise }: CartListProps) {
             <Card className="rounded-2xl p-5 sm:p-6">
                 <div className="flex items-center justify-between">
                     <p className="text-sm font-semibold text-foreground">
-                        {cartCourses.length} {cartCourses.length === 1 ? "course" : "courses"} in cart
+                        {cartCourses.length} {pluralize(cartCourses.length, "course")} in cart
                     </p>
-                    <Button variant={"destructive"} className="capitalize" onClick={() => removeAllCart()}>
+                    <Button variant="destructive" className="capitalize" onClick={() => setConfirmOpen(true)}>
                         remove all
                     </Button>
+                    <ConfirmDialog
+                        open={confirmOpen}
+                        onOpenChange={setConfirmOpen}
+                        title="Remove all courses from your cart?"
+                        description="Your cart will be empty. You can add the courses again later."
+                        confirmLabel="Remove all"
+                        destructive
+                        onConfirm={() => {
+                            removeAllCart(); // optimistic: the cart is empty right away
+                            setConfirmOpen(false);
+                        }}
+                    />
                 </div>
 
                 <ul className="divide-y divide-border">

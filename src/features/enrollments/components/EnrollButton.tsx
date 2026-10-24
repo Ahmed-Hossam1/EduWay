@@ -2,10 +2,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useProfile } from "@/features/profile/hooks/useProfile";
+import { useRequireLogin } from "@/features/profile/hooks/useRequireLogin";
 import { useCart } from "@/features/cart/hooks/useCart";
 import { useAddToCart } from "@/features/cart/hooks/useAddToCart";
 import { useEnrollments } from "../hooks/useEnrollments";
@@ -25,7 +24,7 @@ type EnrollButtonProps = {
  */
 export function EnrollButton({ courseId, price, className }: EnrollButtonProps) {
     const router = useRouter();
-    const { data: profile } = useProfile();
+    const requireLogin = useRequireLogin();
     const { data: enrolledIds = [] } = useEnrollments();
     const { data: cartIds = [] } = useCart();
     const { mutate: enroll, isPending: isEnrolling } = useEnroll();
@@ -47,11 +46,7 @@ export function EnrollButton({ courseId, price, className }: EnrollButtonProps) 
     }
 
     const handleClick = () => {
-        if (!profile) {
-            toast.info("Log in to enroll in this course");
-            router.push("/auth/login");
-            return;
-        }
+        if (!requireLogin("Log in to enroll in this course")) return;
 
         if (isFree) {
             enroll(courseId);

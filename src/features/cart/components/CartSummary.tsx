@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "@/features/courses/utils/format";
+import { pluralize } from "@/lib/format";
 import { useCheckout } from "@/features/checkout/hooks/useCheckout";
 
 type CartSummaryProps = {
@@ -28,7 +29,7 @@ export function CartSummary({ itemsCount, total, currency }: CartSummaryProps) {
             <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center justify-between text-muted-foreground">
                     <span>
-                        Subtotal ({itemsCount} {itemsCount === 1 ? "course" : "courses"})
+                        Subtotal ({itemsCount} {pluralize(itemsCount, "course")})
                     </span>
                     <span>{formatPrice(total, currency)}</span>
                 </div>

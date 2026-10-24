@@ -2,11 +2,8 @@ import { TeacherOnboardingContainer } from "@/features/auth/onboarding/component
 import { getOnboardingDefaults } from "@/features/auth/onboarding/server/getOnboardingDefaults";
 import { getCategoryOptions } from "@/features/auth/onboarding/server/getCategoryOptions";
 import { getSavedOnboardingAnswers } from "@/features/auth/onboarding/server/getSavedOnboardingAnswers";
-import { getAuthRedirectRoute } from "@/features/auth/shared/utils/getAuthRedirectRoute";
-import { getProfileByIdService } from "@/features/profile/server/getProfileById";
-import { getAuthUser } from "@/lib/supabase/getAuthUser";
+import { requireProfileStatus } from "@/features/profile/server/requireProfileStatus";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
     title: "Teacher Onboarding - EduWay",
@@ -15,17 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function OnboardingPage() {
-    // 1- Who is he? (proxy.ts already sends guests to /auth/login)
-    const user = await getAuthUser(); // not logged in → /auth/login
-
-    const profile = await getProfileByIdService(user.id);
-
-    // 2- Only a teacher who didn't finish the onboarding stays here.
-    //    Everyone else goes where he belongs (student → home, no role → choose-role,
-    //    teacher waiting → /account/waiting, approved → dashboard...)
-    if (profile.role !== "teacher" || profile.status !== "onboarding") {
-        redirect(getAuthRedirectRoute(profile.role, profile.status));
-    }
+    // 1+2- Only a teacher who didn't finish the onboarding stays here.
+    //      Everyone else goes where he belongs (guest → login, student → home, no role → choose-role,
+    //      teacher waiting → /account/waiting, approved → dashboard...)
+    const { user, profile } = await requireProfileStatus("teacher", "onboarding");
 
     // 3- The name + photo he already gave us (+ his old answers if he applies again),
     //    and the categories from the database

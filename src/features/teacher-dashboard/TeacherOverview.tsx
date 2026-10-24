@@ -16,34 +16,34 @@ import {
 import { StatsCards } from "./components/overview/StatsCards";
 import { TeacherProfileCard } from "./components/overview/TeacherProfileCard";
 import { TopCoursesFan } from "./components/overview/TopCoursesFan";
-import { getOverviewStats } from "./server/getOverviewStats";
-import { getEarningsOverview } from "./server/getEarningsOverview";
-import { getTeacherTopCourses } from "./server/getTeacherTopCourses";
-import { getTeacherRecentSales } from "./server/getTeacherRecentSales";
-import { getTeacherNewStudents } from "./server/getTeacherNewStudents";
+import { EarningsOverview, NewStudent, OverviewStats, RecentSale, TopCourse } from "./types";
 
 /**
  * The teacher Overview: a bento grid of cards.
  *
- * Streaming: all the functions START together here (no await),
- * then each card has its OWN <Suspense> + skeleton → it appears as soon as ITS data is ready.
+ * Streaming: the page STARTS all the functions together (no await) and passes the promises here,
+ * then each card has its OWN <Suspense> + skeleton → it appears as soon as ITS data is ready
+ * (the same pattern as the other pages: page.tsx starts the work, the feature shows it).
  * The numbers + the chart come ready from 2 database functions (supabase.rpc);
  * the lists (top courses, sales, students) are one small query each (sorted + limited in the database).
  *
  * Grid: 1 column on mobile, 2 on tablets, 4 on big screens ("sm:col-span-2" = a wide card).
  */
 type TeacherOverviewProps = {
-    teacherId: string;
+    statsPromise: Promise<OverviewStats>;
+    earningsPromise: Promise<EarningsOverview>;
+    topCoursesPromise: Promise<TopCourse[]>;
+    salesPromise: Promise<RecentSale[]>;
+    studentsPromise: Promise<NewStudent[]>;
 };
 
-export function TeacherOverview({ teacherId }: TeacherOverviewProps) {
-    // start everything now, in parallel (no await → the page doesn't wait)
-    const statsPromise = getOverviewStats();
-    const earningsPromise = getEarningsOverview();
-    const topCoursesPromise = getTeacherTopCourses(teacherId);
-    const salesPromise = getTeacherRecentSales(teacherId);
-    const studentsPromise = getTeacherNewStudents(teacherId);
-
+export function TeacherOverview({
+    statsPromise,
+    earningsPromise,
+    topCoursesPromise,
+    salesPromise,
+    studentsPromise,
+}: TeacherOverviewProps) {
     return (
         <div className="space-y-6">
             <div>

@@ -2,7 +2,9 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InstructorsHero } from "./components/InstructorsHero";
 import { InstructorsCount } from "./components/InstructorsCount";
-import { InstructorsSortSelect } from "./components/InstructorsSortSelect";
+import { UrlSortSelect } from "@/components/shared/UrlSortSelect";
+import { instructorsSortOptions } from "./data";
+import { DEFAULT_INSTRUCTORS_SORT } from "./schemas/instructorsQuerySchema";
 import { InstructorsGrid } from "./components/InstructorsGrid";
 import { InstructorsGridSkeleton } from "./components/InstructorsGridSkeleton";
 import { InstructorListItem } from "./types";
@@ -25,7 +27,12 @@ export function InstructorsPage({ instructorsPromise, filtersKey }: InstructorsP
 
                     <div className="flex items-center gap-2">
                         <span className="hidden text-sm text-muted-foreground sm:inline">Sort by</span>
-                        <InstructorsSortSelect />
+                        <UrlSortSelect
+                            options={instructorsSortOptions}
+                            defaultValue={DEFAULT_INSTRUCTORS_SORT}
+                            label="Sort instructors"
+                            className="h-9 min-w-40"
+                        />
                     </div>
                 </div>
 

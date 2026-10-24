@@ -1,21 +1,8 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/stripe";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { isCourseOwner } from "@/lib/authorization/ownership";
-
-// One cart row with its course (what we read from Supabase)
-type CartRow = {
-    course: {
-        id: string;
-        title: string;
-        price: number;
-        currency: string;
-        status: string;
-        instructor_id: string;
-        thumbnail_url: string | null;
-    } | null;
-};
+import { getPurchasableCourses } from "@/features/checkout/server/getPurchasableCourses";
 
 // POST /api/checkout (no body) → { url }  = the Stripe payment page
 // We buy the WHOLE cart: the server reads the cart itself, so the browser
@@ -23,45 +10,16 @@ type CartRow = {
 export async function POST() {
     try {
         // 1- Is the user logged in?
-        const supabase = await createSupabaseServerClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const auth = await requireUser();
+        if (!auth.ok) return auth.response;
+        const { user } = auth;
 
-        // 2- His cart (RLS → only his rows) + the courses he already owns
-        const { data: cartRows, error: cartError } = await supabase
-            .from("cart_items")
-            .select("course:courses ( id, title, price, currency, status, instructor_id, thumbnail_url )")
-            .eq("user_id", user.id);
-
-        if (cartError) throw cartError;
-
-        const { data: enrollments, error: enrollmentsError } = await supabase
-            .from("enrollments")
-            .select("course_id")
-            .eq("user_id", user.id)
-            .neq("status", "refunded");
-
-        if (enrollmentsError) throw enrollmentsError;
-
-        const ownedIds = enrollments.map((item) => item.course_id);
-
-        // 3- Keep only the courses he can really buy:
-        //    published + paid + not his own course + not owned already
-        const courses = (cartRows as unknown as CartRow[])
-            .map((row) => row.course)
-            .filter((course) => course !== null)
-            .filter((course) => course.status === "published")
-            .filter((course) => course.price > 0)
-            .filter((course) => !isCourseOwner(user.id, course)) // a teacher can not buy his own course
-            .filter((course) => !ownedIds.includes(course.id));
+        // 2+3- The courses of his cart he can really buy (the rules live in getPurchasableCourses):
+        //      published + paid + not his own course + not owned already
+        const { courses, hasOwnCourse } = await getPurchasableCourses(user.id);
 
         if (courses.length === 0) {
             // his own course is in the cart (added before the cart API refused it) → tell him clearly
-            const hasOwnCourse = (cartRows as unknown as CartRow[]).some(
-                (row) => row.course !== null && isCourseOwner(user.id, row.course),
-            );
             const message = hasOwnCourse
                 ? "You can't buy your own course. Remove it from your cart."
                 : "Your cart has no courses to buy";

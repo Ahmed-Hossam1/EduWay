@@ -1,7 +1,10 @@
 import { ProfileStatus, UserRole } from "@/features/profile/types";
 
-// The student pages (the checkout).
-// /cart is public; /wishlist and /my-learning are for any logged-in user (see protectedRoutes in proxy.ts)
+// Pages for ANY logged-in user, whatever his role (a path covers its sub-pages).
+// /cart is public: a guest just sees an empty cart.
+const loginRoutes = ["/account", "/learn", "/wishlist", "/my-learning"];
+
+// The student pages (the checkout success page)
 const studentRoutes = ["/student"];
 
 // Pages that only some roles can open (a path covers its sub-pages: "/student" → "/student/checkout/success").
@@ -15,6 +18,12 @@ const roleRoutes: Record<UserRole, string[]> = {
 // "/teacher" matches "/teacher" and "/teacher/dashboard", but not "/teachers"
 function matchesRoute(pathname: string, route: string): boolean {
     return pathname === route || pathname.startsWith(route + "/");
+}
+
+// Does this page need a logged-in user? (any login page, or a page for some roles)
+export function requiresLogin(pathname: string): boolean {
+    const isLoginRoute = loginRoutes.some((route) => matchesRoute(pathname, route));
+    return isLoginRoute || isProtectedRoute(pathname);
 }
 
 // Is this page for some roles only?

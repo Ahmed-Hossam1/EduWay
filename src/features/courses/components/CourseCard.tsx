@@ -1,12 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ImageOff } from "lucide-react";
 import { WishlistButton } from "@/features/wishlist/components/WishlistButton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardAction, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RatingStars } from "@/components/shared/RatingStars";
 import { Course } from "../types";
+import { CourseThumbnail } from "./CourseThumbnail";
 import { COURSE_BADGES, formatCompactNumber, formatDuration, formatPrice, getInstructorName } from "../utils/format";
 
 interface CourseCardProps {
@@ -21,19 +20,13 @@ export function CourseCard({ course }: CourseCardProps) {
         <Card className="group relative pt-0 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:ring-primary/40">
             {/* Thumbnail — first child gets rounded-t-xl from Card automatically */}
             <div className="relative aspect-16/10 w-full overflow-hidden bg-muted">
-                {course.thumbnail_url ? (
-                    <Image
-                        src={course.thumbnail_url}
-                        alt={course.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                ) : (
-                    <div className="flex size-full items-center justify-center text-muted-foreground">
-                        <ImageOff className="size-8" />
-                    </div>
-                )}
+                <CourseThumbnail
+                    src={course.thumbnail_url}
+                    alt={course.title}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                    zoomOnHover
+                    iconClassName="size-8"
+                />
 
                 {/* Floating badge */}
                 {badge && (

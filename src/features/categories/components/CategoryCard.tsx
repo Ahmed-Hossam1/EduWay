@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CategoryListItem } from "../types";
-import { formatCoursesCount, getCategoryStyle } from "../utils/getCategoryStyle";
+import { pluralize } from "@/lib/format";
+import { getCategoryStyle } from "../utils/getCategoryStyle";
 
 type CategoryCardProps = {
     category: CategoryListItem;
@@ -27,7 +28,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
                 <h3 className="line-clamp-2 leading-snug font-bold text-foreground transition-colors group-hover:text-primary">
                     {category.name}
                 </h3>
-                <p className="text-xs text-muted-foreground sm:text-sm">{formatCoursesCount(category.coursesCount)}</p>
+                <p className="text-xs text-muted-foreground sm:text-sm">{category.coursesCount} {pluralize(category.coursesCount, "course")}</p>
             </div>
 
             {/* Arrow */}

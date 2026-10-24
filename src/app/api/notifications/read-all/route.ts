@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 // POST /api/notifications/read-all → every unread notification of the user becomes read
 export async function POST() {
     try {
         // 1- Logged in?
-        const supabase = await createSupabaseServerClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const auth = await requireUser();
+        if (!auth.ok) return auth.response;
+        const { user } = auth;
 
         // 2- Admin client (there is no update policy), but ONLY his rows: .eq("user_id", user.id)
         const admin = createSupabaseAdminClient();

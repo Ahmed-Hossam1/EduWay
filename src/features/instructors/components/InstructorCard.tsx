@@ -3,7 +3,8 @@ import { BookOpen, Star, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { formatCompactNumber, getInstructorName } from "@/features/courses/utils/format";
+import { getInstructorName } from "@/features/courses/utils/format";
+import { formatInstructorStats } from "@/features/instructor-details/utils/format";
 import { InstructorListItem } from "../types";
 
 // how many skills we show on the card, the rest becomes "+2"
@@ -15,15 +16,15 @@ type InstructorCardProps = {
 
 export function InstructorCard({ instructor }: InstructorCardProps) {
     const name = getInstructorName(instructor);
-    const { stats } = instructor;
+    const stats = formatInstructorStats(instructor.stats);
 
     const shownSkills = instructor.skills.slice(0, MAX_SKILLS);
     const hiddenSkillsCount = instructor.skills.length - shownSkills.length;
 
     const items = [
-        { icon: BookOpen, value: String(stats.coursesCount), label: "Courses" },
-        { icon: Users, value: formatCompactNumber(stats.studentsCount), label: "Students" },
-        { icon: Star, value: stats.ratingsCount > 0 ? stats.averageRating.toFixed(1) : "—", label: "Rating" },
+        { icon: BookOpen, value: stats.courses, label: "Courses" },
+        { icon: Users, value: stats.students, label: "Students" },
+        { icon: Star, value: stats.rating, label: "Rating" },
     ];
 
     return (

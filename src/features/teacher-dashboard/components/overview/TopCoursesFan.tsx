@@ -2,7 +2,8 @@ import { use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardCard } from "./DashboardCard";
 import { cn } from "@/lib/utils";
 import { TopCourse } from "../../types";
 import { formatCompactNumber } from "@/features/courses/utils/format";
@@ -28,17 +29,17 @@ export function TopCoursesFan({ topCoursesPromise }: TopCoursesFanProps) {
     // no courses yet → a short message instead of an empty stack
     if (courses.length === 0) {
         return (
-            <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2">
+            <DashboardCard className="sm:col-span-2">
                 <CardHeader>
                     <CardTitle className="font-bold">Top courses</CardTitle>
                     <CardDescription>Create your first course to see it here.</CardDescription>
                 </CardHeader>
-            </Card>
+            </DashboardCard>
         );
     }
 
     return (
-        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2">
+        <DashboardCard className="sm:col-span-2">
             <CardContent className="grid gap-4 sm:grid-cols-[1fr_1.3fr] sm:items-center">
                 <div>
                     {/* header inside the left column (the stack is on the right) */}
@@ -90,6 +91,6 @@ export function TopCoursesFan({ topCoursesPromise }: TopCoursesFanProps) {
                     ))}
                 </div>
             </CardContent>
-        </Card>
+        </DashboardCard>
     );
 }

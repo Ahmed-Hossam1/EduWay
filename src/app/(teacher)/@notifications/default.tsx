@@ -1,5 +1,5 @@
 import { NotificationsBellSkeleton } from "@/features/notifications/components/NotificationsBellSkeleton";
-import NotificationsBellWithData from "@/features/notifications/components/NotificationsBellWithData";
+import { NotificationsBellWithData } from "@/features/notifications/components/NotificationsBellWithData";
 import { Suspense } from "react";
 
 /**

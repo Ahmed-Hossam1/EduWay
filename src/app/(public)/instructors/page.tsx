@@ -1,6 +1,7 @@
 import { InstructorsPage } from "@/features/instructors/InstructorsPage";
 import { instructorsQuerySchema } from "@/features/instructors/schemas/instructorsQuerySchema";
 import { getInstructors } from "@/features/instructors/server/getInstructors";
+import { parseSearchParams } from "@/lib/utils";
 
 export const metadata = {
     title: "Instructors",
@@ -15,8 +16,7 @@ export default async function Instructors({ searchParams }: Params) {
     const params = await searchParams;
 
     // Validate: a broken URL (?sort=abc) falls back to the defaults instead of crashing
-    const parsed = instructorsQuerySchema.safeParse(params);
-    const query = parsed.success ? parsed.data : instructorsQuerySchema.parse({});
+    const query = parseSearchParams(instructorsQuerySchema, params);
 
     // No await => the hero shows right away and the cards are streamed
     const instructorsPromise = getInstructors(query);

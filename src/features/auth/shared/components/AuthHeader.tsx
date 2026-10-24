@@ -1,16 +1,13 @@
-import Link from "next/link";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Logo } from "@/components/layout/Logo";
 
 export function AuthHeader() {
     return (
         <div className="flex items-center justify-between px-6 pt-6 sm:px-10 lg:px-12">
-            <Link
-                href="/"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground lg:hidden"
-            >
+            {/* Logo is already a link to "/" → a div here (a link inside a link breaks the HTML) */}
+            <div className="lg:hidden">
                 <Logo />
-            </Link>
+            </div>
             {/* Desktop spacer: Logo is displayed inside the hero section */}
             <div className="hidden lg:block" />
 

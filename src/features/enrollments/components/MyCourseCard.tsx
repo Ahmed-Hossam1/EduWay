@@ -1,11 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, ImageOff } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getInstructorName } from "@/features/courses/utils/format";
+import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
 import { EnrolledCourse } from "../types";
 
 type MyCourseCardProps = {
@@ -21,19 +21,13 @@ export function MyCourseCard({ enrolledCourse }: MyCourseCardProps) {
     return (
         <Card className="group pt-0">
             <Link href={`/courses/${course.slug}`} className="relative aspect-16/10 w-full overflow-hidden bg-muted">
-                {course.thumbnail_url ? (
-                    <Image
-                        src={course.thumbnail_url}
-                        alt={course.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                ) : (
-                    <span className="flex size-full items-center justify-center text-muted-foreground">
-                        <ImageOff className="size-8" />
-                    </span>
-                )}
+                <CourseThumbnail
+                    src={course.thumbnail_url}
+                    alt={course.title}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    zoomOnHover
+                    iconClassName="size-8"
+                />
                 {isCompleted && (
                     <Badge variant="success" className="absolute top-2.5 left-2.5 h-auto gap-1 px-2.5 py-0.5">
                         <CheckCircle2 />

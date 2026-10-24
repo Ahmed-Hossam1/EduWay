@@ -1,6 +1,6 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { COURSES_PAGE_SIZE } from "../schemas/coursesQuerySchema";
+import { COURSES_PAGE_SIZE, DEFAULT_COURSES_SORT } from "../schemas/coursesQuerySchema";
 import { Course, CoursesResponse, GetCoursesParams } from "../types";
 
 // What search_courses() returns (database function): one page + how many courses match in total
@@ -21,7 +21,7 @@ export const getCourses = async (
     pageSize: number = COURSES_PAGE_SIZE,
 ): Promise<CoursesResponse> => {
     // Default values when the param is not in the URL
-    const { q, category, level, price, duration, rating, instructorId, sort = "popular", page = 1 } = params;
+    const { q, category, level, price, duration, rating, instructorId, sort = DEFAULT_COURSES_SORT, page = 1 } = params;
 
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.rpc("search_courses", {

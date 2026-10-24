@@ -1,4 +1,5 @@
 import { use } from "react";
+import { pluralize } from "@/lib/format";
 import { InstructorListItem } from "../types";
 
 type InstructorsCountProps = {
@@ -12,7 +13,7 @@ export function InstructorsCount({ instructorsPromise }: InstructorsCountProps) 
     return (
         <p className="text-sm text-muted-foreground">
             Showing <span className="font-semibold text-foreground">{instructors.length}</span>{" "}
-            {instructors.length === 1 ? "instructor" : "instructors"}
+            {pluralize(instructors.length, "instructor")}
         </p>
     );
 }

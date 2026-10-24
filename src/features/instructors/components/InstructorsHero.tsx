@@ -1,33 +1,17 @@
 "use client";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { PageBreadcrumb } from "@/components/shared/PageBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Check, Search } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-// same URL helper as /courses (it works with the current page path)
-import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
+// same search box logic as /courses (it works with the current page path)
+import { useUrlSearchForm } from "@/hooks/useUrlSearchForm";
 import { highlights, teachPerks } from "../data";
 
 export function InstructorsHero() {
-    const { getValue, updateParams } = useUrlSearchParams();
-    const [query, setQuery] = useState<string>(getValue("q") ?? "");
-
-    // Runs when the user presses "Search" (or Enter), not on every letter
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault(); // stop the browser from reloading the page
-
-        // empty text → null → removes q from the URL (the sort stays)
-        updateParams({ q: query.trim() || null });
-    };
+    // ?q= is written when the user presses "Search" (or Enter), not on every letter
+    const { query, setQuery, handleSearch } = useUrlSearchForm();
 
     return (
         <section className="border-b border-border/50 bg-muted/40">
@@ -36,19 +20,7 @@ export function InstructorsHero() {
                     {/* Left: title + search + highlights */}
                     <div className="lg:col-span-7">
                         {/* Breadcrumb */}
-                        <Breadcrumb>
-                            <BreadcrumbList className="text-xs font-medium">
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink render={<Link href="/" />} className="hover:text-primary">
-                                        Home
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>Instructors</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
+                        <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Instructors" }]} />
 
                         {/* Small title above the heading */}
                         <p className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary">

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ArrowLeft, KeyRound, Mail, MailCheck, Send } from "lucide-react";
+import { ArrowLeft, KeyRound, Mail, Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { forgotPasswordSchema, ForgotPasswordSchemaType } from "../schemas/forgotPasswordSchema";
 import { useForgotPassword } from "../hooks/useForgotPassword";
+import { CheckInboxCard } from "../../shared/components/CheckInboxCard";
 
 type ForgotPasswordFormProps = {
     linkExpired?: boolean; // came back from an old / used reset link (/api/auth/confirm)
@@ -29,37 +30,28 @@ export function ForgotPasswordForm({ linkExpired = false }: ForgotPasswordFormPr
     // ── After sending: "Check your inbox" ──
     if (isSuccess) {
         return (
-            <Card className="block w-full max-w-sm rounded-2xl p-7 text-center shadow-lg sm:max-w-md sm:p-9">
-                <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50 dark:bg-emerald-950/40 dark:text-emerald-400 dark:ring-emerald-950/20">
-                    <MailCheck className="size-6" />
-                </div>
-
-                <h1 className="mt-6 text-2xl font-bold tracking-tight text-foreground">Check your inbox</h1>
-                <p className="mt-2 text-sm text-muted-foreground">
-                    If an account exists for <span className="font-semibold text-foreground">{getValues("email")}</span>
-                    , we sent a link to reset your password. The link works for 1 hour.
-                </p>
-
-                <p className="mt-5 rounded-xl bg-muted/60 px-4 py-3 text-xs text-muted-foreground">
-                    Didn&apos;t get the email? Check your spam folder, or{" "}
-                    <button
-                        type="button"
-                        onClick={() => reset()}
-                        className="font-semibold text-primary hover:underline"
-                    >
-                        send it again
-                    </button>
-                    .
-                </p>
-
-                <Link
-                    href="/auth/login"
-                    className="mt-6 flex items-center justify-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
-                >
-                    <ArrowLeft className="size-4" />
-                    Back to sign in
-                </Link>
-            </Card>
+            <CheckInboxCard
+                description={
+                    <>
+                        If an account exists for{" "}
+                        <span className="font-semibold text-foreground">{getValues("email")}</span>, we sent a link to
+                        reset your password. The link works for 1 hour.
+                    </>
+                }
+                note={
+                    <>
+                        Didn&apos;t get the email? Check your spam folder, or{" "}
+                        <button
+                            type="button"
+                            onClick={() => reset()}
+                            className="font-semibold text-primary hover:underline"
+                        >
+                            send it again
+                        </button>
+                        .
+                    </>
+                }
+            />
         );
     }
 

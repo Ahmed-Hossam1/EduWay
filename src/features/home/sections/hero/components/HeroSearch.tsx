@@ -14,8 +14,10 @@ export function HeroSearch() {
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-        if (!searchValue) return;
-        router.push(`/courses?q=${searchValue}`);
+        const text = searchValue.trim();
+        if (!text) return;
+        // URLSearchParams encodes the text ("C++" → "C%2B%2B", "R&D" → "R%26D")
+        router.push(`/courses?${new URLSearchParams({ q: text })}`);
     };
 
     return (

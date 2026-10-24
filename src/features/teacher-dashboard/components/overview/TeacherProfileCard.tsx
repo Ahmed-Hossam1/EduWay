@@ -2,9 +2,11 @@
 
 import { use } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
+import { DashboardCard } from "./DashboardCard";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { UserAvatar } from "@/features/profile/components/UserAvatar";
+import { getFullName } from "@/lib/format";
 import { OverviewStats } from "../../types";
 
 type TeacherProfileCardProps = {
@@ -20,7 +22,7 @@ export function TeacherProfileCard({ statsPromise }: TeacherProfileCardProps) {
     const stats = use(statsPromise); // waits inside the <Suspense> of TeacherOverview
     const { data: profile, isPending } = useProfile();
 
-    const fullName = `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim() || "Teacher";
+    const fullName = getFullName(profile?.first_name, profile?.last_name, "Teacher");
     const numbers = [
         { label: "Courses", value: String(stats.totalCourses) },
         { label: "New students", value: String(stats.studentsLast30Days) }, // the last 30 days
@@ -28,7 +30,7 @@ export function TeacherProfileCard({ statsPromise }: TeacherProfileCardProps) {
     ];
 
     return (
-        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
+        <DashboardCard>
             <CardContent className="flex flex-col items-center text-center">
                 {/* only this part waits for useProfile (instant when it's already cached) */}
                 {isPending ? (
@@ -63,6 +65,6 @@ export function TeacherProfileCard({ statsPromise }: TeacherProfileCardProps) {
                     ))}
                 </div>
             </CardContent>
-        </Card>
+        </DashboardCard>
     );
 }

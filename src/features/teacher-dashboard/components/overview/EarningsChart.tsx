@@ -1,8 +1,10 @@
 import { use } from "react";
 import { CircleCheck } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardCard } from "./DashboardCard";
 import { EarningsOverview } from "../../types";
-import { formatMoney, formatMonth, toPoints } from "../../utils/chart";
+import { formatMoney } from "@/lib/format";
+import { formatMonth, toPoints } from "../../utils/chart";
 import { ChangePill } from "./ChangePill";
 
 type EarningsChartProps = {
@@ -22,7 +24,7 @@ export function EarningsChart({ earningsPromise }: EarningsChartProps) {
     );
 
     return (
-        <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2 xl:col-span-3">
+        <DashboardCard className="sm:col-span-2 xl:col-span-3">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 font-bold">
                     Earnings
@@ -46,7 +48,7 @@ export function EarningsChart({ earningsPromise }: EarningsChartProps) {
                     <div className="rounded-xl border border-border px-3 py-2">
                         <p className="text-[11px] text-muted-foreground">Total revenue</p>
                         <p className="flex items-center gap-1.5 text-sm font-bold">
-                            {formatMoney(earnings.totalRevenue)} <ChangePill value={earnings.revenueChange} />
+                            {formatMoney(earnings.totalRevenue, "USD", 0)} <ChangePill value={earnings.revenueChange} />
                         </p>
                     </div>
                 </div>
@@ -75,6 +77,6 @@ export function EarningsChart({ earningsPromise }: EarningsChartProps) {
                     ))}
                 </div>
             </CardContent>
-        </Card>
+        </DashboardCard>
     );
 }

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { onboardingSchema } from "@/features/auth/onboarding/schemas/onboardingSchema";
+import { getProfileById } from "@/features/profile/server/getProfileById";
 
 // POST /api/onboarding  { ...all 3 steps } -> { nextRoute: "/account/waiting" }
 // Saves the teacher profile and sends it for review (status: onboarding -> waiting).
@@ -20,20 +21,12 @@ export async function POST(request: NextRequest) {
         const data = result.data;
 
         // 2- Logged in?
-        const supabase = await createSupabaseServerClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const auth = await requireUser();
+        if (!auth.ok) return auth.response;
+        const { user } = auth;
 
         // 3- Only a teacher who is still in the onboarding can send it (only once)
-        const { data: profile, error: profileError } = await supabase
-            .from("profiles")
-            .select("role, status")
-            .eq("id", user.id)
-            .single();
-
-        if (profileError) throw profileError;
+        const profile = await getProfileById(user.id);
 
         if (profile.role !== "teacher") {
             return NextResponse.json({ message: "Only teachers can complete the onboarding" }, { status: 403 });

@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/features/profile/components/UserAvatar";
 import { useLogout } from "@/features/profile/hooks/useLogout";
+import { getFullName } from "@/lib/format";
 import { teacherNav } from "../data/teacherNav";
 
 type TeacherSidebarProps = {
@@ -41,7 +42,7 @@ type TeacherSidebarProps = {
 export function TeacherSidebar({ userId, firstName, lastName, avatarUrl }: TeacherSidebarProps) {
     const pathname = usePathname();
     const { mutate: logout } = useLogout();
-    const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim() || "Teacher";
+    const fullName = getFullName(firstName, lastName, "Teacher");
 
     return (
         <Sidebar collapsible="icon">

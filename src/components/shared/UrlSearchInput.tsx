@@ -34,6 +34,9 @@ export function UrlSearchInput({ placeholder, Size = "md", className }: UrlSearc
 
         // (this cleanup works here because it is returned from useEffect, not from an event handler)
         return () => clearTimeout(timer);
+        // only "search" starts the timer: getValue / updateParams are new functions on every render,
+        // adding them would restart the 500ms wait all the time
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search]);
 
     return (

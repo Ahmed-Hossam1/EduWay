@@ -1,12 +1,12 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CourseRow, flattenCourse } from "@/features/courses/utils/flattenCourse";
+import { COURSE_CARD_SELECT, CourseWithCategoriesRow, flattenCourse } from "@/features/courses/utils/flattenCourse";
 import { EnrolledCourse, EnrollmentStatus } from "../types";
 
 type EnrollmentRow = {
     status: EnrollmentStatus;
     enrolled_at: string;
-    course: CourseRow | null; // null = the course was unpublished (hidden by RLS)
+    course: CourseWithCategoriesRow | null; // null = the course was unpublished (hidden by RLS)
 };
 
 // One row of get_my_completed_lessons() (database function)
@@ -29,16 +29,7 @@ export const getMyCourses = async (): Promise<EnrolledCourse[]> => {
     // 1- his enrollments + the full course (same shape as the courses list)
     const { data: enrollments, error } = await supabase
         .from("enrollments")
-        .select(
-            `
-            status, enrolled_at,
-            course:courses (
-                *,
-                instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
-                course_categories ( category:categories ( id, name, slug ) )
-            )
-        `,
-        )
+        .select(`status, enrolled_at, course:courses ( ${COURSE_CARD_SELECT} )`)
         .eq("user_id", user.id)
         .neq("status", "refunded")
         .order("enrolled_at", { ascending: false });

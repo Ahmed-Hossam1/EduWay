@@ -1,5 +1,3 @@
-import { ExperienceLevel } from "../types";
-
 // The categories come from the database (categories table).
 // This only adds a short description under each one, by its slug.
 export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
@@ -9,29 +7,6 @@ export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
     marketing: "SEO, Social Media & Content Marketing",
     business: "Management, Entrepreneurship & Productivity",
 };
-
-export const EXPERIENCE_LEVELS: ExperienceLevel[] = [
-    {
-        id: "beginner",
-        label: "1 – 2 Years",
-        description: "Early career instructor or mentoring experience",
-    },
-    {
-        id: "intermediate",
-        label: "3 – 5 Years",
-        description: "Experienced educator or senior industry practitioner",
-    },
-    {
-        id: "expert",
-        label: "5 – 10 Years",
-        description: "Extensive professional and instructional background",
-    },
-    {
-        id: "veteran",
-        label: "10+ Years",
-        description: "Master educator or senior industry veteran",
-    },
-];
 
 export const POPULAR_SKILLS: string[] = [
     "React",

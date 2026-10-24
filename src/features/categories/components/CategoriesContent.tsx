@@ -1,6 +1,7 @@
 import { use } from "react";
 import { SearchX, Shapes } from "lucide-react";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { pluralize } from "@/lib/format";
 import { CategoryListItem } from "../types";
 import { CategoryCard } from "./CategoryCard";
 import { PopularCategoryCard } from "./PopularCategoryCard";
@@ -40,7 +41,7 @@ export function CategoriesContent({ categoriesPromise, q }: CategoriesContentPro
                         <p className="mt-1 text-sm text-muted-foreground">Categories matching &quot;{q}&quot;</p>
                     </div>
                     <span className="text-sm font-medium text-muted-foreground">
-                        {categories.length} {categories.length === 1 ? "category" : "categories"}
+                        {categories.length} {pluralize(categories.length, "category", "categories")}
                     </span>
                 </div>
 
@@ -94,7 +95,7 @@ export function CategoriesContent({ categoriesPromise, q }: CategoriesContentPro
                         <p className="mt-1 text-sm text-muted-foreground">From A to Z</p>
                     </div>
                     <span className="text-sm font-medium text-muted-foreground">
-                        {categories.length} {categories.length === 1 ? "category" : "categories"}
+                        {categories.length} {pluralize(categories.length, "category", "categories")}
                     </span>
                 </div>
 

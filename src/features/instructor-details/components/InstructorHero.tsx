@@ -1,19 +1,11 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import { Briefcase } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { PageBreadcrumb } from "@/components/shared/PageBreadcrumb";
 import { getInstructorName } from "@/features/courses/utils/format";
 import { Instructor, InstructorStats } from "../types";
-import { EXPERIENCE_LABELS } from "../utils/format";
+import { getExperienceProfileLabel } from "@/features/instructors/data/experienceLevels";
 import { InstructorSocialLinks } from "./InstructorSocialLinks";
 import { InstructorStatsCards } from "./InstructorStatsCards";
 import { InstructorStatsCardsSkeleton } from "./skeleton";
@@ -36,17 +28,7 @@ export function InstructorHero({ instructor, statsPromise }: InstructorHeroProps
 
             <div className="container relative mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1fr_420px] lg:gap-12 lg:px-8">
                 <div className="min-w-0">
-                    <Breadcrumb>
-                        <BreadcrumbList className="text-xs font-medium">
-                            <BreadcrumbItem>
-                                <BreadcrumbLink render={<Link href="/" />}>Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Instructors</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                    <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Instructors" }]} />
 
                     <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
                         <Avatar className="size-24 ring-4 ring-background shadow-lg">
@@ -67,7 +49,7 @@ export function InstructorHero({ instructor, statsPromise }: InstructorHeroProps
                             {profile?.experience_level && (
                                 <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                                     <Briefcase className="size-4" />
-                                    {EXPERIENCE_LABELS[profile.experience_level]}
+                                    {getExperienceProfileLabel(profile.experience_level)}
                                 </p>
                             )}
                         </div>

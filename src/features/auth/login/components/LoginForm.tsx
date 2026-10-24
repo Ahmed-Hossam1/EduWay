@@ -58,7 +58,8 @@ export function LoginForm({ confirmLinkExpired = false }: LoginFormProps) {
             )}
 
             {/* Form */}
-            <form className="mt-6 space-y-4">
+            {/* onSubmit on the form → the Enter key works too */}
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>
                 {/* Email not confirmed yet → resend the link */}
                 {emailNotConfirmed && <EmailNotConfirmedNotice email={getValues("email")} />}
 
@@ -99,7 +100,7 @@ export function LoginForm({ confirmLinkExpired = false }: LoginFormProps) {
 
                 {/* Primary CTA */}
                 <Button
-                    onClick={handleSubmit(onSubmit)}
+                    type="submit"
                     variant="default"
                     isLoading={isPending}
                     disabled={isAuthBusy}

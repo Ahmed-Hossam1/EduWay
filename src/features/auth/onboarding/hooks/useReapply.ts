@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/axios/getErrorMessage";
+import { profileQueryKey } from "@/features/profile/hooks/useProfile";
 import { reapplyService } from "../services/reapply";
 
 /**
@@ -20,7 +21,7 @@ export const useReapply = () => {
 
         onSuccess: (response) => {
             // status rejected → onboarding: the menu badge must show it
-            queryClient.invalidateQueries({ queryKey: ["profile"] });
+            queryClient.invalidateQueries({ queryKey: profileQueryKey });
             router.push(response.nextRoute);
         },
 

@@ -1,10 +1,8 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { useProfile } from "@/features/profile/hooks/useProfile";
+import { useRequireLogin } from "@/features/profile/hooks/useRequireLogin";
 import { useCart } from "../hooks/useCart";
 import { useAddToCart } from "../hooks/useAddToCart";
 
@@ -14,8 +12,7 @@ type AddToCartButtonProps = {
 
 // "Add to cart" → after adding it becomes "Go to cart" (a link to /cart)
 export function AddToCartButton({ courseId }: AddToCartButtonProps) {
-    const router = useRouter();
-    const { data: profile } = useProfile();
+    const requireLogin = useRequireLogin();
     const { data: cartIds = [] } = useCart();
     const { mutate: addToCart, isPending } = useAddToCart();
 
@@ -34,11 +31,7 @@ export function AddToCartButton({ courseId }: AddToCartButtonProps) {
 
     const handleClick = () => {
         // choice: the cart needs an account (same as the wishlist)
-        if (!profile) {
-            toast.info("Log in to add courses to your cart");
-            router.push("/auth/login");
-            return;
-        }
+        if (!requireLogin("Log in to add courses to your cart")) return;
         addToCart(courseId);
     };
 

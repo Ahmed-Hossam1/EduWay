@@ -1,11 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ImageOff, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/features/courses/utils/format";
-import { formatMoney } from "@/features/teacher-dashboard/utils/chart";
+import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
+import { formatMoney } from "@/lib/format";
 import { STATUS_BADGES } from "../constant";
 import { TeacherCourse } from "../types";
 import { getDraftHint } from "../utils/getDraftHint";
@@ -37,13 +37,7 @@ export function TeacherCourseRow({ course }: TeacherCourseRowProps) {
                     !course.thumbnail_url && "border border-dashed border-border",
                 )}
             >
-                {course.thumbnail_url ? (
-                    <Image src={course.thumbnail_url} alt={course.title} fill sizes="96px" className="object-cover" />
-                ) : (
-                    <div className="flex size-full items-center justify-center text-muted-foreground">
-                        <ImageOff className="size-5" />
-                    </div>
-                )}
+                <CourseThumbnail src={course.thumbnail_url} alt={course.title} sizes="96px" iconClassName="size-5" />
             </div>
 
             {/* Title + status + details */}
@@ -64,7 +58,7 @@ export function TeacherCourseRow({ course }: TeacherCourseRowProps) {
                 {/* mobile only: the numbers (on desktop they have their own columns) */}
                 {!isDraft && (
                     <p className="mt-1 text-xs text-muted-foreground md:hidden">
-                        {course.students_count} students · {formatMoney(course.earnings)}
+                        {course.students_count} students · {formatMoney(course.earnings, course.currency, 0)}
                     </p>
                 )}
             </div>
@@ -80,7 +74,7 @@ export function TeacherCourseRow({ course }: TeacherCourseRowProps) {
             </div>
 
             {/* Earnings */}
-            <p className="hidden text-sm font-semibold md:block">{isDraft ? "—" : formatMoney(course.earnings)}</p>
+            <p className="hidden text-sm font-semibold md:block">{isDraft ? "—" : formatMoney(course.earnings, course.currency, 0)}</p>
 
             {/* Actions: a draft continues where it stopped, a published course gets edited */}
             <div className="col-span-2 flex items-center justify-end gap-1 md:col-span-1">

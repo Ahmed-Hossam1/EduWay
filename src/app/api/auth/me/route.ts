@@ -1,13 +1,12 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 
+// GET /api/auth/me → the profile of the logged-in user (+ the teacher headline) for the Navbar / menus
 export async function GET() {
     try {
-        const supabase = await createSupabaseServerClient();
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const auth = await requireUser();
+        if (!auth.ok) return auth.response;
+        const { supabase, user } = auth;
 
         const { data: profile } = await supabase
             .from("profiles")

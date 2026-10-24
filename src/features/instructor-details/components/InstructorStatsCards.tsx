@@ -1,8 +1,8 @@
 import { use } from "react";
 import { BookOpen, Star, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { formatCompactNumber } from "@/features/courses/utils/format";
 import { InstructorStats } from "../types";
+import { formatInstructorStats } from "../utils/format";
 
 type InstructorStatsCardsProps = {
     statsPromise: Promise<InstructorStats>;
@@ -10,16 +10,12 @@ type InstructorStatsCardsProps = {
 
 // Numbers come from the teacher's courses → streamed with <Suspense>
 export function InstructorStatsCards({ statsPromise }: InstructorStatsCardsProps) {
-    const stats = use(statsPromise);
+    const stats = formatInstructorStats(use(statsPromise));
 
     const items = [
-        { icon: BookOpen, value: String(stats.coursesCount), label: "Courses" },
-        { icon: Users, value: formatCompactNumber(stats.studentsCount), label: "Students" },
-        {
-            icon: Star,
-            value: stats.ratingsCount > 0 ? stats.averageRating.toFixed(1) : "—",
-            label: `Rating (${formatCompactNumber(stats.ratingsCount)})`,
-        },
+        { icon: BookOpen, value: stats.courses, label: "Courses" },
+        { icon: Users, value: stats.students, label: "Students" },
+        { icon: Star, value: stats.rating, label: `Rating (${stats.ratings})` },
     ];
 
     return (

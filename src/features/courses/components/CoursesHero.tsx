@@ -3,31 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { PageBreadcrumb } from "@/components/shared/PageBreadcrumb";
 import { Search, Sparkles, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { coursesHeroStats, coursesPopularTopics } from "../data";
-import { useState } from "react";
-import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
+import { useUrlSearchForm } from "@/hooks/useUrlSearchForm";
 
 export function CoursesHero() {
-    const { getValue, updateParams } = useUrlSearchParams();
-    const [query, setQuery] = useState<string>(getValue("q") ?? "");
-
-    // Runs when the user presses "Search" (or Enter), not on every letter
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault(); // stop the browser from reloading the page
-
-        // empty text → null → removes q from the URL (the other filters stay)
-        updateParams({ q: query.trim() || null });
-    };
+    // ?q= is written when the user presses "Search" (or Enter), not on every letter
+    const { query, setQuery, handleSearch } = useUrlSearchForm();
 
     return (
         <section className="relative overflow-hidden border-b border-border/50 bg-linear-to-b from-accent/70 via-background to-background">
@@ -43,19 +27,7 @@ export function CoursesHero() {
                     {/* Left: copy + search + topics */}
                     <div className="lg:col-span-7">
                         {/* Breadcrumb */}
-                        <Breadcrumb>
-                            <BreadcrumbList className="text-xs font-medium">
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink render={<Link href="/" />} className="hover:text-primary">
-                                        Home
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>Courses</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
+                        <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Courses" }]} />
 
                         <Badge
                             variant="accent"

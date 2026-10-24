@@ -5,7 +5,9 @@ import { CoursesCount } from "./CoursesCount";
 import { CoursesCategoryChipsSkeleton } from "./CoursesCategoryChipsSkeleton";
 import { CoursesCategoryChips } from "./CoursesCategoryChips";
 import { CoursesMobileFilters } from "./CoursesMobileFilters";
-import { CoursesSortSelect } from "./CoursesSortSelect";
+import { UrlSortSelect } from "@/components/shared/UrlSortSelect";
+import { coursesSortOptions } from "../data";
+import { DEFAULT_COURSES_SORT } from "../schemas/coursesQuerySchema";
 
 interface CoursesToolbarProps {
     coursesPromise: Promise<CoursesResponse>;
@@ -31,7 +33,12 @@ export function CoursesToolbar({ coursesPromise, categoryPromise }: CoursesToolb
                     <CoursesMobileFilters categoriesPromise={categoryPromise} />
 
                     <span className="hidden text-sm text-muted-foreground sm:inline">Sort by</span>
-                    <CoursesSortSelect />
+                    <UrlSortSelect
+                        options={coursesSortOptions}
+                        defaultValue={DEFAULT_COURSES_SORT}
+                        label="Sort courses"
+                        className="h-9 min-w-44"
+                    />
                 </div>
             </div>
         </div>

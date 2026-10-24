@@ -1,13 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Compass } from "lucide-react";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { PageBreadcrumb } from "@/components/shared/PageBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CategoriesSearch } from "./CategoriesSearch";
@@ -21,19 +14,7 @@ export function CategoriesHero() {
                     {/* Left: title + text */}
                     <div className="lg:col-span-7">
                         {/* Breadcrumb */}
-                        <Breadcrumb>
-                            <BreadcrumbList className="text-xs font-medium">
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink render={<Link href="/" />} className="hover:text-primary">
-                                        Home
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>Categories</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
+                        <PageBreadcrumb items={[{ label: "Home", href: "/" }, { label: "Categories" }]} />
 
                         {/* Small title above the heading */}
                         <p className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary">
