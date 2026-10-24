@@ -4,6 +4,7 @@ import { getInstructorName } from "@/features/courses/utils/format";
 import { InstructorPage } from "@/features/instructor-details/InstructorPage";
 import { getInstructorById } from "@/features/instructor-details/server/getInstructorById";
 import { getInstructorCourses } from "@/features/instructor-details/server/getInstructorCourses";
+import { getInstructorStats } from "@/features/instructor-details/server/getInstructorStats";
 
 type Params = {
     params: Promise<{ id: string }>;
@@ -43,10 +44,9 @@ export default async function Instructor({ params }: Params) {
     const instructor = await getInstructorById(id);
     if (!instructor) notFound();
 
-    // 2- His courses + stats: no await => streamed (one database call, two promises)
-    const coursesWithStats = getInstructorCourses(instructor.id);
-    const coursesPromise = coursesWithStats.then((result) => result.courses);
-    const statsPromise = coursesWithStats.then((result) => result.stats);
+    // 2- His courses + his numbers: no await => both start now and are streamed
+    const coursesPromise = getInstructorCourses(instructor.id);
+    const statsPromise = getInstructorStats(instructor.id);
 
     return <InstructorPage instructor={instructor} coursesPromise={coursesPromise} statsPromise={statsPromise} />;
 }

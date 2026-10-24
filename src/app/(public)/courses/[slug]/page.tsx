@@ -39,7 +39,7 @@ export default async function CourseDetails({ params }: Params) {
     if (!course) notFound();
 
     // 2- Related courses: no await => streamed with <Suspense> (same idea as the courses page)
-    const relatedCoursesPromise = getRelatedCourses(course.id, course.categories[0]?.slug);
+    const relatedCoursesPromise = getRelatedCourses(course.id);
 
     return <CourseDetailsPage course={course} relatedCoursesPromise={relatedCoursesPromise} />;
 }

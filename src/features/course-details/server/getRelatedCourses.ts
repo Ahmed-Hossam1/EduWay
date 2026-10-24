@@ -1,21 +1,16 @@
 import "server-only";
-import { getCourses } from "@/features/courses/server/getCourses";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { Course } from "@/features/courses/types";
 
-const RELATED_COURSES_COUNT = 4;
-
 /**
- * Server only: the most popular courses in the same category,
- * without the course we are looking at.
+ * Server only: the most popular courses in the same category (the course's main category),
+ * without the course we are looking at. The database picks them (get_related_courses → at most 4).
  */
-export const getRelatedCourses = async (courseId: string, categorySlug: string | undefined): Promise<Course[]> => {
-    if (!categorySlug) return [];
+export const getRelatedCourses = async (courseId: string): Promise<Course[]> => {
+    const supabase = await createSupabaseServerClient();
 
-    // ask for one more, because the current course can be in the list
-    const { courses } = await getCourses(
-        { category: [categorySlug], sort: "popular", page: 1 },
-        RELATED_COURSES_COUNT + 1,
-    );
+    const { data, error } = await supabase.rpc("get_related_courses", { p_course_id: courseId });
 
-    return courses.filter((course) => course.id !== courseId).slice(0, RELATED_COURSES_COUNT);
+    if (error) throw error;
+    return data as Course[];
 };
