@@ -1,7 +1,7 @@
 import { CourseStatus } from "@/features/courses/types";
 
 // One row in the "My courses" list (what get_teacher_courses() returns for each course)
-export type MyCourse = {
+export type TeacherCourse = {
     id: string;
     title: string;
     slug: string;
@@ -16,9 +16,9 @@ export type MyCourse = {
     newStudentsThisWeek: number;
 };
 
-// Response of getMyCourses(): one page of the list (+ what the pagination needs)
-export type MyCoursesResponse = {
-    courses: MyCourse[];
+// Response of getTeacherCourses(): one page of the list (+ what the pagination needs)
+export type TeacherCoursesResponse = {
+    courses: TeacherCourse[];
     totalCount: number;
     pageSize: number;
 };

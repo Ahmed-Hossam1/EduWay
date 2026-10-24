@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { UrlPagination } from "@/components/shared/UrlPagination";
-import { MyCoursesResponse } from "../types";
-import { MyCourseRow } from "./MyCourseRow";
+import { TeacherCoursesResponse } from "../types";
+import { TeacherCourseRow } from "./TeacherCourseRow";
 import { cn } from "@/lib/utils";
 
-type MyCoursesListProps = {
-    coursesPromise: Promise<MyCoursesResponse>;
+type TeacherCoursesListProps = {
+    coursesPromise: Promise<TeacherCoursesResponse>;
     hasFilters: boolean;
 };
 
-export function MyCoursesList({ coursesPromise, hasFilters }: MyCoursesListProps) {
+export function TeacherCoursesList({ coursesPromise, hasFilters }: TeacherCoursesListProps) {
     const { courses, totalCount, pageSize } = use(coursesPromise);
 
     // a filter is on and nothing matches
@@ -76,7 +76,7 @@ export function MyCoursesList({ coursesPromise, hasFilters }: MyCoursesListProps
 
                 <ul>
                     {courses.map((course) => (
-                        <MyCourseRow key={course.id} course={course} />
+                        <TeacherCourseRow key={course.id} course={course} />
                     ))}
                 </ul>
             </Card>

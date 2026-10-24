@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // The skeletons of the My courses page (same shape as the real parts → no jump when the data arrives)
 
-export function MyCoursesSummarySkeleton() {
+export function TeacherCoursesSummarySkeleton() {
     return (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {[1, 2, 3, 4].map((item) => (
@@ -20,7 +20,7 @@ export function MyCoursesSummarySkeleton() {
     );
 }
 
-export function MyCoursesListSkeleton() {
+export function TeacherCoursesListSkeleton() {
     return (
         <Card className="gap-0 py-0">
             {[1, 2, 3, 4].map((item) => (

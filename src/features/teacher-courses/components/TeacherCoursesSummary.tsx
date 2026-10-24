@@ -3,13 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/
 import { formatMoney } from "@/features/teacher-dashboard/utils/chart";
 import { EarningsOverview, OverviewStats } from "@/features/teacher-dashboard/types";
 
-type MyCoursesSummaryProps = {
+type TeacherCoursesSummaryProps = {
     statsPromise: Promise<OverviewStats>;
     earningsPromise: Promise<EarningsOverview>;
 };
 
 // The 4 numbers on top of the page (the same database functions as the Overview)
-export function MyCoursesSummary({ statsPromise, earningsPromise }: MyCoursesSummaryProps) {
+export function TeacherCoursesSummary({ statsPromise, earningsPromise }: TeacherCoursesSummaryProps) {
     const stats = use(statsPromise);
     const earnings = use(earningsPromise);
 

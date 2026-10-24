@@ -1,11 +1,11 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { TEACHER_COURSES_PAGE_SIZE, TeacherCoursesQuery } from "../schemas/teacherCoursesQuerySchema";
-import { MyCourse, MyCoursesResponse } from "../types";
+import { TeacherCourse, TeacherCoursesResponse } from "../types";
 
 // What get_teacher_courses() returns (database function): one page + how many courses match in total
 type TeacherCoursesResult = {
-    courses: MyCourse[];
+    courses: TeacherCourse[];
     totalCount: number;
 };
 
@@ -15,7 +15,7 @@ type TeacherCoursesResult = {
  * The database does the work (get_teacher_courses): the earnings + new students of each course,
  * the filters, the sort and the page. It finds the teacher by himself (auth.uid()) → no teacherId to send.
  */
-export async function getMyCourses(query: TeacherCoursesQuery): Promise<MyCoursesResponse> {
+export async function getTeacherCourses(query: TeacherCoursesQuery): Promise<TeacherCoursesResponse> {
     const { status, q, sort, page } = query;
 
     const supabase = await createSupabaseServerClient();

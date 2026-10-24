@@ -6,10 +6,10 @@ import { UrlSearchInput } from "@/components/shared/UrlSearchInput";
 import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
 import { cn } from "@/lib/utils";
 import { STATUS_BADGES } from "../constant";
-import { myCoursesSortOptions, myCoursesStatusTabs } from "../data";
+import { teacherCoursesSortOptions, teacherCoursesStatusTabs } from "../data";
 
 // Status tabs + search + sort. Everything lives in the URL (?status=draft&q=react&sort=students)
-export function MyCoursesToolbar() {
+export function TeacherCoursesToolbar() {
     const { getValue, updateParams } = useUrlSearchParams();
 
     // nothing in the URL the defaults (same as teacherCoursesQuerySchema)
@@ -19,7 +19,7 @@ export function MyCoursesToolbar() {
     return (
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex gap-1" role="tablist" aria-label="Filter by status">
-                {myCoursesStatusTabs.map((tab) => {
+                {teacherCoursesStatusTabs.map((tab) => {
                     const isActive = tab.value === currentStatus;
                     // "all" has no status color → the normal gray tab
                     const activeColor = tab.value === "all" ? "" : STATUS_BADGES[tab.value].className;
@@ -46,7 +46,7 @@ export function MyCoursesToolbar() {
                 </div>
 
                 <Select
-                    items={myCoursesSortOptions}
+                    items={teacherCoursesSortOptions}
                     value={currentSort}
                     onValueChange={(value) => updateParams({ sort: value as string })}
                 >
@@ -54,7 +54,7 @@ export function MyCoursesToolbar() {
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent align="end">
-                        {myCoursesSortOptions.map((option) => (
+                        {teacherCoursesSortOptions.map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                                 {option.label}
                             </SelectItem>

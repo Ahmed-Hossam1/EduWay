@@ -15,7 +15,7 @@ import { useUnpublishCourse } from "../hooks/useUnpublishCourse";
 import { useDeleteDraftCourse } from "../hooks/useDeleteDraftCourse";
 import { copyCourseLink } from "../utils/copyCourseLink";
 
-type MyCourseActionsProps = {
+type TeacherCourseActionsProps = {
     courseId: string;
     courseTitle: string;
     courseSlug: string;
@@ -31,7 +31,7 @@ type OpenDialog = "unpublish" | "delete" | null;
  *   draft     → View as student, Delete draft
  * Unpublish and Delete ask first (ConfirmDialog).
  */
-export function MyCourseActions({ courseId, courseTitle, courseSlug, status }: MyCourseActionsProps) {
+export function TeacherCourseActions({ courseId, courseTitle, courseSlug, status }: TeacherCourseActionsProps) {
     const [openDialog, setOpenDialog] = useState<OpenDialog>(null);
     const { mutate: unpublish, isPending: isUnPublishing } = useUnpublishCourse();
     const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraftCourse();

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function MyCoursesHeader() {
+export function TeacherCoursesHeader() {
     return (
         <div className="flex flex-wrap items-start justify-between gap-3">
             <div>

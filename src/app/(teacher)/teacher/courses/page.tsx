@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { getAuthUser } from "@/lib/supabase/getAuthUser";
-import { MyCoursesPage } from "@/features/teacher-courses/MyCoursesPage";
+import { TeacherCoursesPage } from "@/features/teacher-courses/TeacherCoursesPage";
 import { teacherCoursesQuerySchema } from "@/features/teacher-courses/schemas/teacherCoursesQuerySchema";
-import { getMyCourses } from "@/features/teacher-courses/server/getMyCourses";
+import { getTeacherCourses } from "@/features/teacher-courses/server/getTeacherCourses";
 import { getOverviewStats } from "@/features/teacher-dashboard/server/getOverviewStats";
 import { getEarningsOverview } from "@/features/teacher-dashboard/server/getEarningsOverview";
 
@@ -16,7 +16,7 @@ type Params = {
 };
 
 // /teacher/courses → all the courses of the teacher (the layout already checked he's an approved teacher)
-export default async function TeacherCoursesPage({ searchParams }: Params) {
+export default async function TeacherCourses({ searchParams }: Params) {
     await getAuthUser(); // not logged in → /auth/login (the layout checked it too)
     const params = await searchParams;
 
@@ -27,10 +27,10 @@ export default async function TeacherCoursesPage({ searchParams }: Params) {
     // no await → the page shows right away, each part streams with its skeleton
     const statsPromise = getOverviewStats();
     const earningsPromise = getEarningsOverview();
-    const coursesPromise = getMyCourses(query);
+    const coursesPromise = getTeacherCourses(query);
 
     return (
-        <MyCoursesPage
+        <TeacherCoursesPage
             statsPromise={statsPromise}
             earningsPromise={earningsPromise}
             coursesPromise={coursesPromise}

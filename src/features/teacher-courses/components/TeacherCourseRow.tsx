@@ -7,16 +7,16 @@ import { cn } from "@/lib/utils";
 import { formatPrice } from "@/features/courses/utils/format";
 import { formatMoney } from "@/features/teacher-dashboard/utils/chart";
 import { STATUS_BADGES } from "../constant";
-import { MyCourse } from "../types";
+import { TeacherCourse } from "../types";
 import { getDraftHint } from "../utils/getDraftHint";
-import { MyCourseActions } from "./MyCourseActions";
+import { TeacherCourseActions } from "./TeacherCourseActions";
 
-type MyCourseRowProps = {
-    course: MyCourse;
+type TeacherCourseRowProps = {
+    course: TeacherCourse;
 };
 
 // One course in the list: thumbnail, title, numbers, then Edit / Continue + the "..." menu
-export function MyCourseRow({ course }: MyCourseRowProps) {
+export function TeacherCourseRow({ course }: TeacherCourseRowProps) {
     const isDraft = course.status === "draft";
     const badge = STATUS_BADGES[course.status];
     // TODO: the edit course page comes later
@@ -95,7 +95,7 @@ export function MyCourseRow({ course }: MyCourseRowProps) {
                         </Link>
                     </Button>
                 )}
-                <MyCourseActions
+                <TeacherCourseActions
                     courseId={course.id}
                     courseTitle={course.title}
                     courseSlug={course.slug}
