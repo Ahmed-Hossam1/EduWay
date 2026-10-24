@@ -8,14 +8,14 @@ import { Separator } from "@/components/ui/separator";
 import { RatingStars } from "@/components/shared/RatingStars";
 import { coursesFilterGroups, coursesRatingOptions } from "../data";
 import { FilterGroup, FilterOption } from "../types";
-import { useCoursesSearchParams } from "../hooks/useCoursesSearchParams";
+import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
 
 type CoursesFiltersProps = {
     categoriesPromise: Promise<FilterOption[]>;
 };
 
 export function CoursesFilters({ categoriesPromise }: CoursesFiltersProps) {
-    const { getValue, getValues, updateParams } = useCoursesSearchParams();
+    const { getValue, getValues, updateParams } = useUrlSearchParams();
 
     // Categories come from the database, the other groups are static
     const categories = use(categoriesPromise);

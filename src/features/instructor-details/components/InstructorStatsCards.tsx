@@ -1,7 +1,6 @@
 import { use } from "react";
 import { BookOpen, Star, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { formatCompactNumber } from "@/features/courses/utils/format";
 import { InstructorStats } from "../types";
 
@@ -31,16 +30,6 @@ export function InstructorStatsCards({ statsPromise }: InstructorStatsCardsProps
                     <p className="mt-1 text-xl font-black text-foreground sm:text-2xl">{item.value}</p>
                     <p className="text-xs text-muted-foreground">{item.label}</p>
                 </Card>
-            ))}
-        </div>
-    );
-}
-
-export function InstructorStatsCardsSkeleton() {
-    return (
-        <div className="grid grid-cols-3 gap-3">
-            {[1, 2, 3].map((item) => (
-                <Skeleton key={item} className="h-24 rounded-2xl" />
             ))}
         </div>
     );

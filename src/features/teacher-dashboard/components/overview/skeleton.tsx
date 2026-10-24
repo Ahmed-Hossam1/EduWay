@@ -76,3 +76,61 @@ export function NewStudentsCardSkeleton() {
         </Card>
     );
 }
+
+export function RecentSalesCardSkeleton() {
+    return (
+        <Card>
+            <CardHeader>
+                <Skeleton className="h-5 w-28" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+                {[1, 2, 3].map((item) => (
+                    <div key={item} className="flex items-center gap-3">
+                        <Skeleton className="h-8 w-1" />
+                        <div className="flex-1 space-y-1.5">
+                            <Skeleton className="h-3 w-3/4" />
+                            <Skeleton className="h-2.5 w-1/2" />
+                        </div>
+                        <Skeleton className="h-5 w-14 rounded-full" />
+                    </div>
+                ))}
+            </CardContent>
+        </Card>
+    );
+}
+
+export function TopCoursesFanSkeleton() {
+    return (
+        <Card className="sm:col-span-2">
+            <CardContent className="grid gap-4 sm:grid-cols-[1fr_1.3fr] sm:items-center">
+                <div>
+                    <Skeleton className="h-5 w-28" />
+                    <Skeleton className="mt-2 h-3 w-48" />
+                    <div className="mt-3 space-y-2">
+                        {[1, 2, 3].map((item) => (
+                            <Skeleton key={item} className="h-3 w-full" />
+                        ))}
+                    </div>
+                </div>
+                <Skeleton className="mx-auto h-36 w-44 rounded-xl" />
+            </CardContent>
+        </Card>
+    );
+}
+
+export function TeacherProfileCardSkeleton() {
+    return (
+        <Card className="items-center">
+            <CardContent className="flex w-full flex-col items-center">
+                <Skeleton className="size-16 rounded-full" />
+                <Skeleton className="mt-3 h-4 w-28" />
+                <Skeleton className="mt-2 h-3 w-36" />
+                <div className="mt-4 grid w-full grid-cols-3 gap-2">
+                    {[1, 2, 3].map((item) => (
+                        <Skeleton key={item} className="h-10" />
+                    ))}
+                </div>
+            </CardContent>
+        </Card>
+    );
+}

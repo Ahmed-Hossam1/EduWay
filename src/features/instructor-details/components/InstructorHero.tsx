@@ -15,7 +15,8 @@ import { getInstructorName } from "@/features/courses/utils/format";
 import { Instructor, InstructorStats } from "../types";
 import { EXPERIENCE_LABELS } from "../utils/format";
 import { InstructorSocialLinks } from "./InstructorSocialLinks";
-import { InstructorStatsCards, InstructorStatsCardsSkeleton } from "./InstructorStatsCards";
+import { InstructorStatsCards } from "./InstructorStatsCards";
+import { InstructorStatsCardsSkeleton } from "./skeleton";
 
 type InstructorHeroProps = {
     instructor: Instructor;

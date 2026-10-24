@@ -1,31 +1,13 @@
 import { use } from "react";
 import { CircleCheck } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { EarningsOverview } from "../../types";
-import { formatMoney, toPoints } from "../../utils/chart";
+import { formatMoney, formatMonth, toPoints } from "../../utils/chart";
+import { ChangePill } from "./ChangePill";
 
 type EarningsChartProps = {
     earningsPromise: Promise<EarningsOverview>;
 };
-
-// A small "+5.5%" / "-1.2%" pill (green up, red down)
-function ChangePill({ value }: { value: number }) {
-    const isUp = value >= 0;
-    return (
-        <span
-            className={cn(
-                "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
-                isUp
-                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300"
-                    : "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300",
-            )}
-        >
-            {isUp ? "+" : ""}
-            {value}%
-        </span>
-    );
-}
 
 const CHART_WIDTH = 600;
 const CHART_HEIGHT = 140;
@@ -58,7 +40,7 @@ export function EarningsChart({ earningsPromise }: EarningsChartProps) {
                     <div className="rounded-xl border border-border px-3 py-2">
                         <p className="text-[11px] text-muted-foreground">Completion</p>
                         <p className="flex items-center gap-1.5 text-sm font-bold">
-                            {earnings.completionRate}% <ChangePill value={earnings.completionChange} />
+                            {earnings.completionRate}%
                         </p>
                     </div>
                     <div className="rounded-xl border border-border px-3 py-2">
@@ -89,7 +71,7 @@ export function EarningsChart({ earningsPromise }: EarningsChartProps) {
                 {/* month names under the chart */}
                 <div className="mt-2 flex justify-between text-[11px] text-muted-foreground">
                     {earnings.months.map((month) => (
-                        <span key={month.label}>{month.label}</span>
+                        <span key={month.month}>{formatMonth(month.month)}</span>
                     ))}
                 </div>
             </CardContent>

@@ -8,7 +8,6 @@ import { cn, timeAgo } from "@/lib/utils";
 import { MyNotifications } from "../types";
 import { notificationIcons } from "../data/notificationIcons";
 import { useMarkAllRead } from "../hooks/useMarkAllRead";
-import { use } from "react";
 
 type NotificationsBellProps = {
     notifications: MyNotifications;

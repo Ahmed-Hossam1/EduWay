@@ -1,6 +1,6 @@
 "use client";
 import { use } from "react";
-import { useCoursesSearchParams } from "../hooks/useCoursesSearchParams";
+import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
 import { FilterOption } from "../types";
 import { Button } from "@/components/ui/button";
 
@@ -10,7 +10,7 @@ type CoursesCategoryChipsProps = {
 
 export function CoursesCategoryChips({ categoryPromise }: CoursesCategoryChipsProps) {
     const categories = use(categoryPromise);
-    const { getValue, updateParams } = useCoursesSearchParams();
+    const { getValue, updateParams } = useUrlSearchParams();
 
     // The category in the URL (?category=design) → that chip is active
     // No category in the URL → "All" is active

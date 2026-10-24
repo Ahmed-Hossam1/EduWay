@@ -15,10 +15,10 @@ import { Search, Sparkles, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { coursesHeroStats, coursesPopularTopics } from "../data";
 import { useState } from "react";
-import { useCoursesSearchParams } from "../hooks/useCoursesSearchParams";
+import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
 
 export function CoursesHero() {
-    const { getValue, updateParams } = useCoursesSearchParams();
+    const { getValue, updateParams } = useUrlSearchParams();
     const [query, setQuery] = useState<string>(getValue("q") ?? "");
 
     // Runs when the user presses "Search" (or Enter), not on every letter

@@ -3,7 +3,6 @@
 import { use } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { UserAvatar } from "@/features/profile/components/UserAvatar";
 import { OverviewStats } from "../../types";
@@ -15,7 +14,7 @@ type TeacherProfileCardProps = {
 /**
  * The teacher card, from 2 places:
  *   name + photo + headline → useProfile()  (React Query: updates by itself after Profile settings)
- *   courses + students      → statsPromise  (server, the same data as the stats cards)
+ *   courses + new students  → statsPromise  (server, the same data as the stats cards)
  */
 export function TeacherProfileCard({ statsPromise }: TeacherProfileCardProps) {
     const stats = use(statsPromise); // waits inside the <Suspense> of TeacherOverview
@@ -23,8 +22,8 @@ export function TeacherProfileCard({ statsPromise }: TeacherProfileCardProps) {
 
     const fullName = `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim() || "Teacher";
     const numbers = [
-        { label: "Courses", value: String(stats.publishedCourses + stats.draftCourses) },
-        { label: "Students", value: stats.totalStudents.toLocaleString("en-US") },
+        { label: "Courses", value: String(stats.totalCourses) },
+        { label: "New students", value: String(stats.studentsLast30Days) }, // the last 30 days
         { label: "Rating", value: "—" }, // TODO: when reviews exist
     ];
 
@@ -61,23 +60,6 @@ export function TeacherProfileCard({ statsPromise }: TeacherProfileCardProps) {
                             <p className="text-lg font-black">{number.value}</p>
                             <p className="text-[11px] text-muted-foreground">{number.label}</p>
                         </div>
-                    ))}
-                </div>
-            </CardContent>
-        </Card>
-    );
-}
-
-export function TeacherProfileCardSkeleton() {
-    return (
-        <Card className={cn("items-center")}>
-            <CardContent className="flex w-full flex-col items-center">
-                <Skeleton className="size-16 rounded-full" />
-                <Skeleton className="mt-3 h-4 w-28" />
-                <Skeleton className="mt-2 h-3 w-36" />
-                <div className="mt-4 grid w-full grid-cols-3 gap-2">
-                    {[1, 2, 3].map((item) => (
-                        <Skeleton key={item} className="h-10" />
                     ))}
                 </div>
             </CardContent>

@@ -1,33 +1,20 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { COURSES_PAGE_SIZE } from "../schemas/coursesQuerySchema";
-import { Course, CourseDurationFilter, CoursesResponse, CourseSort, GetCoursesParams } from "../types";
-import { CourseRow, flattenCourse } from "../utils/flattenCourse";
+import { Course, CoursesResponse, GetCoursesParams } from "../types";
 
-// A sort function for every sort option
-const sorters: Record<CourseSort, (a: Course, b: Course) => number> = {
-    popular: (a, b) => b.students_count - a.students_count,
-    rating: (a, b) => b.rating_avg - a.rating_avg,
-    newest: (a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime(),
-    "price-asc": (a, b) => a.price - b.price,
-    "price-desc": (a, b) => b.price - a.price,
-};
-
-// Is the course duration inside one of the chosen ranges?
-// 14820 seconds = 4.1 hours → inside "3-10"
-const isInDurationRange = (durationSeconds: number, ranges: CourseDurationFilter[]) => {
-    const hours = durationSeconds / 3600;
-
-    return ranges.some((range) => {
-        if (range === "0-3") return hours < 3;
-        if (range === "3-10") return hours >= 3 && hours < 10;
-        return hours >= 10; // "10-plus"
-    });
+// What search_courses() returns (database function): one page + how many courses match in total
+type SearchCoursesResult = {
+    courses: Course[];
+    totalCount: number;
 };
 
 /**
  * Server only: returns one page of courses after search, filters and sort.
- * Used by the /courses page, the home page and /api/courses.
+ * Used by the /courses page, the home page, the related courses and the instructor page.
+ *
+ * The database does the work (search_courses): it filters, sorts and returns ONLY this page,
+ * so we never load all the courses into Next.js.
  */
 export const getCourses = async (
     params: GetCoursesParams,
@@ -36,60 +23,29 @@ export const getCourses = async (
     // Default values when the param is not in the URL
     const { q, category, level, price, duration, rating, instructorId, sort = "popular", page = 1 } = params;
 
-    // 1- Get all published courses + their instructor + their categories
     const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase
-        .from("courses")
-        .select(
-            `
-            *,
-            instructor:profiles!courses_instructor_id_fkey ( id, first_name, last_name, avatar_url ),
-            course_categories ( category:categories ( id, name, slug ) )
-        `,
-        )
-        .eq("status", "published");
+    const { data, error } = await supabase.rpc("search_courses", {
+        p_q: q ?? null,
+        p_categories: category ?? null,
+        p_levels: level ?? null,
+        p_prices: price ?? null,
+        p_durations: duration ?? null,
+        p_min_rating: rating ?? null,
+        p_instructor: instructorId ?? null,
+        p_sort: sort,
+        p_page: page,
+        p_page_size: pageSize,
+    });
 
     if (error) throw error;
 
-    // course_categories: [{ category: {...} }]  →  categories: [{...}]
-    const allCourses: Course[] = (data as unknown as CourseRow[]).map(flattenCourse);
+    const { courses, totalCount } = data as SearchCoursesResult;
 
-    // 2- Filter: a course stays only if it passes every filter the user chose
-    const filtered = allCourses.filter((course) => {
-        // search
-        if (q && !course.title.toLowerCase().includes(q.toLowerCase())) return false;
-
-        // category: the course must have at least one of the chosen categories
-        if (category && !course.categories.some((c) => category.includes(c.slug))) return false;
-
-        // level
-        if (level && !level.includes(course.level)) return false;
-
-        // price: free = 0, paid = more than 0
-        const coursePrice = course.price === 0 ? "free" : "paid";
-        if (price && !price.includes(coursePrice)) return false;
-
-        // duration
-        if (duration && !isInDurationRange(course.duration_seconds, duration)) return false;
-
-        // rating: 4 → only courses rated 4 or more
-        if (rating && course.rating_avg < rating) return false;
-
-        // instructor: only the courses of this teacher
-        if (instructorId && course.instructor.id !== instructorId) return false;
-
-        return true;
-    });
-
-    // 3- Sort (copy first so we don't change the original array)
-    const sorted = [...filtered].sort(sorters[sort]);
-
-    // 4- Paginate
-    const totalCount = sorted.length;
-    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize;
-    const courses = sorted.slice(from, to);
-
-    return { courses, page, pageSize, totalCount, totalPages };
+    return {
+        courses,
+        page,
+        pageSize,
+        totalCount,
+        totalPages: Math.max(1, Math.ceil(totalCount / pageSize)), // simple math → stays here
+    };
 };

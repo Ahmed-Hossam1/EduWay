@@ -16,7 +16,7 @@ export const useLogout = () => {
 
             return { prevProfile };
         },
-        onError: (err, variables, context) => {
+        onError: (_error, _variables, context) => { // _ = not used, only context is needed
             queryClient.setQueryData(["profile"], context?.prevProfile);
         },
         onSuccess: () => {

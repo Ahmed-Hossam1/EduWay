@@ -1,13 +1,11 @@
 import { Suspense } from "react";
 import { CoursesFilters } from "./components/CoursesFilters";
 import { CoursesHero } from "./components/CoursesHero";
-import { CoursesPagination } from "./components/CoursesPagination";
 import { CoursesSkeleton } from "./components/CoursesSkeleton";
 import { CoursesToolbar } from "./components/CoursesToolbar";
 import { CoursesResponse, FilterOption } from "./types";
 import { CoursesGrid } from "./components/CoursesGrid";
 import { CoursesFiltersSkeleton } from "./components/CoursesFiltersSkeleton";
-import { CoursesPaginationSkeleton } from "./components/CoursesPaginationSkeleton";
 
 type CoursesPageProps = {
     coursesPromise: Promise<CoursesResponse>;
@@ -34,13 +32,9 @@ export function CoursesPage({ coursesPromise, categoriesPromise, filtersKey, sea
                     <div className="min-w-0 space-y-8">
                         <CoursesToolbar coursesPromise={coursesPromise} categoryPromise={categoriesPromise} />
 
-                        {/* Course cards: skeleton first, then the real cards when the data arrives */}
+                        {/* Course cards + pagination: skeleton first, then the real cards when the data arrives */}
                         <Suspense key={`grid-${filtersKey}`} fallback={<CoursesSkeleton />}>
                             <CoursesGrid coursesPromise={coursesPromise} />
-                        </Suspense>
-
-                        <Suspense key={`pagination-${filtersKey}`} fallback={<CoursesPaginationSkeleton />}>
-                            <CoursesPagination coursesPromise={coursesPromise} />
                         </Suspense>
                     </div>
                 </div>

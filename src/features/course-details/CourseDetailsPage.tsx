@@ -8,7 +8,8 @@ import { CourseMobileBar } from "./components/CourseMobileBar";
 import { CoursePurchaseCard } from "./components/CoursePurchaseCard";
 import { CourseRequirements } from "./components/CourseRequirements";
 import { CourseTags } from "./components/CourseTags";
-import { RelatedCourses, RelatedCoursesSkeleton } from "./components/RelatedCourses";
+import { RelatedCourses } from "./components/RelatedCourses";
+import { RelatedCoursesSkeleton } from "./components/skeleton";
 import { CourseDetails } from "./types";
 
 type CourseDetailsPageProps = {

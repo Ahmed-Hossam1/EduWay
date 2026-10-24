@@ -2,18 +2,17 @@ import { use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { TopCourse } from "../../types";
-import { formatMoney } from "../../utils/chart";
+import { formatCompactNumber } from "@/features/courses/utils/format";
 
 type TopCoursesFanProps = {
     topCoursesPromise: Promise<TopCourse[]>;
 };
 
 /**
- * The 3 best-selling courses as stacked cards.
+ * The 3 published courses with the most students, as stacked cards.
  * Hover the stack → the cards fan out (CSS only: "group" on the parent, "group-hover:" on each card).
  *   card 1 → left + turn left, card 2 → up, card 3 → right + turn right
  */
@@ -45,7 +44,7 @@ export function TopCoursesFan({ topCoursesPromise }: TopCoursesFanProps) {
                     {/* header inside the left column (the stack is on the right) */}
                     <CardHeader className="px-0">
                         <CardTitle className="font-bold">Top courses</CardTitle>
-                        <CardDescription className="text-xs">Your 3 best-selling courses. Hover to see them all.</CardDescription>
+                        <CardDescription className="text-xs">Your 3 most popular courses. Hover to see them all.</CardDescription>
                     </CardHeader>
 
                     <ul className="mt-3 space-y-1 text-xs">
@@ -54,7 +53,7 @@ export function TopCoursesFan({ topCoursesPromise }: TopCoursesFanProps) {
                                 <span className="truncate text-muted-foreground">
                                     {index + 1}. {course.title}
                                 </span>
-                                <span className="shrink-0 font-semibold">{formatMoney(course.earnings)}</span>
+                                <span className="shrink-0 font-semibold">{formatCompactNumber(course.students_count)} students</span>
                             </li>
                         ))}
                     </ul>
@@ -76,33 +75,20 @@ export function TopCoursesFan({ topCoursesPromise }: TopCoursesFanProps) {
                                 FAN_POSITIONS[index],
                             )}
                         >
-                            <Image src={course.thumbnailUrl} alt={course.title} fill sizes="176px" className="object-cover" />
+                            <Image
+                                src={course.thumbnail_url ?? "/images/course-web-dev.jpg"}
+                                alt={course.title}
+                                fill
+                                sizes="176px"
+                                className="object-cover"
+                            />
                             <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-2 text-white">
                                 <p className="line-clamp-1 text-[11px] font-semibold">{course.title}</p>
-                                <p className="text-[10px] text-white/80">{course.students} students</p>
+                                <p className="text-[10px] text-white/80">{formatCompactNumber(course.students_count)} students</p>
                             </div>
                         </div>
                     ))}
                 </div>
-            </CardContent>
-        </Card>
-    );
-}
-
-export function TopCoursesFanSkeleton() {
-    return (
-        <Card className="sm:col-span-2">
-            <CardContent className="grid gap-4 sm:grid-cols-[1fr_1.3fr] sm:items-center">
-                <div>
-                    <Skeleton className="h-5 w-28" />
-                    <Skeleton className="mt-2 h-3 w-48" />
-                    <div className="mt-3 space-y-2">
-                        {[1, 2, 3].map((item) => (
-                            <Skeleton key={item} className="h-3 w-full" />
-                        ))}
-                    </div>
-                </div>
-                <Skeleton className="mx-auto h-36 w-44 rounded-xl" />
             </CardContent>
         </Card>
     );

@@ -3,24 +3,32 @@ import { CompleteProfileCard } from "./components/overview/CompleteProfileCard";
 import { EarningsChart } from "./components/overview/EarningsChart";
 import { InsightCard } from "./components/overview/InsightCard";
 import { NewStudentsCard } from "./components/overview/NewStudentsCard";
-import { RecentSalesCard, RecentSalesCardSkeleton } from "./components/overview/RecentSalesCard";
-import { EarningsChartSkeleton, InsightCardSkeleton, NewStudentsCardSkeleton, StatsCardsSkeleton } from "./components/overview/skeleton";
+import { RecentSalesCard } from "./components/overview/RecentSalesCard";
+import {
+    EarningsChartSkeleton,
+    InsightCardSkeleton,
+    NewStudentsCardSkeleton,
+    RecentSalesCardSkeleton,
+    StatsCardsSkeleton,
+    TeacherProfileCardSkeleton,
+    TopCoursesFanSkeleton,
+} from "./components/overview/skeleton";
 import { StatsCards } from "./components/overview/StatsCards";
-import { TeacherProfileCard, TeacherProfileCardSkeleton } from "./components/overview/TeacherProfileCard";
-import { TopCoursesFan, TopCoursesFanSkeleton } from "./components/overview/TopCoursesFan";
+import { TeacherProfileCard } from "./components/overview/TeacherProfileCard";
+import { TopCoursesFan } from "./components/overview/TopCoursesFan";
 import { getOverviewStats } from "./server/getOverviewStats";
 import { getEarningsOverview } from "./server/getEarningsOverview";
-import { getTopCourses } from "./server/getTopCourses";
-import { getRecentSales } from "./server/getRecentSales";
-import { getOverviewInsight } from "./server/getOverviewInsight";
-import { getNewStudents } from "./server/getNewStudents";
+import { getTeacherTopCourses } from "./server/getTeacherTopCourses";
+import { getTeacherRecentSales } from "./server/getTeacherRecentSales";
+import { getTeacherNewStudents } from "./server/getTeacherNewStudents";
 
 /**
  * The teacher Overview: a bento grid of cards.
  *
  * Streaming: all the functions START together here (no await),
  * then each card has its OWN <Suspense> + skeleton → it appears as soon as ITS data is ready.
- * Inside, they share 3 cached queries (server/base): courses, sales, enrollments → asked once each.
+ * The numbers + the chart come ready from 2 database functions (supabase.rpc);
+ * the lists (top courses, sales, students) are one small query each (sorted + limited in the database).
  *
  * Grid: 1 column on mobile, 2 on tablets, 4 on big screens ("sm:col-span-2" = a wide card).
  */
@@ -30,12 +38,11 @@ type TeacherOverviewProps = {
 
 export function TeacherOverview({ teacherId }: TeacherOverviewProps) {
     // start everything now, in parallel (no await → the page doesn't wait)
-    const statsPromise = getOverviewStats(teacherId);
-    const earningsPromise = getEarningsOverview(teacherId);
-    const topCoursesPromise = getTopCourses(teacherId);
-    const salesPromise = getRecentSales(teacherId);
-    const insightPromise = getOverviewInsight(teacherId);
-    const studentsPromise = getNewStudents(teacherId);
+    const statsPromise = getOverviewStats();
+    const earningsPromise = getEarningsOverview();
+    const topCoursesPromise = getTeacherTopCourses(teacherId);
+    const salesPromise = getTeacherRecentSales(teacherId);
+    const studentsPromise = getTeacherNewStudents(teacherId);
 
     return (
         <div className="space-y-6">
@@ -47,7 +54,7 @@ export function TeacherOverview({ teacherId }: TeacherOverviewProps) {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {/* Row 1: the 4 numbers */}
                 <Suspense fallback={<StatsCardsSkeleton />}>
-                    <StatsCards statsPromise={statsPromise} />
+                    <StatsCards statsPromise={statsPromise} earningsPromise={earningsPromise} />
                 </Suspense>
 
                 {/* Row 2: chart (3 columns wide) + profile */}
@@ -70,7 +77,7 @@ export function TeacherOverview({ teacherId }: TeacherOverviewProps) {
 
                 {/* Row 4: insight (wide) + new students (wide) */}
                 <Suspense fallback={<InsightCardSkeleton />}>
-                    <InsightCard insightPromise={insightPromise} />
+                    <InsightCard statsPromise={statsPromise} />
                 </Suspense>
                 <Suspense fallback={<NewStudentsCardSkeleton />}>
                     <NewStudentsCard studentsPromise={studentsPromise} />

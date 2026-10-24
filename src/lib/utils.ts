@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import z from "zod";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -21,4 +22,10 @@ export function timeAgo(date: string): string {
     if (Math.abs(days) < 30) return relativeTimeFormatter.format(days, "day");
 
     return new Date(date).toLocaleDateString("en", { day: "numeric", month: "short" });
+}
+
+export function isSafeQuery(schema: z.ZodTypeAny, params: unknown): unknown {
+    const parsed = schema.safeParse(params);
+    const query = parsed.success ? parsed.data : schema.parse({});
+    return query;
 }

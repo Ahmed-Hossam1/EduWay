@@ -14,11 +14,11 @@ import { ArrowRight, Check, Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 // same URL helper as /courses (it works with the current page path)
-import { useCoursesSearchParams } from "@/features/courses/hooks/useCoursesSearchParams";
+import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
 import { highlights, teachPerks } from "../data";
 
 export function InstructorsHero() {
-    const { getValue, updateParams } = useCoursesSearchParams();
+    const { getValue, updateParams } = useUrlSearchParams();
     const [query, setQuery] = useState<string>(getValue("q") ?? "");
 
     // Runs when the user presses "Search" (or Enter), not on every letter

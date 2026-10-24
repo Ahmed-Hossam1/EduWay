@@ -1,10 +1,10 @@
 "use client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { coursesSortOptions } from "../data";
-import { useCoursesSearchParams } from "../hooks/useCoursesSearchParams";
+import { useUrlSearchParams } from "@/hooks/useUrlSearchParams";
 
 export function CoursesSortSelect() {
-    const { getValue, updateParams } = useCoursesSearchParams();
+    const { getValue, updateParams } = useUrlSearchParams();
 
     // no sort in the URL → "popular" (same default as getCourses)
     const currentSort = getValue("sort") ?? "popular";

@@ -9,6 +9,12 @@ type EnrollmentRow = {
     course: CourseRow | null; // null = the course was unpublished (hidden by RLS)
 };
 
+// One row of get_my_completed_lessons() (database function)
+type CompletedLessonsRow = {
+    course_id: string;
+    completed_lessons: number;
+};
+
 /**
  * Server only: the logged-in user's courses for the "My courses" page,
  * newest enrollment first, with how many lessons he completed in each one.
@@ -39,19 +45,15 @@ export const getMyCourses = async (): Promise<EnrolledCourse[]> => {
 
     if (error) throw error;
 
-    // 2- his completed lessons, with the course each lesson belongs to
-    const { data: progress, error: progressError } = await supabase
-        .from("lesson_progress")
-        .select("lesson:lessons ( section:sections ( course_id ) )")
-        .eq("user_id", user.id);
+    // 2- how many lessons he completed in each course (counted in the database, one row per course)
+    const { data: completed, error: completedError } = await supabase.rpc("get_my_completed_lessons");
 
-    if (progressError) throw progressError;
+    if (completedError) throw completedError;
 
-    // count completed lessons per course: { "course-id": 3, ... }
+    // [{ course_id: "abc", completed_lessons: 3 }] → { abc: 3 }
     const completedByCourse: Record<string, number> = {};
-    for (const item of progress ?? []) {
-        const courseId = (item.lesson as unknown as { section: { course_id: string } } | null)?.section?.course_id;
-        if (courseId) completedByCourse[courseId] = (completedByCourse[courseId] ?? 0) + 1;
+    for (const row of (completed ?? []) as CompletedLessonsRow[]) {
+        completedByCourse[row.course_id] = row.completed_lessons;
     }
 
     return (enrollments as unknown as EnrollmentRow[])

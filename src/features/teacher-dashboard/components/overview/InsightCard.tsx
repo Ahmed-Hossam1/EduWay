@@ -1,16 +1,25 @@
 import { use } from "react";
 import { Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { OverviewInsight } from "../../types";
+import { OverviewStats } from "../../types";
 
 type InsightCardProps = {
-    insightPromise: Promise<OverviewInsight>;
+    statsPromise: Promise<OverviewStats>; // the SAME promise as the stats cards → no extra call
 };
 
-// One sentence about the teacher's numbers ("Enrollments are up 5.4%...")
-export function InsightCard({ insightPromise }: InsightCardProps) {
-    const insight = use(insightPromise); // waits inside the <Suspense> of TeacherOverview
-    const TrendIcon = insight.trend === "up" ? TrendingUp : TrendingDown;
+// One sentence about the new students: the last 30 days vs the 30 days before
+export function InsightCard({ statsPromise }: InsightCardProps) {
+    const { studentsLast30Days: last30, studentsPrevious30Days: before30 } = use(statsPromise);
+
+    const isUp = last30 >= before30;
+    const TrendIcon = isUp ? TrendingUp : TrendingDown;
+    const students = `${last30} new ${last30 === 1 ? "student" : "students"}`;
+
+    // nothing to compare with yet → just say how many
+    const text =
+        before30 === 0
+            ? `${students} joined your courses in the last 30 days.`
+            : `${students} in the last 30 days, ${isUp ? "up" : "down"} from ${before30} the 30 days before.`;
 
     return (
         <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2">
@@ -25,7 +34,7 @@ export function InsightCard({ insightPromise }: InsightCardProps) {
             <CardContent>
                 <p className="flex items-center gap-2 text-sm">
                     <TrendIcon className="size-4 shrink-0 text-primary" />
-                    {insight.text}
+                    {text}
                 </p>
             </CardContent>
         </Card>

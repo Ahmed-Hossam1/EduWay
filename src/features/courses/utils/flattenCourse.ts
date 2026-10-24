@@ -17,7 +17,7 @@ export type CourseRow = Omit<Course, "categories"> & {
  *   categories:        [{ id, name, slug }, ...]
  *
  * Every other column stays the same.
- * Used by getCourses, getCartCourses, getWishlistCourses and getMyCourses.
+ * Used by getCartCourses, getWishlistCourses and getMyCourses (getCourses gets this shape ready from search_courses).
  */
 export const flattenCourse = (row: CourseRow): Course => {
     const { course_categories, ...course } = row;

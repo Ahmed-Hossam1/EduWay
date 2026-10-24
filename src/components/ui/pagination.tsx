@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "next/link";
 import { cn } from "cn";
 
 import { Button } from "@/components/ui/button";
@@ -27,12 +28,12 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 type PaginationLinkProps = {
     isActive?: boolean;
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
-    React.ComponentProps<"a">;
+    React.ComponentProps<typeof Link>; // a Next <Link>  changing the page has no full reload
 
 function PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps) {
     return (
         <Button variant={isActive ? "outline" : "ghost"} size={size} className={cn(className)} asChild>
-            <a
+            <Link
                 aria-current={isActive ? "page" : undefined}
                 data-slot="pagination-link"
                 data-active={isActive}

@@ -1,6 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { NewStudent } from "../../types";
 import { use } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { timeAgo } from "@/lib/utils";
+import { UserAvatar } from "@/features/profile/components/UserAvatar";
+import { NewStudent } from "../../types";
 
 type NewStudentsCardProps = {
     studentsPromise: Promise<NewStudent[]>;
@@ -8,7 +10,7 @@ type NewStudentsCardProps = {
 
 // The latest students who joined the teacher's courses
 export function NewStudentsCard({ studentsPromise }: NewStudentsCardProps) {
-    const students = use(studentsPromise);
+    const students = use(studentsPromise); // waits inside the <Suspense> of TeacherOverview
 
     return (
         <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 sm:col-span-2">
@@ -23,18 +25,29 @@ export function NewStudentsCard({ studentsPromise }: NewStudentsCardProps) {
                 )}
 
                 <ul>
-                    {students.map((student) => (
-                        <li key={student.id} className="flex items-center gap-3 border-t border-border py-2.5">
-                            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                                {student.initials}
-                            </span>
-                            <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium">{student.name}</p>
-                                <p className="truncate text-xs text-muted-foreground">{student.courseTitle}</p>
-                            </div>
-                            <span className="text-xs text-muted-foreground">{student.timeAgo}</span>
-                        </li>
-                    ))}
+                    {students.map((enrollment) => {
+                        const { student } = enrollment;
+                        const name = `${student?.first_name ?? ""} ${student?.last_name ?? ""}`.trim() || "A student";
+
+                        return (
+                            // unique: one student can join many courses
+                            <li
+                                key={`${enrollment.user_id}-${enrollment.course_id}`}
+                                className="flex items-center gap-3 border-t border-border py-2.5"
+                            >
+                                <UserAvatar
+                                    firstName={student?.first_name ?? null}
+                                    lastName={student?.last_name ?? null}
+                                    avatarUrl={student?.avatar_url ?? null}
+                                />
+                                <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-medium">{name}</p>
+                                    <p className="truncate text-xs text-muted-foreground">{enrollment.course.title}</p>
+                                </div>
+                                <span className="text-xs text-muted-foreground">{timeAgo(enrollment.enrolled_at)}</span>
+                            </li>
+                        );
+                    })}
                 </ul>
             </CardContent>
         </Card>

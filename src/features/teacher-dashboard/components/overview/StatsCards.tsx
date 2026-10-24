@@ -1,56 +1,59 @@
 import { use } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { OverviewStats } from "../../types";
-import { formatMoney, toPoints } from "../../utils/chart";
+import { EarningsOverview, OverviewStats } from "../../types";
+import { formatMoney } from "../../utils/chart";
+import { ChangePill } from "./ChangePill";
 
 type StatsCardsProps = {
     statsPromise: Promise<OverviewStats>;
+    earningsPromise: Promise<EarningsOverview>; // the SAME promise as the chart → no extra call
 };
 
 // The 4 cards on top: earnings, new students, courses, enrollments this week (purple)
-export function StatsCards({ statsPromise }: StatsCardsProps) {
+export function StatsCards({ statsPromise, earningsPromise }: StatsCardsProps) {
     const stats = use(statsPromise); // waits inside the <Suspense> of TeacherOverview
-    const maxWeek = Math.max(...stats.earningsByWeek, 1); // 1 → no dividing by 0 when everything is 0
+    const earnings = use(earningsPromise);
+
+    // the last month of the list = this month
+    const thisMonth = earnings.months[earnings.months.length - 1]?.value ?? 0;
+    const monthValues = earnings.months.map((month) => month.value);
+    const maxMonth = Math.max(...monthValues, 1); // 1 → no dividing by 0 when everything is 0
 
     return (
         <>
-            {/* Earnings + small bars */}
+            {/* Earnings this month + small bars (the last 6 months) */}
             <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
                 <CardHeader>
                     <CardDescription>Earnings this month</CardDescription>
+                    <CardAction>
+                        <ChangePill value={earnings.revenueChange} />
+                    </CardAction>
                 </CardHeader>
                 <CardContent className="flex items-end justify-between gap-3">
-                    <p className="text-2xl font-black tracking-tight">{formatMoney(stats.earningsThisMonth)}</p>
+                    <p className="text-2xl font-black tracking-tight">{formatMoney(thisMonth)}</p>
                     <div className="flex h-8 items-end gap-1">
-                        {stats.earningsByWeek.map((value, index) => (
+                        {monthValues.map((value, index) => (
                             <span
                                 key={index}
                                 className="w-1.5 rounded-sm bg-primary/30 last:bg-primary"
-                                style={{ height: `${Math.max(8, (value / maxWeek) * 100)}%` }}
+                                style={{ height: `${Math.max(8, (value / maxMonth) * 100)}%` }}
                             />
                         ))}
                     </div>
                 </CardContent>
             </Card>
 
-            {/* New students + small line */}
+            {/* New students (last 30 days vs the 30 days before) */}
             <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10">
                 <CardHeader>
                     <CardDescription>New students</CardDescription>
                 </CardHeader>
-                <CardContent className="flex items-end justify-between gap-3">
-                    <p className="text-2xl font-black tracking-tight">{stats.newStudents}</p>
-                    <svg viewBox="0 0 60 28" className="h-7 w-16 overflow-visible" aria-hidden="true">
-                        <polyline
-                            points={toPoints(stats.studentsTrend, 60, 28)}
-                            fill="none"
-                            className="stroke-primary"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
+                <CardContent>
+                    <p className="text-2xl font-black tracking-tight">{stats.studentsLast30Days}</p>
+                    <p className="text-xs text-muted-foreground">
+                        Last 30 days · {stats.studentsPrevious30Days} the 30 days before
+                    </p>
                 </CardContent>
             </Card>
 
@@ -60,7 +63,7 @@ export function StatsCards({ statsPromise }: StatsCardsProps) {
                     <CardDescription>Courses</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-2xl font-black tracking-tight">{stats.publishedCourses + stats.draftCourses}</p>
+                    <p className="text-2xl font-black tracking-tight">{stats.totalCourses}</p>
                     <p className="text-xs text-muted-foreground">
                         {stats.publishedCourses} published · {stats.draftCourses} drafts
                     </p>
@@ -75,18 +78,9 @@ export function StatsCards({ statsPromise }: StatsCardsProps) {
                         <Badge className="bg-primary-foreground/20 text-primary-foreground">● Live</Badge>
                     </CardAction>
                 </CardHeader>
-                <CardContent className="flex items-end justify-between gap-3">
+                <CardContent>
                     <p className="text-2xl font-black tracking-tight">{stats.enrollmentsThisWeek}</p>
-                    <svg viewBox="0 0 70 28" className="h-7 w-20 overflow-visible" aria-hidden="true">
-                        <polyline
-                            points={toPoints(stats.enrollmentsTrend, 70, 28)}
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
+                    <p className="text-xs text-primary-foreground/80">Last 7 days</p>
                 </CardContent>
             </Card>
         </>
