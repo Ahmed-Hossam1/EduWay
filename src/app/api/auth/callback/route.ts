@@ -60,10 +60,9 @@ export async function GET(request: Request) {
         }
 
         // New OAuth user:
-        // No profile means the user still needs to choose a role.
-        //
-        // The profile will be created later by:
-        // POST /api/auth/choose-role (the /account/choose-role page)
+        // The signup trigger always creates the profile; a new Google / GitHub user has role = null
+        // → getAuthRedirectRoute() below sends him to /account/choose-role.
+        // (no profile at all should never happen — choose-role is the safe place anyway)
         if (!profile) {
             return NextResponse.redirect(new URL("/account/choose-role", request.url));
         }

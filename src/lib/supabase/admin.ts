@@ -6,10 +6,10 @@ import { createClient } from "@supabase/supabase-js";
  RLS does NOT apply to it => it can write anything.
  Use it ONLY on the server, and only after checking the user yourself.
 
- Used by the checkout:
- - create orders / order_items (users can only read them)
- - create enrollments for PAID courses after Stripe says "paid"
-   (from the browser RLS allows free courses only)
+ Used ONLY to confirm a Stripe payment (fulfillOrder / failOrder):
+ Stripe calls our webhook, there is no logged-in user, and the database functions
+ fulfill_order / fail_order can be called by the server only (a user can never mark his order as paid).
+ Everything else in the app uses the normal client: the database rules (RLS) protect the data.
 
  "server-only" => the build fails if a client component imports this file,
  so the secret key can never reach the browser.

@@ -12,7 +12,7 @@ const chooseRoleSchema = z.object({
 export async function POST(request: NextRequest) {
     try {
         // 1- Validate the role (a broken body → 400, not a crash)
-        const body = await request.json().catch(() => null);
+        const body = await request.json()
         const result = chooseRoleSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json({ message: "A valid role is required" }, { status: 400 });

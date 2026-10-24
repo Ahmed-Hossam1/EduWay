@@ -10,7 +10,7 @@ const SENT_MESSAGE = "If this email is waiting for confirmation, we sent a new l
 // The link in the email → /api/auth/confirm (type=email) → /account/choose-role
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json();
+        const body = await request.json()
         const result = resendConfirmationSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json({ message: "Enter a valid email address" }, { status: 400 });

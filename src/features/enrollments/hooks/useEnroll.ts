@@ -8,7 +8,7 @@ import { enrollmentsQueryKey } from "./useEnrollments";
 /**
  * "Enroll for free" — 3 lists change right away:
  * the buttons switch to "Go to course", and the course leaves the cart + wishlist
- * (the database trigger removes it there too).
+ * (a database trigger removes it there too — the same happens after a Stripe payment).
  */
 export const useEnroll = () =>
     useOptimisticMutation({

@@ -8,7 +8,7 @@ import { onboardingSchema } from "@/features/auth/onboarding/schemas/onboardingS
 export async function POST(request: NextRequest) {
     try {
         // 1- Check the data again with the SAME schema as the form (never trust the browser)
-        const body = await request.json().catch(() => null);
+        const body = await request.json()
         const result = onboardingSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json(

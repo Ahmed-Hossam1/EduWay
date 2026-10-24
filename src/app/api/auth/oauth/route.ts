@@ -10,7 +10,7 @@ const oauthSchema = z.object({
 // The browser then goes to that url (the Google / GitHub sign-in page).
 // After it, Google / GitHub → Supabase → /api/auth/callback (unchanged).
 export async function POST(request: NextRequest) {
-    const body = await request.json().catch(() => null);
+    const body = await request.json()
     const result = oauthSchema.safeParse(body);
     if (!result.success) {
         return NextResponse.json({ message: "A valid provider is required" }, { status: 400 });

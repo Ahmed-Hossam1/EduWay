@@ -20,7 +20,7 @@ type EnrollButtonProps = {
  * The main button of a course:
  *   - already enrolled → "Go to course"
  *   - free course      → "Enroll for free"  (enrolls right away)
- *   - paid course      → "Enroll now"       (adds to the cart and opens it — paying = next phase)
+ *   - paid course      → "Enroll now"       (adds to the cart, then opens the cart to pay)
  */
 export function EnrollButton({ courseId, price, className }: EnrollButtonProps) {
     const router = useRouter();
@@ -53,9 +53,15 @@ export function EnrollButton({ courseId, price, className }: EnrollButtonProps) 
             return;
         }
 
-        // paid: put it in the cart (if it's not there yet) and go pay
-        if (!cartIds.includes(courseId)) addToCart(courseId);
-        router.push("/cart");
+        // paid: already in the cart → go pay
+        if (cartIds.includes(courseId)) {
+            router.push("/cart");
+            return;
+        }
+
+        // not in the cart yet → open the cart only AFTER it is saved
+        // (otherwise the cart page can load before the course is in it)
+        addToCart(courseId, { onSuccess: () => router.push("/cart") });
     };
 
     return (

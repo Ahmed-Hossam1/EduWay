@@ -6,7 +6,7 @@ import { cartQueryKey } from "./useCart";
 
 /**
  * Add a course to the cart — 2 lists change right away:
- * the cart count goes up AND the course leaves the wishlist (the server removes it there too).
+ * the cart count goes up AND the course leaves the wishlist (a database trigger removes it there too).
  */
 export const useAddToCart = () =>
     useOptimisticMutation({

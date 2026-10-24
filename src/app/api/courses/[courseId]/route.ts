@@ -7,7 +7,7 @@ type Params = {
 };
 
 // DELETE /api/courses/:courseId → deletes a DRAFT course of the logged-in teacher
-// A published course is never deleted: students paid for it (unpublish it instead).
+// A course with students is never deleted (published, or unpublished after people bought it).
 export async function DELETE(_request: Request, { params }: Params) {
     try {
         const { courseId } = await params;
@@ -20,11 +20,24 @@ export async function DELETE(_request: Request, { params }: Params) {
             return NextResponse.json({ message: "Only draft courses can be deleted" }, { status: 409 });
         }
 
-        // RLS: a teacher can delete only HIS draft courses
+        // RLS: a teacher can delete only HIS draft courses that nobody enrolled in / bought
         const supabase = await createSupabaseServerClient();
-        const { error } = await supabase.from("courses").delete().eq("id", courseId).eq("status", "draft");
+        const { data: deleted, error } = await supabase
+            .from("courses")
+            .delete()
+            .eq("id", courseId)
+            .eq("status", "draft")
+            .select("id");
 
         if (error) throw error;
+
+        // nothing deleted → students own this course (it was published before)
+        if (deleted.length === 0) {
+            return NextResponse.json(
+                { message: "Students own this course, so it can't be deleted. Keep it unpublished." },
+                { status: 409 },
+            );
+        }
 
         return NextResponse.json({ message: "Draft deleted" }, { status: 200 });
     } catch (error) {

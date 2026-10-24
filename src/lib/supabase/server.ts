@@ -7,16 +7,10 @@ import { createServerClient } from "@supabase/ssr";
 
  We use `createServerClient` from `@supabase/ssr`
  so Supabase can work with Next.js cookies on the server.
+ The browser never talks to Supabase directly: it calls our /api routes.
 
- Browser → createBrowserClient()
- Server  → createServerClient()
-
- The Browser starts OAuth and receives:
- /callback?code=...
-
- The Server uses that code with:
- exchangeCodeForSession(code)
-- This allows the server to create/read the user's session.
+ OAuth: Google / GitHub send the user back to /api/auth/callback?code=...
+ and the server turns that code into a session with exchangeCodeForSession(code).
 */
 
 export async function createSupabaseServerClient() {

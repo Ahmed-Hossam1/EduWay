@@ -27,7 +27,7 @@ export async function GET() {
 
 const addSchema = z.object({ courseId: z.uuid() });
 
-// POST /api/cart  { courseId } → adds the course to the cart AND removes it from the wishlist
+// POST /api/cart  { courseId } → adds the course to the cart (the database also removes it from the wishlist)
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json().catch(() => null);
@@ -47,7 +47,8 @@ export async function POST(request: NextRequest) {
         }
 
         // 1- add to the cart (double click → no duplicate, no error)
-        //    RLS refuses free / unpublished courses
+        //    RLS refuses free / unpublished / already owned courses.
+        //    A database trigger removes it from his wishlist at the same time.
         const { error: cartError } = await supabase
             .from("cart_items")
             .upsert({ user_id: user.id, course_id: courseId }, { onConflict: "user_id,course_id", ignoreDuplicates: true });
@@ -56,16 +57,6 @@ export async function POST(request: NextRequest) {
             console.error("Add to cart error:", cartError);
             return NextResponse.json({ message: "This course can't be added to the cart" }, { status: 400 });
         }
-
-        // 2- it's in the cart now → it doesn't need to stay in the wishlist
-        //    (if this fails the cart is still fine, so we only log it)
-        const { error: wishlistError } = await supabase
-            .from("wishlist_items")
-            .delete()
-            .eq("user_id", user.id)
-            .eq("course_id", courseId);
-
-        if (wishlistError) console.error("Remove from wishlist after add to cart error:", wishlistError);
 
         return NextResponse.json({ message: "Added to cart" }, { status: 201 });
     } catch (error) {

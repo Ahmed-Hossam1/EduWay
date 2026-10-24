@@ -6,7 +6,7 @@ import { loginSchema } from "@/features/auth/login/schemas/loginSchema";
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
+        const body = await request.json()
 
         // Step 2: Validate request body with Zod schema
         const result = loginSchema.safeParse(body);
