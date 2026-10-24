@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "./server";
+import { getCurrentUser } from "./getCurrentUser";
 
 /**
  * Server only: the logged-in user (or → /auth/login).
@@ -11,10 +11,7 @@ import { createSupabaseServerClient } from "./server";
  *   user.id
  */
 export const getAuthUser = cache(async () => {
-    const supabase = await createSupabaseServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
 
     if (!user) redirect("/auth/login");
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/stripe";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { getPurchasableCourses } from "@/features/checkout/server/getPurchasableCourses";
+import { getPurchasableCart } from "@/features/checkout/server/getPurchasableCart";
 
 // POST /api/checkout (no body) → { url }  = the Stripe payment page
 // We buy the WHOLE cart: the server reads the cart itself, so the browser
@@ -14,11 +14,11 @@ export async function POST() {
         if (!auth.ok) return auth.response;
         const { user } = auth;
 
-        // 2+3- The courses of his cart he can really buy (the rules live in getPurchasableCourses):
-        //      published + paid + not his own course + not owned already
-        const { courses, hasOwnCourse } = await getPurchasableCourses(user.id);
+        // 2- What he can really buy from his cart + the total + the currency (the database applies the rules:
+        //    published + paid + not his own course + not owned already)
+        const { courses, total, currency, mixedCurrencies, hasOwnCourse } = await getPurchasableCart();
 
-        if (courses.length === 0) {
+        if (courses.length === 0 || !currency) {
             // his own course is in the cart (added before the cart API refused it) → tell him clearly
             const message = hasOwnCourse
                 ? "You can't buy your own course. Remove it from your cart."
@@ -27,13 +27,10 @@ export async function POST() {
             return NextResponse.json({ message }, { status: 400 });
         }
 
-        // one Stripe payment = one currency
-        const currency = courses[0].currency;
-        if (courses.some((course) => course.currency !== currency)) {
+        // 3- one Stripe payment = one currency
+        if (mixedCurrencies) {
             return NextResponse.json({ message: "All courses must have the same currency" }, { status: 400 });
         }
-
-        const total = courses.reduce((sum, course) => sum + course.price, 0);
 
         // 4- Save the order (pending) + its courses with the price of today
         //    (admin client: users can only READ orders, see the orders migration)

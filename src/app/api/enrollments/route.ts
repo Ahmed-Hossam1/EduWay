@@ -7,18 +7,14 @@ export async function GET() {
     try {
         const auth = await requireUser();
         if (!auth.ok) return auth.response;
-        const { supabase, user } = auth;
+        const { supabase } = auth;
 
-        const { data, error } = await supabase
-            .from("enrollments")
-            .select("course_id")
-            .eq("user_id", user.id) // a teacher also sees his students' rows → keep only his own
-            .neq("status", "refunded") // a refunded course is not owned anymore
-            .order("enrolled_at", { ascending: false });
+        // the database knows which courses he owns (refunded left out, newest first) → ["id", ...]
+        const { data, error } = await supabase.rpc("get_my_course_ids");
 
         if (error) throw error;
 
-        return NextResponse.json({ courseIds: data.map((item) => item.course_id) }, { status: 200 });
+        return NextResponse.json({ courseIds: data as string[] }, { status: 200 });
     } catch (error) {
         console.error("Get enrollments error:", error);
         return NextResponse.json({ message: "Failed to load your courses" }, { status: 500 });

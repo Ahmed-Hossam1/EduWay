@@ -1,5 +1,6 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/getCurrentUser";
 import { MyNotifications, NotificationType } from "../types";
 
 // How many notifications the bell shows
@@ -10,12 +11,10 @@ const LATEST_COUNT = 10;
  * RLS returns only his own rows.
  */
 export const getMyNotifications = async (): Promise<MyNotifications> => {
-    const supabase = await createSupabaseServerClient();
-
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
     if (!user) return { items: [], unreadCount: 0 };
+
+    const supabase = await createSupabaseServerClient();
 
     // 1- the latest ones (newest first)
     const { data, error } = await supabase
