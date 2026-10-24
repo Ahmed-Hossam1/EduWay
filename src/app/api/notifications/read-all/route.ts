@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 // POST /api/notifications/read-all → every unread notification of the user becomes read
 export async function POST() {
@@ -8,11 +7,10 @@ export async function POST() {
         // 1- Logged in?
         const auth = await requireUser();
         if (!auth.ok) return auth.response;
-        const { user } = auth;
+        const { supabase, user } = auth;
 
-        // 2- Admin client (there is no update policy), but ONLY his rows: .eq("user_id", user.id)
-        const admin = createSupabaseAdminClient();
-        const { error } = await admin
+        // 2- RLS: he can change only read_at, and only on his own notifications
+        const { error } = await supabase
             .from("notifications")
             .update({ read_at: new Date().toISOString() })
             .eq("user_id", user.id)

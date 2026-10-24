@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { checkCourseAccess } from "@/features/teacher-courses/server/checkCourseAccess";
 
 type Params = {
@@ -12,6 +12,7 @@ export async function DELETE(_request: Request, { params }: Params) {
     try {
         const { courseId } = await params;
 
+        // clear messages: 400 / 401 / 403 / 404
         const access = await checkCourseAccess(courseId, "course:delete");
         if (!access.ok) return access.response;
 
@@ -19,9 +20,9 @@ export async function DELETE(_request: Request, { params }: Params) {
             return NextResponse.json({ message: "Only draft courses can be deleted" }, { status: 409 });
         }
 
-        // Admin client: the checks above already made sure it's HIS draft
-        const admin = createSupabaseAdminClient();
-        const { error } = await admin.from("courses").delete().eq("id", courseId).eq("status", "draft");
+        // RLS: a teacher can delete only HIS draft courses
+        const supabase = await createSupabaseServerClient();
+        const { error } = await supabase.from("courses").delete().eq("id", courseId).eq("status", "draft");
 
         if (error) throw error;
 

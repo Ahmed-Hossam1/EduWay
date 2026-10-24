@@ -37,4 +37,3 @@ export const coursesQuerySchema = z.object({
     page: z.coerce.number().int().min(1).default(1),
 });
 
-export type CoursesQuery = z.infer<typeof coursesQuerySchema>;

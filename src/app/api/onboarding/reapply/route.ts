@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/requireUser";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { getProfileById } from "@/features/profile/server/getProfileById";
 
 // POST /api/onboarding/reapply → { nextRoute: "/account/onboarding" }
 // A rejected teacher wants to try again: status rejected → onboarding.
@@ -11,23 +9,16 @@ export async function POST() {
         // 1- Logged in?
         const auth = await requireUser();
         if (!auth.ok) return auth.response;
-        const { user } = auth;
+        const { supabase } = auth;
 
-        // 2- Only a REJECTED teacher can apply again
-        const profile = await getProfileById(user.id);
-        if (profile.role !== "teacher" || profile.status !== "rejected") {
+        // 2- Back to the onboarding: the database allows it only for a REJECTED teacher (false = not allowed)
+        const { data: reapplied, error } = await supabase.rpc("reapply_as_teacher");
+
+        if (error) throw error;
+
+        if (!reapplied) {
             return NextResponse.json({ message: "You can't apply again right now" }, { status: 403 });
         }
-
-        // 3- Back to the onboarding (admin client: a user must never change his own status)
-        const admin = createSupabaseAdminClient();
-        const { error: updateError } = await admin
-            .from("profiles")
-            .update({ status: "onboarding", updated_at: new Date().toISOString() })
-            .eq("id", user.id)
-            .eq("status", "rejected");
-
-        if (updateError) throw updateError;
 
         return NextResponse.json({ nextRoute: "/account/onboarding" }, { status: 200 });
     } catch (error) {

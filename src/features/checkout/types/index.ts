@@ -22,7 +22,7 @@ export interface Order {
     order_items: OrderItem[];
 }
 
-// A course of the cart that can go to Stripe (what get_purchasable_cart returns for each course)
+// A course of the order that goes to Stripe (what create_order returns for each course)
 export interface PurchasableCourse {
     id: string;
     title: string;
@@ -31,11 +31,10 @@ export interface PurchasableCourse {
     thumbnail_url: string | null;
 }
 
-// What get_purchasable_cart() returns (database function): ready for the checkout route
-export interface PurchasableCart {
-    courses: PurchasableCourse[]; // what he can buy now (published + paid + not his own + not owned)
-    total: number; // the sum of their prices
-    currency: string | null; // null when "courses" is empty
-    mixedCurrencies: boolean; // true → they can't be paid in one Stripe payment
-    hasOwnCourse: boolean; // his own course is in the cart → a clear message
+// What create_order() returns (database function): the new pending order, ready for Stripe
+export interface CreatedOrder {
+    orderId: string;
+    courses: PurchasableCourse[]; // what he can buy (published + paid + not his own + not owned)
+    total: number; // the sum of their prices (the database prices)
+    currency: string; // one currency for the whole order
 }

@@ -22,24 +22,15 @@ export async function POST(request: NextRequest) {
         // 2- Logged in?
         const auth = await requireUser();
         if (!auth.ok) return auth.response;
-        const { supabase, user } = auth;
+        const { supabase } = auth;
 
-        // 3- First status: a teacher starts the onboarding, a student is ready
-        const status = role === "teacher" ? "onboarding" : "approved";
-
-        // 4- Assign the role only if it hasn't been assigned yet
-        const { data, error } = await supabase
-            .from("profiles")
-            .update({ role, status })
-            .eq("id", user.id)
-            .is("role", null)
-            .select("id")
-            .maybeSingle();
+        // 3- The database gives the role + the first status (teacher → onboarding, student → approved),
+        //    only if he has no role yet → false = he already has one
+        const { data: assigned, error } = await supabase.rpc("choose_my_role", { p_role: role });
 
         if (error) throw error;
 
-        // the profile already has a role
-        if (!data) {
+        if (!assigned) {
             return NextResponse.json({ message: "Role already assigned" }, { status: 409 });
         }
 
