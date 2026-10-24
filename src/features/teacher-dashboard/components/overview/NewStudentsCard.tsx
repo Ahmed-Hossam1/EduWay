@@ -27,7 +27,7 @@ export function NewStudentsCard({ studentsPromise }: NewStudentsCardProps) {
                 )}
 
                 <ul>
-                    {students.map((enrollment) => {
+                    {students.slice(0, 3).map((enrollment) => {
                         const { student } = enrollment;
                         const name = getFullName(student?.first_name, student?.last_name, "A student");
 
