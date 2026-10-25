@@ -2,8 +2,15 @@
 
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/react/sortable";
-import { GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
+import { GripVertical, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/format";
@@ -79,25 +86,26 @@ export function SortableSection({ section, index }: SortableSectionProps) {
                                 {lessonsCount} {pluralize(lessonsCount, "lesson")}
                             </p>
                         </div>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label={`Rename ${section.title}`}
-                            onClick={() => setIsRenaming(true)}
-                        >
-                            <Pencil />
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label={`Delete ${section.title}`}
-                            onClick={() => setConfirmOpen(true)}
-                            className="text-muted-foreground hover:text-destructive"
-                        >
-                            <Trash2 />
-                        </Button>
+                        {/* the section actions, with words (not only icons) */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger
+                                aria-label={`Actions for section ${section.title}`}
+                                className="flex size-8 cursor-pointer items-center justify-center rounded-lg outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-expanded:bg-muted"
+                            >
+                                <MoreHorizontal className="size-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-44">
+                                <DropdownMenuItem onClick={() => setIsRenaming(true)}>
+                                    <Pencil />
+                                    Rename section
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
+                                    <Trash2 />
+                                    Delete section
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </>
                 )}
             </div>
@@ -132,7 +140,6 @@ export function SortableSection({ section, index }: SortableSectionProps) {
                         }
                         onCancel={() => setIsAddingLesson(false)}
                     />
-
                 ) : (
                     <Button type="button" variant="outline" size="sm" onClick={() => setIsAddingLesson(true)}>
                         <Plus />
