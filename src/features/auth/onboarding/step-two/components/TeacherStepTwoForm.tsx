@@ -10,10 +10,10 @@ import { ExperienceSelector } from "./ExperienceSelector";
 import { LanguagesSelector } from "./LanguagesSelector";
 import { SkillsSelector } from "./SkillsSelector";
 import { OnboardingFormValues } from "../../schemas/onboardingSchema";
-import { CategoryOption } from "../../types/index";
+import { CategoryRow } from "@/features/categories/types";
 
 interface TeacherStepTwoFormProps {
-    categories: CategoryOption[];
+    categories: CategoryRow[];
     onBack?: () => void;
     className?: string;
 }

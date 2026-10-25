@@ -1,11 +1,11 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { COURSES_PAGE_SIZE, DEFAULT_COURSES_SORT } from "../schemas/coursesQuerySchema";
-import { Course, CoursesResponse, GetCoursesParams } from "../types";
+import { CourseCard, CoursesResponse, GetCoursesParams } from "../types";
 
 // What search_courses() returns (database function): one page + how many courses match in total
 type SearchCoursesResult = {
-    courses: Course[];
+    courses: CourseCard[];
     totalCount: number;
 };
 

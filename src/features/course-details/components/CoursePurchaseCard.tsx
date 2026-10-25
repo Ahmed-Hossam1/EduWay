@@ -2,7 +2,7 @@ import { BarChart3, BookOpen, Clock, Globe, Layers } from "lucide-react";
 import { CoursePurchaseActions } from "@/features/enrollments/components/CoursePurchaseActions";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDuration, formatPrice } from "@/features/courses/utils/format";
+import { formatDuration, formatPrice, getCourseLevelLabel } from "@/features/courses/utils/format";
 import { CourseDetails } from "../types";
 
 type CoursePurchaseCardProps = {
@@ -13,15 +13,13 @@ type CoursePurchaseCardProps = {
 export function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
     const { price, currency, level, duration_seconds, lessons_count, sections, language } = course;
     const isFree = price === 0;
-    // "beginner" => "Beginner"
-    const levelLabel = level.charAt(0).toUpperCase() + level.slice(1);
 
     // Course content details come from the database
     const includes = [
         { icon: Clock, text: `${formatDuration(duration_seconds)} of on-demand content` },
         { icon: BookOpen, text: `${lessons_count} lessons` },
         { icon: Layers, text: `${sections.length} sections` },
-        { icon: BarChart3, text: `${levelLabel} level` },
+        { icon: BarChart3, text: `${getCourseLevelLabel(level)} level` },
         { icon: Globe, text: language },
     ];
 

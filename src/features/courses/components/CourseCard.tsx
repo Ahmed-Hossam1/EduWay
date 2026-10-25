@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardAction, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RatingStars } from "@/components/shared/RatingStars";
-import { Course } from "../types";
+import type { CourseCard as CourseCardData } from "../types";
 import { CourseThumbnail } from "./CourseThumbnail";
 import { COURSE_BADGES, formatCompactNumber, formatDuration, formatPrice, getInstructorName } from "../utils/format";
 
 interface CourseCardProps {
-    course: Course;
+    course: CourseCardData;
 }
 
 export function CourseCard({ course }: CourseCardProps) {

@@ -1,4 +1,5 @@
 import { InstructorExperience } from "@/features/instructors/data/experienceLevels";
+import { Profile } from "@/features/profile/types";
 
 // instructor_certifications row
 export interface InstructorCertification {
@@ -23,14 +24,10 @@ export interface InstructorProfile {
 }
 
 // What the instructor page receives
-export interface Instructor {
-    id: string;
-    first_name: string | null;
-    last_name: string | null;
-    avatar_url: string | null;
+export type Instructor = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url"> & {
     // null => the teacher has no profile yet, or is not approved (RLS hides it from visitors)
     profile: InstructorProfile | null;
-}
+};
 
 // Computed from the teacher's published courses
 export interface InstructorStats {

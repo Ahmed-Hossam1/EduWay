@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { CoursesSkeleton } from "@/features/courses/components/CoursesSkeleton";
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 import { getInstructorName } from "@/features/courses/utils/format";
 import { Instructor, InstructorStats } from "./types";
 import { InstructorHero } from "./components/InstructorHero";
@@ -9,7 +9,7 @@ import { InstructorCourses } from "./components/InstructorCourses";
 
 type InstructorPageProps = {
     instructor: Instructor;
-    coursesPromise: Promise<Course[]>;
+    coursesPromise: Promise<CourseCard[]>;
     statsPromise: Promise<InstructorStats>;
 };
 

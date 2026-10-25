@@ -1,17 +1,15 @@
 import { LucideIcon } from "lucide-react";
+import { Input } from "@/types";
 import { UserRole } from "@/features/profile/types";
 
 // Roles a user can pick by himself during signup (admin is assigned manually)
 export type AuthRole = Exclude<UserRole, "admin">;
 
-export interface AuthInputConfig<T extends string = string> {
-    name: T;
-    type: string;
-    placeholder?: string;
+// One input of the login / signup forms = the app Input + an icon (+ half width on signup)
+export type AuthInputConfig<T extends string = string> = Input<T> & {
     icon: LucideIcon;
-    id?: string;
     halfWidth?: boolean;
-}
+};
 
 // One feature line on the login / signup hero (AuthHero)
 export interface AuthHeroFeature {

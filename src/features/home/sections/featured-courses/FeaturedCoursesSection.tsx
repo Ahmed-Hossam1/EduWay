@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { SectionHeading } from "@/components/shared/SectionHeading";
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 import { FeaturedCoursesGrid } from "./components/FeaturedCoursesGrid";
 import { FeaturedCoursesSkeleton } from "./components/skeleton";
 
 type FeaturedCoursesSectionProps = {
-    coursesPromise: Promise<Course[]>; // started in app/(public)/page.tsx (no await)
+    coursesPromise: Promise<CourseCard[]>; // started in app/(public)/page.tsx (no await)
 };
 
 // The heading shows right away; the 5 cards stream in (the rest of the home page doesn't wait for the database)

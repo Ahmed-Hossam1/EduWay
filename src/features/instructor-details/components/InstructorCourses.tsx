@@ -2,10 +2,10 @@ import { use } from "react";
 import { BookOpen } from "lucide-react";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CourseCard } from "@/features/courses/components/CourseCard";
-import { Course } from "@/features/courses/types";
+import type { CourseCard as CourseCardData } from "@/features/courses/types"; // the component is called CourseCard too
 
 type InstructorCoursesProps = {
-    coursesPromise: Promise<Course[]>;
+    coursesPromise: Promise<CourseCardData[]>;
     instructorName: string;
 };
 

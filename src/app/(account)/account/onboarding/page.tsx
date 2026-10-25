@@ -1,6 +1,6 @@
 import { TeacherOnboardingContainer } from "@/features/auth/onboarding/components/TeacherOnboardingContainer";
 import { getOnboardingDefaults } from "@/features/auth/onboarding/server/getOnboardingDefaults";
-import { getCategoryOptions } from "@/features/auth/onboarding/server/getCategoryOptions";
+import { getAllCategories } from "@/features/categories/server/getAllCategories";
 import { getSavedOnboardingAnswers } from "@/features/auth/onboarding/server/getSavedOnboardingAnswers";
 import { requireProfileStatus } from "@/features/profile/server/requireProfileStatus";
 import { Metadata } from "next";
@@ -21,7 +21,7 @@ export default async function OnboardingPage() {
     //    and the categories from the database
     const saved = await getSavedOnboardingAnswers(user.id);
     const defaultValues = getOnboardingDefaults(user, profile, saved);
-    const categories = await getCategoryOptions();
+    const categories = await getAllCategories();
 
     return <TeacherOnboardingContainer defaultValues={defaultValues} categories={categories} />;
 }

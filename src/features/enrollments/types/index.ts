@@ -1,4 +1,4 @@
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 
 // Same values as the Postgres enum enrollment_status
 export type EnrollmentStatus = "active" | "completed" | "refunded";
@@ -10,7 +10,7 @@ export interface EnrollmentIdsResponse {
 
 // One course on the "My courses" page
 export interface EnrolledCourse {
-    course: Course;
+    course: CourseCard;
     status: EnrollmentStatus;
     enrolledAt: string;
     completedLessons: number;

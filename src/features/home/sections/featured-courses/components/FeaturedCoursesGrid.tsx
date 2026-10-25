@@ -1,9 +1,9 @@
 import { use } from "react";
 import { CourseCard } from "@/features/courses/components/CourseCard";
-import { Course } from "@/features/courses/types";
+import type { CourseCard as CourseCardData } from "@/features/courses/types"; // the component is called CourseCard too
 
 type FeaturedCoursesGridProps = {
-    coursesPromise: Promise<Course[]>;
+    coursesPromise: Promise<CourseCardData[]>;
 };
 
 // Streamed with <Suspense>: use() waits for the promise

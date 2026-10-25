@@ -1,4 +1,4 @@
-import { NavItem, FooterColumn } from "@/types/navigation";
+import { NavItem, FooterColumn } from "@/types";
 
 export const navItems: NavItem[] = [
     { label: "Home", href: "/" },

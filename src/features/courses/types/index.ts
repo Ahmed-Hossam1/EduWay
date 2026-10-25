@@ -1,4 +1,6 @@
 import { LucideIcon } from "lucide-react";
+import { Profile } from "@/features/profile/types";
+import { CategoryRow } from "@/features/categories/types";
 import {
     coursesDurationValues,
     coursesLevelValues,
@@ -11,7 +13,14 @@ export type CourseLevel = (typeof coursesLevelValues)[number]; // "beginner" | "
 export type CourseStatus = "draft" | "published" | "archived";
 export type CourseBadge = "bestseller" | "new" | "popular";
 
-export interface CourseRow {
+/**
+ * THE course type of the app = one row of the courses table (every column).
+ * Every other course shape is built from it, never written again by hand:
+ *   Pick<Course, "id" | "title" | ...>            → only the columns a place needs
+ *   Pick<Course, ...> & { earnings: number }      → + what that place adds (joins, numbers...)
+ * A new column in the database → add it HERE once.
+ */
+export interface Course {
     id: string;
     instructor_id: string;
     title: string;
@@ -33,24 +42,39 @@ export interface CourseRow {
     rating_count: number;
     created_at: string;
     updated_at: string;
+    learning_outcomes: string[]; // "What you'll learn"
+    requirements: string[]; // requirements as text
 }
 
-export interface CategoryRow {
+// One row of the sections table (a part of a course: "Getting started", "Hooks"...)
+export interface Section {
     id: string;
-    name: string;
-    slug: string;
+    course_id: string;
+    title: string;
+    position: number; // 1, 2, 3... the order inside the course
+    created_at: string;
+    updated_at: string;
 }
 
-// What the courses list / CourseCard receives
-export interface CourseInstructor {
+// One row of the lessons table (a lesson inside a section)
+export interface Lesson {
     id: string;
-    first_name: string | null;
-    last_name: string | null;
-    avatar_url: string | null;
+    section_id: string;
+    title: string;
+    description: string | null;
+    duration_seconds: number; // 0 until the lesson has a video
+    position: number; // 1, 2, 3... the order inside the section
+    is_preview: boolean; // true → everybody can watch it (a free preview)
+    created_at: string;
+    updated_at: string;
 }
 
-export type Course = Pick<
-    CourseRow,
+// The teacher of a course (on the cards and the course page)
+export type CourseInstructor = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url">;
+
+// What the course cards receive (lists: courses, cart, wishlist, home, instructor page...)
+export type CourseCard = Pick<
+    Course,
     | "id"
     | "title"
     | "slug"
@@ -73,7 +97,7 @@ export type Course = Pick<
 
 // Response of getCourses() (one page of courses + what the pagination needs)
 export interface CoursesResponse {
-    courses: Course[];
+    courses: CourseCard[];
     page: number;
     pageSize: number;
     totalCount: number;

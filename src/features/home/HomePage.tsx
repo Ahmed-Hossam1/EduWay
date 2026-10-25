@@ -6,10 +6,10 @@ import { CareerBannerSection } from "./sections/career-banner/CareerBannerSectio
 import { StatisticsSection } from "./sections/statistics/StatisticsSection";
 import { TestimonialsSection } from "./sections/testimonials/TestimonialsSection";
 import { CTASection } from "./sections/cta/CTASection";
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 
 type HomePageProps = {
-    featuredCoursesPromise: Promise<Course[]>; // started in app/(public)/page.tsx (no await → streamed)
+    featuredCoursesPromise: Promise<CourseCard[]>; // started in app/(public)/page.tsx (no await → streamed)
 };
 
 // Navbar + Footer come from app/(public)/layout.tsx

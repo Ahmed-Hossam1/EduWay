@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 import { pluralize } from "@/lib/format";
 import { useCart } from "../hooks/useCart";
 import { CartItem } from "./CartItem";
@@ -14,7 +14,7 @@ import { CartSummary } from "./CartSummary";
 import { useRemoveAllCart } from "../hooks/useRemoveAllCart";
 
 type CartListProps = {
-    coursesPromise: Promise<Course[]>;
+    coursesPromise: Promise<CourseCard[]>;
 };
 
 export function CartList({ coursesPromise }: CartListProps) {

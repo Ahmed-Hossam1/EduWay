@@ -1,11 +1,9 @@
 import { LucideIcon } from "lucide-react";
+import { Input } from "@/types";
 
-export interface SocialLinkFieldConfig {
-    id: string;
-    name: "linkedinUrl" | "websiteUrl" | "githubUrl" | "twitterUrl"; // = the form fields
-    label: string;
-    placeholder: string;
+// One social link input of onboarding step 3 = the app Input + a help line
+export type SocialLinkFieldConfig = Input<"linkedinUrl" | "websiteUrl" | "githubUrl" | "twitterUrl"> & {
     helperText?: string;
     icon?: LucideIcon;
     required?: boolean;
-}
+};

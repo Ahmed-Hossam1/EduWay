@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 import { CartList } from "./components/CartList";
 import { CartListSkeleton } from "./components/CartListSkeleton";
 import { CheckoutCancelledToast } from "@/features/checkout/components/CheckoutCancelledToast";
 
 type CartPageProps = {
-    coursesPromise: Promise<Course[]>;
+    coursesPromise: Promise<CourseCard[]>;
 };
 
 export function CartPage({ coursesPromise }: CartPageProps) {

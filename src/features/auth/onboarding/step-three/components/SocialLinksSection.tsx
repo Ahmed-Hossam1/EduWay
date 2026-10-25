@@ -33,7 +33,7 @@ export function SocialLinksSection({ className }: SocialLinksSectionProps) {
                         <Input
                             key={field.name}
                             id={field.id}
-                            type="url"
+                            type={field.type}
                             {...register(field.name)}
                             label={field.label}
                             placeholder={field.placeholder}

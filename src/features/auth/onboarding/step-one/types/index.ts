@@ -1,12 +1,9 @@
 import { LucideIcon } from "lucide-react";
+import { Input } from "@/types";
 
-export interface StepOneInputField {
-    id: string;
-    name: "firstName" | "lastName";
-    type: string;
-    label: string;
-    placeholder?: string;
+// One input of onboarding step 1 = the app Input + an icon and a help line
+export type StepOneInputField = Input<"firstName" | "lastName"> & {
     icon?: LucideIcon;
     helperText?: string;
     required?: boolean;
-}
+};

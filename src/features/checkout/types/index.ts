@@ -1,15 +1,12 @@
+import { Course } from "@/features/courses/types";
+
 // Same values as the Postgres enum order_status
 export type OrderStatus = "pending" | "paid" | "failed";
 
 // One course inside the order (price = what he paid, not today's price)
 export interface OrderItem {
     price: number;
-    course: {
-        id: string;
-        title: string;
-        slug: string;
-        thumbnail_url: string | null;
-    };
+    course: Pick<Course, "id" | "title" | "slug" | "thumbnail_url">;
 }
 
 // What the success page receives
@@ -23,13 +20,7 @@ export interface Order {
 }
 
 // A course of the order that goes to Stripe (what create_order returns for each course)
-export interface PurchasableCourse {
-    id: string;
-    title: string;
-    price: number;
-    currency: string;
-    thumbnail_url: string | null;
-}
+export type PurchasableCourse = Pick<Course, "id" | "title" | "price" | "currency" | "thumbnail_url">;
 
 // What create_order() returns (database function): the new pending order, ready for Stripe
 export interface CreatedOrder {

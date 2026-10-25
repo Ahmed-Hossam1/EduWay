@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { deleteCloudinaryVideos } from "@/lib/cloudinary/cloudinary";
 import { checkCourseAccess } from "@/features/teacher-courses/server/checkCourseAccess";
 
 type Params = {
@@ -20,8 +21,15 @@ export async function DELETE(_request: Request, { params }: Params) {
             return NextResponse.json({ message: "Only draft courses can be deleted" }, { status: 409 });
         }
 
-        // RLS: a teacher can delete only HIS draft courses that nobody enrolled in / bought
         const supabase = await createSupabaseServerClient();
+
+        // the videos of all its lessons (read them BEFORE the delete)
+        const { data: videos } = await supabase
+            .from("lesson_videos")
+            .select("public_id, lessons!inner(sections!inner(course_id))")
+            .eq("lessons.sections.course_id", courseId);
+
+        // RLS: a teacher can delete only HIS draft courses that nobody enrolled in / bought
         const { data: deleted, error } = await supabase
             .from("courses")
             .delete()
@@ -38,6 +46,9 @@ export async function DELETE(_request: Request, { params }: Params) {
                 { status: 409 },
             );
         }
+
+        // the video files on Cloudinary
+        await deleteCloudinaryVideos((videos ?? []).map((video) => video.public_id));
 
         return NextResponse.json({ message: "Draft deleted" }, { status: 200 });
     } catch (error) {

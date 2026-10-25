@@ -1,13 +1,10 @@
 import { LucideIcon } from "lucide-react";
+import { Input } from "@/types";
 
-export type resetPasswordFormInputsType = {
-    id: string,
-    name: "password" | "confirmPassword",
-    type: string
-    label: string,
-    placeholder: string,
-    icon: LucideIcon,
-    fullWidth: boolean,
-    autoComplete: string,
-    errorText?: string,
-}
+// One input of the reset password form = the app Input + what this form adds
+export type resetPasswordFormInputsType = Input<"password" | "confirmPassword"> & {
+    icon: LucideIcon;
+    fullWidth: boolean;
+    autoComplete: string;
+    errorText?: string;
+};

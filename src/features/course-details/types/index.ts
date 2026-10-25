@@ -1,4 +1,5 @@
-import { CategoryRow, CourseInstructor, CourseRow } from "@/features/courses/types";
+import { CourseInstructor, Course, Lesson, Section } from "@/features/courses/types";
+import { CategoryRow } from "@/features/categories/types";
 import { InstructorProfile } from "@/features/instructor-details/types";
 
 // The course instructor + a small part of his instructor profile
@@ -7,22 +8,13 @@ export type CourseDetailsInstructor = CourseInstructor & {
     profile: Pick<InstructorProfile, "headline" | "bio"> | null;
 };
 
-// One lesson inside a section (no video yet → Phase 3)
-export interface CourseLesson {
-    id: string;
-    title: string;
-    duration_seconds: number;
-    position: number;
-    is_preview: boolean;
-}
+// One lesson inside a section on the course page (no video yet → Phase 3)
+export type CourseLesson = Pick<Lesson, "id" | "title" | "duration_seconds" | "position" | "is_preview">;
 
 // One section of the curriculum with its lessons (sorted by position)
-export interface CourseSection {
-    id: string;
-    title: string;
-    position: number;
+export type CourseSection = Pick<Section, "id" | "title" | "position"> & {
     lessons: CourseLesson[];
-}
+};
 
 // A tag like "React" or "SQL"
 export interface CourseTag {
@@ -32,17 +24,10 @@ export interface CourseTag {
 }
 
 // A course you should finish first (course_requirements table)
-export interface PrerequisiteCourse {
-    id: string;
-    title: string;
-    slug: string;
-    thumbnail_url: string | null;
-}
+export type PrerequisiteCourse = Pick<Course, "id" | "title" | "slug" | "thumbnail_url">;
 
 // Everything the course details page needs
-export type CourseDetails = CourseRow & {
-    learning_outcomes: string[]; // "What you'll learn"
-    requirements: string[]; // requirements as text
+export type CourseDetails = Course & {
     instructor: CourseDetailsInstructor;
     categories: CategoryRow[];
     tags: CourseTag[];

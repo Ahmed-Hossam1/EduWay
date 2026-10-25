@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { CourseCard } from "@/features/courses/components/CourseCard";
-import { Course } from "@/features/courses/types";
+import type { CourseCard as CourseCardData } from "@/features/courses/types"; // the component is called CourseCard too
 import { useWishlist } from "../hooks/useWishlist";
 import { useRemoveAllWishlist } from "../hooks/useRemoveAllWishlist";
 
 type WishlistGridProps = {
-    coursesPromise: Promise<Course[]>;
+    coursesPromise: Promise<CourseCardData[]>;
 };
 
 export function WishlistGrid({ coursesPromise }: WishlistGridProps) {

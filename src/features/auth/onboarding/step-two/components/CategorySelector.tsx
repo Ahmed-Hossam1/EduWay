@@ -6,10 +6,10 @@ import { useController } from "react-hook-form";
 import { CATEGORY_DESCRIPTIONS } from "../data/teachingData";
 import { OnboardingFormValues } from "../../schemas/onboardingSchema";
 import { FieldError } from "../../components/FieldError";
-import { CategoryOption } from "../../types/index";
+import { CategoryRow } from "@/features/categories/types";
 
 interface CategorySelectorProps {
-    categories: CategoryOption[]; // from the database
+    categories: CategoryRow[]; // from the database
     className?: string;
 }
 

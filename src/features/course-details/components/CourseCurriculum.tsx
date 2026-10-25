@@ -1,7 +1,7 @@
 import { Lock, PlayCircle } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { formatDuration } from "@/features/courses/utils/format";
+import { formatDuration, formatVideoDuration } from "@/features/courses/utils/format";
 import { CourseSection } from "../types";
 
 type CourseCurriculumProps = {
@@ -72,7 +72,7 @@ export function CourseCurriculum({ sections, totalLessons, totalSeconds }: Cours
                                             )}
                                         </span>
                                         <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-                                            {formatDuration(lesson.duration_seconds)}
+                                            {formatVideoDuration(lesson.duration_seconds)}
                                         </span>
                                     </li>
                                 ))}

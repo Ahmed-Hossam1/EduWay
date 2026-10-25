@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { CoursesSkeleton } from "@/features/courses/components/CoursesSkeleton";
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 import { WishlistGrid } from "./components/WishlistGrid";
 
 type WishlistPageProps = {
-    coursesPromise: Promise<Course[]>;
+    coursesPromise: Promise<CourseCard[]>;
 };
 
 export function WishlistPage({ coursesPromise }: WishlistPageProps) {

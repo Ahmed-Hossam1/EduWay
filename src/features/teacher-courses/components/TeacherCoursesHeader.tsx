@@ -10,7 +10,6 @@ export function TeacherCoursesHeader() {
                 <p className="text-sm text-muted-foreground">Manage, edit, and publish your courses.</p>
             </div>
 
-            {/* TODO: the create course page comes next */}
             <Button asChild size="lg">
                 <Link href="/teacher/courses/new">
                     <Plus />

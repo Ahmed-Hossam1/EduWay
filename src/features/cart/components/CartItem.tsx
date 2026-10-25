@@ -2,14 +2,14 @@
 import Link from "next/link";
 import { Clock, Heart, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
 import { formatDuration, formatPrice, getInstructorName } from "@/features/courses/utils/format";
 import { useToggleWishlist } from "@/features/wishlist/hooks/useToggleWishlist";
 import { useRemoveFromCart } from "../hooks/useRemoveFromCart";
 
 type CartItemProps = {
-    course: Course;
+    course: CourseCard;
 };
 
 // One course row in the cart: thumbnail · title · instructor · price · Remove / Move to wishlist

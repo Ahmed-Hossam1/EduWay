@@ -1,19 +1,15 @@
-import { InstructorStats } from "@/features/instructor-details/types";
+import { InstructorProfile, InstructorStats } from "@/features/instructor-details/types";
+import { Profile } from "@/features/profile/types";
 import { instructorsSortValues } from "../schemas/instructorsQuerySchema";
 
 // "students" | "rating" | "courses"
 export type InstructorSort = (typeof instructorsSortValues)[number];
 
 // One card on the /instructors page
-export interface InstructorListItem {
-    id: string;
-    first_name: string | null;
-    last_name: string | null;
-    avatar_url: string | null;
-    headline: string | null;
-    skills: string[];
-    stats: InstructorStats;
-}
+export type InstructorListItem = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url"> &
+    Pick<InstructorProfile, "headline" | "skills"> & {
+        stats: InstructorStats;
+    };
 
 export interface GetInstructorsParams {
     q?: string;

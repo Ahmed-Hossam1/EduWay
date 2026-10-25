@@ -1,10 +1,10 @@
 import { use } from "react";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { CourseCard } from "@/features/courses/components/CourseCard";
-import { Course } from "@/features/courses/types";
+import type { CourseCard as CourseCardData } from "@/features/courses/types"; // the component is called CourseCard too
 
 type RelatedCoursesProps = {
-    relatedCoursesPromise: Promise<Course[]>;
+    relatedCoursesPromise: Promise<CourseCardData[]>;
     categoryName?: string;
     categorySlug?: string;
 };

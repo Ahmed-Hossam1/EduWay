@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { RatingStars } from "@/components/shared/RatingStars";
 import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
-import { COURSE_BADGES, formatCompactNumber, formatDuration, getInstructorName } from "@/features/courses/utils/format";
+import { COURSE_BADGES, formatCompactNumber, formatDuration, getInstructorName, getCourseLevelLabel } from "@/features/courses/utils/format";
 import { CourseDetails } from "../types";
 
 type CourseDetailsHeroProps = {
@@ -70,9 +70,20 @@ export function CourseDetailsHero({ course }: CourseDetailsHeroProps) {
                                 {badge.label}
                             </Badge>
                         )}
-                        <Badge variant="outline" className="h-auto bg-background/80 px-2.5 py-0.5 capitalize">
-                            {course.level}
+                        <Badge variant="outline" className="h-auto bg-background/80 px-2.5 py-0.5">
+                            {getCourseLevelLabel(course.level)}
                         </Badge>
+                        {/* every category of the course (the teacher can choose up to 3) → the courses of that category */}
+                        {course.categories.map((item) => (
+                            <Badge
+                                key={item.id}
+                                variant="outline"
+                                className="h-auto bg-background/80 px-2.5 py-0.5 hover:border-primary/40 hover:text-primary"
+                                render={<Link href={`/courses?category=${item.slug}`} />}
+                            >
+                                {item.name}
+                            </Badge>
+                        ))}
                     </div>
 
                     <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-[2.75rem]">

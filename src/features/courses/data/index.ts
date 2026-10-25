@@ -1,18 +1,21 @@
 import { BookOpen, GraduationCap, Star, Users } from "lucide-react";
-import { FilterGroup, HeroStat, PopularTopic, SortOption } from "../types";
+import { FilterGroup, FilterOption, HeroStat, PopularTopic, SortOption } from "../types";
 
 // Static UI data — replace with real data from the API later
+
+// The course levels + their labels (the courses filters AND the course builder form use it)
+export const courseLevelOptions: FilterOption[] = [
+    { id: "beginner", label: "Beginner" },
+    { id: "intermediate", label: "Intermediate" },
+    { id: "advanced", label: "Advanced" },
+];
 
 // Static filters (the "Category" filter comes from the database → getCategories)
 export const coursesFilterGroups: FilterGroup[] = [
     {
         id: "level",
         title: "Level",
-        options: [
-            { id: "beginner", label: "Beginner" },
-            { id: "intermediate", label: "Intermediate" },
-            { id: "advanced", label: "Advanced" },
-        ],
+        options: courseLevelOptions,
     },
     {
         id: "price",

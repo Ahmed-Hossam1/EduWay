@@ -1,3 +1,6 @@
+import { Course } from "@/features/courses/types";
+import { Profile } from "@/features/profile/types";
+
 // The data of each Overview card
 
 // What get_teacher_overview_stats() returns (database function, called with supabase.rpc)
@@ -18,17 +21,13 @@ export interface EarningsOverview {
     completionRate: number; // % of the enrollments that finished the course
 }
 
-// One row of getTeacherTopCourses()
-export interface TopCourse {
-    id: string;
-    title: string;
-    slug: string;
-    thumbnail_url: string | null;
-    students_count: number;
-    price: number;
-    currency: string;
+// One row of getTeacherTopCourses() (published courses only)
+export type TopCourse = Pick<
+    Course,
+    "id" | "title" | "slug" | "thumbnail_url" | "students_count" | "price" | "currency"
+> & {
     status: "published";
-}
+};
 
 // One row of getTeacherRecentSales() (order_items has no id: order_id + course_id)
 export interface RecentSale {
@@ -39,9 +38,9 @@ export interface RecentSale {
         id: string;
         status: "paid";
         paid_at: string;
-        buyer: { first_name: string | null; last_name: string | null } | null;
+        buyer: Pick<Profile, "first_name" | "last_name"> | null;
     };
-    course: { id: string; title: string; thumbnail_url: string | null; instructor_id: string };
+    course: Pick<Course, "id" | "title" | "thumbnail_url" | "instructor_id">;
 }
 
 // One row of getTeacherNewStudents() (enrollments has no id: user_id + course_id)
@@ -49,6 +48,6 @@ export interface NewStudent {
     user_id: string;
     course_id: string;
     enrolled_at: string;
-    student: { first_name: string | null; last_name: string | null; avatar_url: string | null } | null;
-    course: { id: string; title: string; instructor_id: string };
+    student: Pick<Profile, "first_name" | "last_name" | "avatar_url"> | null;
+    course: Pick<Course, "id" | "title" | "instructor_id">;
 }

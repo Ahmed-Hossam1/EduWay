@@ -1,4 +1,4 @@
-import { Course } from "@/features/courses/types";
+import { CourseCard } from "@/features/courses/types";
 import { Suspense } from "react";
 import { CourseCurriculum } from "./components/CourseCurriculum";
 import { CourseDetailsHero } from "./components/CourseDetailsHero";
@@ -7,6 +7,7 @@ import { CourseLearningOutcomes } from "./components/CourseLearningOutcomes";
 import { CourseMobileBar } from "./components/CourseMobileBar";
 import { CoursePurchaseCard } from "./components/CoursePurchaseCard";
 import { CourseRequirements } from "./components/CourseRequirements";
+import { CoursePrerequisites } from "./components/CoursePrerequisites";
 import { CourseTags } from "./components/CourseTags";
 import { RelatedCourses } from "./components/RelatedCourses";
 import { RelatedCoursesSkeleton } from "./components/skeleton";
@@ -14,7 +15,7 @@ import { CourseDetails } from "./types";
 
 type CourseDetailsPageProps = {
     course: CourseDetails;
-    relatedCoursesPromise: Promise<Course[]>;
+    relatedCoursesPromise: Promise<CourseCard[]>;
 };
 
 export function CourseDetailsPage({ course, relatedCoursesPromise }: CourseDetailsPageProps) {
@@ -38,16 +39,21 @@ export function CourseDetailsPage({ course, relatedCoursesPromise }: CourseDetai
                     <div className="min-w-0 space-y-12">
                         <CourseLearningOutcomes outcomes={course.learning_outcomes} />
 
-                        {/* course description */}
-                        <div aria-labelledby="description-title">
-                            <h2 id="description-title" className="text-2xl font-bold tracking-tight text-foreground">
-                                About this course
-                            </h2>
-                            {/* whitespace-pre-line keeps the line breaks the teacher wrote */}
-                            <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground sm:text-base">
-                                {course.description}
-                            </p>
-                        </div>
+                        {/* course description (hidden while the teacher has not written it) */}
+                        {course.description && (
+                            <div aria-labelledby="description-title">
+                                <h2
+                                    id="description-title"
+                                    className="text-2xl font-bold tracking-tight text-foreground"
+                                >
+                                    About this course
+                                </h2>
+                                {/* whitespace-pre-line keeps the line breaks the teacher wrote */}
+                                <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground sm:text-base">
+                                    {course.description}
+                                </p>
+                            </div>
+                        )}
 
                         {/* course curriculum */}
                         <CourseCurriculum
@@ -56,6 +62,7 @@ export function CourseDetailsPage({ course, relatedCoursesPromise }: CourseDetai
                             totalSeconds={course.duration_seconds}
                         />
                         <CourseRequirements requirements={course.requirements} />
+                        <CoursePrerequisites prerequisites={course.prerequisites} />
                         <CourseTags tags={course.tags} />
                         <CourseInstructor instructor={course.instructor} />
                     </div>

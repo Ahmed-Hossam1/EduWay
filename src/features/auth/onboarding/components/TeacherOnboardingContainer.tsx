@@ -13,13 +13,13 @@ import { TeacherStepTwoForm } from "../step-two/components/TeacherStepTwoForm";
 import { TeacherStepThreeForm } from "../step-three/components/TeacherStepThreeForm";
 import { onboardingSchema, OnboardingFormValues, STEP_FIELDS } from "../schemas/onboardingSchema";
 import { useSubmitOnboarding } from "../hooks/useSubmitOnboarding";
-import { CategoryOption } from "../types/index";
+import { CategoryRow } from "@/features/categories/types";
 
 type Step = 1 | 2 | 3;
 
 interface TeacherOnboardingContainerProps {
     defaultValues: DefaultValues<OnboardingFormValues>; // name + photo already filled (from the server)
-    categories: CategoryOption[];
+    categories: CategoryRow[];
 }
 
 export function TeacherOnboardingContainer({ defaultValues, categories }: TeacherOnboardingContainerProps) {
