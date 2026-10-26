@@ -17,6 +17,7 @@ import { StudentMenu } from "@/features/profile/components/StudentMenu";
 import { TeacherMenu } from "@/features/profile/components/TeacherMenu";
 import { useWishlist } from "@/features/wishlist/hooks/useWishlist";
 import { useCart } from "@/features/cart/hooks/useCart";
+import { NavbarNotifications } from "@/features/notifications/components/NavbarNotifications";
 import { Badge } from "@/components/ui/badge";
 import { usePathname } from "next/navigation";
 
@@ -134,6 +135,9 @@ export function Navbar() {
                         )}
                     </Link>
 
+                    {/* the bell: replies to your comments, and more */}
+                    {profile && <NavbarNotifications />}
+
                     <AnimatedThemeToggler className={navbarIconClass} />
 
                     {isPending ? (
@@ -155,6 +159,7 @@ export function Navbar() {
 
                 {/* Mobile: theme + avatar + menu */}
                 <div className="flex md:hidden items-center gap-1">
+                    {profile && <NavbarNotifications />}
                     <AnimatedThemeToggler className={navbarIconClass} />
                     {userMenu}
 

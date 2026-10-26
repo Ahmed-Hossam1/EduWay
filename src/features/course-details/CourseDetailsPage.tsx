@@ -12,6 +12,8 @@ import { CourseTags } from "./components/CourseTags";
 import { RelatedCourses } from "./components/RelatedCourses";
 import { RelatedCoursesSkeleton } from "./components/skeleton";
 import { CourseDetails } from "./types";
+import { CourseReviewsSection } from "@/features/reviews/components/CourseReviewsSection";
+import { CourseReviewsSkeleton } from "@/features/reviews/components/skeleton";
 
 type CourseDetailsPageProps = {
     course: CourseDetails;
@@ -65,6 +67,11 @@ export function CourseDetailsPage({ course, relatedCoursesPromise }: CourseDetai
                         <CoursePrerequisites prerequisites={course.prerequisites} />
                         <CourseTags tags={course.tags} />
                         <CourseInstructor instructor={course.instructor} />
+
+                        {/* Reviews: streamed, the page doesn't wait for them */}
+                        <Suspense fallback={<CourseReviewsSkeleton />}>
+                            <CourseReviewsSection courseId={course.id} />
+                        </Suspense>
                     </div>
                 </div>
 

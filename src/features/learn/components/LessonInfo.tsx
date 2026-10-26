@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { CheckCircle2, ChevronLeft, ChevronRight, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { useCompleteLesson } from "../hooks/useCompleteLesson";
 import { CurrentLesson } from "../types";
 import { getLessonHref } from "../utils";
@@ -16,7 +15,7 @@ type LessonInfoProps = {
     canSaveProgress: boolean; // only a student who owns the course has progress
 };
 
-// Under the video: the title, "Mark as complete", previous / next, the description
+// Under the video: the title, "Mark as complete", previous / next (the description is in the Overview tab)
 export function LessonInfo({ lesson, courseSlug, previousLessonId, nextLessonId, canSaveProgress }: LessonInfoProps) {
     const { mutate: completeLesson, isPending } = useCompleteLesson();
 
@@ -70,18 +69,6 @@ export function LessonInfo({ lesson, courseSlug, previousLessonId, nextLessonId,
                 )}
             </div>
 
-            {lesson.description && (
-                <>
-                    <Separator />
-                    <div>
-                        <h2 className="text-lg font-bold">About this lesson</h2>
-                        {/* whitespace-pre-line keeps the line breaks the teacher wrote */}
-                        <p className="mt-2 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
-                            {lesson.description}
-                        </p>
-                    </div>
-                </>
-            )}
         </div>
     );
 }

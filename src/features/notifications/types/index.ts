@@ -6,7 +6,9 @@ export type NotificationType =
     | "new_lesson"
     | "course_published"
     | "new_review"
-    | "announcement";
+    | "announcement"
+    | "new_comment" // someone commented on the teacher's course
+    | "comment_reply"; // someone replied to your comment
 
 // One notification in the bell
 export interface NotificationItem {

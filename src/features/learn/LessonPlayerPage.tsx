@@ -1,4 +1,5 @@
 import { LessonInfo } from "./components/LessonInfo";
+import { LessonTabs } from "./components/LessonTabs";
 import { LessonVideoPlayer } from "./components/LessonVideoPlayer";
 import { PlayerCurriculum } from "./components/PlayerCurriculum";
 import { LessonPlayer } from "./types";
@@ -32,6 +33,7 @@ export function LessonPlayerPage({ player }: LessonPlayerPageProps) {
                         nextLessonId={nextLessonId}
                         canSaveProgress={isEnrolled}
                     />
+                    <LessonTabs player={player} />
                 </div>
 
                 <aside>

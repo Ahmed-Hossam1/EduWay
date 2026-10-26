@@ -98,15 +98,23 @@ export function CourseDetailsHero({ course }: CourseDetailsHeroProps) {
 
                     {/* Rating + students */}
                     <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                        <div className="flex items-center gap-2">
-                            <span className="font-bold text-amber-600 dark:text-amber-400">
-                                {course.rating_avg.toFixed(1)}
-                            </span>
-                            <RatingStars rating={course.rating_avg} />
-                            <span className="text-muted-foreground">
-                                ({formatCompactNumber(course.rating_count)} ratings)
-                            </span>
-                        </div>
+                        {/* a link to the reviews section (id="reviews") */}
+                        {course.rating_count > 0 ? (
+                            <a href="#reviews" className="flex items-center gap-2 hover:underline">
+                                <span className="font-bold text-amber-600 dark:text-amber-400">
+                                    {course.rating_avg.toFixed(1)}
+                                </span>
+                                <RatingStars rating={course.rating_avg} />
+                                <span className="text-muted-foreground">
+                                    ({formatCompactNumber(course.rating_count)}{" "}
+                                    {course.rating_count === 1 ? "rating" : "ratings"})
+                                </span>
+                            </a>
+                        ) : (
+                            <a href="#reviews" className="text-muted-foreground hover:underline">
+                                No ratings yet
+                            </a>
+                        )}
                         <span className="flex items-center gap-1.5 text-muted-foreground">
                             <Users className="size-4" />
                             {formatCompactNumber(course.students_count)} students

@@ -9,14 +9,13 @@ import { requireProfileStatus } from "@/features/profile/server/requireProfileSt
 type TeacherLayoutProps = {
     children: ReactNode; // the page (/teacher/dashboard, /teacher/courses...)
     notifications: ReactNode; // the @notifications slot (the bell)
-    modal: ReactNode; // the @modal slot ("View as student": the lesson player in a modal, null when closed)
 };
 
 /**
  * The teacher dashboard: sidebar on the left, navbar on top, the page in the middle.
  * No site Navbar / Footer here.
  */
-export default async function TeacherLayout({ children, notifications, modal }: TeacherLayoutProps) {
+export default async function TeacherLayout({ children, notifications }: TeacherLayoutProps) {
     // 1- A second check after proxy.ts: only an approved teacher stays here
     //    (not logged in → /auth/login; cached: the pages reuse the same user + profile)
     const { profile } = await requireProfileStatus("teacher", "approved");
@@ -40,9 +39,6 @@ export default async function TeacherLayout({ children, notifications, modal }: 
                     <div className="flex-1 p-4 sm:p-6">{children}</div>
                 </SidebarInset>
             </SidebarProvider>
-
-            {/* "View as student" opens here, ON TOP of the page you were on */}
-            {modal}
         </TooltipProvider>
     );
 }

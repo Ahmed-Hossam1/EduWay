@@ -8,8 +8,8 @@ type Params = {
 };
 
 /**
- * An INTERCEPTED route: "(...)learn" = "catch /learn/... from the root of the app".
- * A link to /learn/... clicked inside the teacher dashboard opens HERE, in the @modal slot,
+ * An INTERCEPTED route: "(..)learn" = "catch /learn/..., one level up from /teacher".
+ * A link to /learn/... clicked inside the teacher dashboard (/teacher/...) opens HERE, in the @modal slot,
  * on top of the page. A refresh / a direct visit opens the real /learn page.
  *
  * Why 2 pages? The teacher reaches the modal with 2 kinds of links, and a page.tsx answers ONE link only
