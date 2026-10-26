@@ -21,7 +21,7 @@ export async function POST(request: NextRequest, { params }: Params) {
             return NextResponse.json({ message: "A valid courseId is required" }, { status: 400 });
         }
 
-        const body = await request.json().catch(() => null);
+        const body = await request.json();
         const result = titleSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json({ message: "Write a section title" }, { status: 400 });
@@ -58,7 +58,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
             return NextResponse.json({ message: "A valid courseId is required" }, { status: 400 });
         }
 
-        const body = await request.json().catch(() => null);
+        const body = await request.json();
         const result = reorderSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json({ message: "A valid order is required" }, { status: 400 });

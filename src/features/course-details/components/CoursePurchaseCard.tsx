@@ -31,7 +31,12 @@ export function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
             </CardHeader>
 
             <CardContent className="space-y-2.5">
-                <CoursePurchaseActions courseId={course.id} price={price} instructorId={course.instructor.id} />
+                <CoursePurchaseActions
+                    courseId={course.id}
+                    courseSlug={course.slug}
+                    price={price}
+                    instructorId={course.instructor.id}
+                />
             </CardContent>
 
             <Separator />

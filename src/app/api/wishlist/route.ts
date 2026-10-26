@@ -29,7 +29,7 @@ const addSchema = z.object({ courseId: z.uuid() });
 // POST /api/wishlist  { courseId } → adds the course (clicking twice is fine: no duplicate, no error)
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json().catch(() => null);
+        const body = await request.json();
         const result = addSchema.safeParse(body);
         if (!result.success) return NextResponse.json({ message: "A valid courseId is required" }, { status: 400 });
 

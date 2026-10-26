@@ -16,7 +16,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
             return NextResponse.json({ message: "A valid lessonId is required" }, { status: 400 });
         }
 
-        const body = await request.json().catch(() => null);
+        const body = await request.json()
         const result = lessonSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json(

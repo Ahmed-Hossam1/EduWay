@@ -28,7 +28,7 @@ const enrollSchema = z.object({ courseId: z.uuid() });
 // The database trigger also removes the course from the cart + wishlist and adds 1 to students_count.
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json().catch(() => null);
+        const body = await request.json();
         const result = enrollSchema.safeParse(body);
         if (!result.success) return NextResponse.json({ message: "A valid courseId is required" }, { status: 400 });
 

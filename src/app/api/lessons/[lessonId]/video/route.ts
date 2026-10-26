@@ -28,7 +28,7 @@ export async function PUT(request: Request, { params }: Params) {
             return NextResponse.json({ message: "A valid lessonId is required" }, { status: 400 });
         }
 
-        const body = await request.json().catch(() => null);
+        const body = await request.json()
         const result = saveVideoSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json({ message: "The uploaded video name is missing" }, { status: 400 });

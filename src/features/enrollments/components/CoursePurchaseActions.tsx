@@ -9,12 +9,13 @@ import { useIsCourseOwner } from "../hooks/useIsCourseOwner";
 
 type CoursePurchaseActionsProps = {
     courseId: string;
+    courseSlug: string;
     price: number;
     instructorId: string; // to know if the user is the teacher of this course
 };
 
 // The buttons of the course price card. Enrolled → only "Go to course" (no cart / wishlist).
-export function CoursePurchaseActions({ courseId, price, instructorId }: CoursePurchaseActionsProps) {
+export function CoursePurchaseActions({ courseId, courseSlug, price, instructorId }: CoursePurchaseActionsProps) {
     const { data: enrolledIds = [] } = useEnrollments();
     const isEnrolled = enrolledIds.includes(courseId);
     const isOwner = useIsCourseOwner(instructorId);
@@ -29,14 +30,14 @@ export function CoursePurchaseActions({ courseId, price, instructorId }: CourseP
                     <CheckCircle2 className="size-4" />
                     You&apos;re enrolled in this course
                 </p>
-                <EnrollButton courseId={courseId} price={price} />
+                <EnrollButton courseId={courseId} courseSlug={courseSlug} price={price} />
             </div>
         );
     }
 
     return (
         <div className="space-y-2.5">
-            <EnrollButton courseId={courseId} price={price} />
+            <EnrollButton courseId={courseId} courseSlug={courseSlug} price={price} />
             {price > 0 && <AddToCartButton courseId={courseId} />}
             <WishlistButton courseId={courseId} variant="full" />
         </div>

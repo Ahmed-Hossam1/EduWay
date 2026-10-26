@@ -83,6 +83,7 @@ export function CourseDetailsPage({ course, relatedCoursesPromise }: CourseDetai
             {/* mobile bar to show enroll button */}
             <CourseMobileBar
                 courseId={course.id}
+                courseSlug={course.slug}
                 price={course.price}
                 currency={course.currency}
                 instructorId={course.instructor.id}

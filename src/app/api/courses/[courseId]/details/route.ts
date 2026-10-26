@@ -23,7 +23,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
         }
 
         // 1- Check the data with the SAME schema as the form
-        const body = await request.json().catch(() => null);
+        const body = await request.json();
         const result = courseDetailsSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json(

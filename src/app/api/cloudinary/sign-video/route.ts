@@ -17,7 +17,7 @@ const signSchema = z.object({
  */
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json().catch(() => null);
+        const body = await request.json();
         const result = signSchema.safeParse(body);
         if (!result.success) {
             return NextResponse.json({ message: "Nothing to sign" }, { status: 400 });

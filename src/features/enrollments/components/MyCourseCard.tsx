@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getInstructorName } from "@/features/courses/utils/format";
 import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
+import { getCourseLearnHref } from "@/features/learn/utils";
 import { EnrolledCourse } from "../types";
 
 type MyCourseCardProps = {
@@ -45,7 +46,7 @@ export function MyCourseCard({ enrolledCourse }: MyCourseCardProps) {
                 </Link>
                 <p className="text-xs text-muted-foreground">By {getInstructorName(course.instructor)}</p>
 
-                {/* Progress (filled by lesson_progress — 0% until the lesson player exists) */}
+                {/* Progress (the lessons marked as done in the player) */}
                 <div className="mt-auto space-y-1.5 pt-3">
                     <Progress value={progressPercent} aria-label={`${progressPercent}% completed`} />
                     <p className="text-xs text-muted-foreground">
@@ -55,9 +56,9 @@ export function MyCourseCard({ enrolledCourse }: MyCourseCardProps) {
             </CardContent>
 
             <CardFooter>
-                {/* TODO (lesson player phase): link to the next lesson instead of the course page */}
+                {/* /learn/[slug] opens the first lesson not done yet */}
                 <Button variant={hasStarted ? "default" : "outline"} rounded="lg" className="w-full" asChild>
-                    <Link href={`/courses/${course.slug}`}>
+                    <Link href={getCourseLearnHref(course.slug)}>
                         {isCompleted ? "Review course" : hasStarted ? "Continue learning" : "Start learning"}
                         <ArrowRight />
                     </Link>
