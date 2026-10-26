@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getVideoThumbnailUrl, getVideoUrl } from "@/lib/cloudinary/urls";
 import { useCompleteLesson } from "../hooks/useCompleteLesson";
 import { CurrentLesson } from "../types";
-import { useRef, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 
 type LessonVideoPlayerProps = {
     lesson: CurrentLesson;
@@ -18,30 +18,26 @@ type LessonVideoPlayerProps = {
  * The video of the open lesson (the browser player: play, seek, volume, full screen...).
  *   not allowed → a locked box + a link to the course page
  *   no video    → an empty box
- *   a video     → the player; at the end the lesson is marked as done
+ *   a video     → the player; at 90% of the video the lesson is marked as done
  */
 export function LessonVideoPlayer({ lesson, courseSlug, canSaveProgress }: LessonVideoPlayerProps) {
     const { mutate: completeLesson } = useCompleteLesson();
-    const [videoCompleted, setVideoCompleted] = useState<boolean>(false)
-
-    const videoRef = useRef<HTMLVideoElement>(null)
-    const video = videoRef.current
+    // true after we asked the server once (timeupdate fires many times a second)
+    const [videoCompleted, setVideoCompleted] = useState<boolean>(false);
 
     // check progress of the video if it reached the 90% mark then mark the lesson as completed
-    const check_progress = () => {
-        if (!video || !canSaveProgress || videoCompleted) return;
+    // event.currentTarget = the <video> itself, read NOW (a ref read during render would still be null)
+    const checkProgress = (event: SyntheticEvent<HTMLVideoElement>) => {
+        if (!canSaveProgress || lesson.is_completed || videoCompleted) return;
 
-        const currentTime = video.currentTime
-        const duration = video.duration
-
-        const isCompleted = (currentTime / duration) * 100 >= 90;
+        const video = event.currentTarget;
+        const isCompleted = (video.currentTime / video.duration) * 100 >= 90;
 
         if (isCompleted) {
-            setVideoCompleted(true)
-            completeLesson({ lessonId: lesson.id, completed: true })
+            setVideoCompleted(true);
+            completeLesson({ lessonId: lesson.id, completed: true });
         }
-
-    }
+    };
 
 
     // 1- not enrolled and not a free preview
@@ -70,17 +66,15 @@ export function LessonVideoPlayer({ lesson, courseSlug, canSaveProgress }: Lesso
         );
     }
 
-    // 3- the video (key = the lesson → a new lesson starts a new player from 0:00)
+    // 3- the video (the page gives this component key = the lesson → a new lesson = a new player from 0:00)
     return (
         <video
-            key={lesson.id}
-            ref={videoRef}
             src={getVideoUrl(lesson.video.public_id, lesson.video.version)}
             poster={getVideoThumbnailUrl(lesson.video.public_id, lesson.video.version)}
             controls
             playsInline
             className="aspect-video w-full rounded-xl bg-black"
-            onTimeUpdate={check_progress}
+            onTimeUpdate={checkProgress}
         />
     );
 }

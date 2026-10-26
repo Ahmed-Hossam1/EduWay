@@ -18,7 +18,13 @@ export function LessonPlayerPage({ player }: LessonPlayerPageProps) {
         <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
                 <div className="min-w-0 space-y-6">
-                    <LessonVideoPlayer lesson={lesson} courseSlug={course.slug} canSaveProgress={isEnrolled} />
+                    {/* key = the lesson → another lesson = a fresh player (its state starts again) */}
+                    <LessonVideoPlayer
+                        key={lesson.id}
+                        lesson={lesson}
+                        courseSlug={course.slug}
+                        canSaveProgress={isEnrolled}
+                    />
                     <LessonInfo
                         lesson={lesson}
                         courseSlug={course.slug}

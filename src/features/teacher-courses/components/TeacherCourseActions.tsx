@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Eye, EyeOff, Link2, MoreHorizontal, Trash2 } from "lucide-react";
+import { getCourseLearnHref } from "@/features/learn/utils";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -52,8 +54,9 @@ export function TeacherCourseActions({ courseId, courseTitle, courseSlug, status
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end" className="w-52">
-                    {/* TODO: Ahmed adds the logic of "View as student" */}
-                    <DropdownMenuItem>
+                    {/* a real link to /learn/<slug> → inside the dashboard it is intercepted
+                        and opens the lesson player in a modal (app/(teacher)/@modal/(...)learn) */}
+                    <DropdownMenuItem render={<Link href={getCourseLearnHref(courseSlug)} />}>
                         <Eye />
                         View as student
                     </DropdownMenuItem>
