@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import Link from "next/link";
 import { Bell, BellOff, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ type NotificationsBellProps = {
 export function NotificationsBell({ notifications }: NotificationsBellProps) {
     const { items, unreadCount } = notifications;
     const { mutate: markAllRead, isPending } = useMarkAllRead();
-    const { mutate: markRead } = useMarkRead();
+    const { mutate: markRead, mutateAsync: markReadAsync } = useMarkRead();
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -88,6 +88,21 @@ export function NotificationsBell({ notifications }: NotificationsBellProps) {
                                 setIsOpen(false);
                             };
 
+                            // a /learn link → a FULL page load (not <Link>): on "My courses" the "View as student"
+                            // modal catches every /learn <Link> (intercepting route), a notification must open the
+                            // real lesson page. The page reloads → save "read" first, then go.
+                            // (the link comes from item.link: after "await", React has cleared event.currentTarget)
+                            const openLearnNotification = async (event: MouseEvent<HTMLAnchorElement>) => {
+                                event.preventDefault();
+                                const link = item.link ?? "/";
+                                try {
+                                    if (isUnread) await markReadAsync(item.id);
+                                } finally {
+                                    window.location.assign(link);
+                                }
+                            };
+                            const isLearnLink = item.link?.startsWith("/learn/");
+
                             const row = (
                                 <div className="flex gap-3 px-4 py-3 transition-colors hover:bg-muted/60">
                                     <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -112,11 +127,17 @@ export function NotificationsBell({ notifications }: NotificationsBellProps) {
 
                             return (
                                 <li key={item.id} className="border-b border-border last:border-0">
-                                    {item.link ? (
+                                    {item.link && isLearnLink && (
+                                        <a href={item.link} onClick={openLearnNotification}>
+                                            {row}
+                                        </a>
+                                    )}
+                                    {item.link && !isLearnLink && (
                                         <Link href={item.link} onClick={openNotification}>
                                             {row}
                                         </Link>
-                                    ) : (
+                                    )}
+                                    {!item.link && (
                                         <button type="button" className="w-full text-left" onClick={openNotification}>
                                             {row}
                                         </button>

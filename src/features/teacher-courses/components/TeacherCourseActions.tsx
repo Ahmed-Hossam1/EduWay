@@ -55,7 +55,7 @@ export function TeacherCourseActions({ courseId, courseTitle, courseSlug, status
 
                 <DropdownMenuContent align="end" className="w-52">
                     {/* a real link to /learn/<slug> → inside the dashboard it is intercepted
-                        and opens the lesson player in a modal (app/(teacher)/teacher/@modal/(..)learn) */}
+                        and opens the lesson player in a modal (app/(teacher)/teacher/courses/@modal/(..)(..)learn) */}
                     <DropdownMenuItem render={<Link href={getCourseLearnHref(courseSlug)} />}>
                         <Eye />
                         View as student

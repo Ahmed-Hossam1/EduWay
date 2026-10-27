@@ -317,3 +317,12 @@
 .dark ::-webkit-scrollbar-thumb:hover {
     background: #475569;
 }
+
+/* 
+/* globals.css */
+.vds-video-layout {
+    --video-brand: var(--color-primary);
+    --video-controls-color: var(--color-primary-foreground);
+    --video-focus-ring-color: var(--color-ring);
+    --video-border-radius: 12px;
+}
