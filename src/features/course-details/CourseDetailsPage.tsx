@@ -2,6 +2,7 @@ import { CourseCard } from "@/features/courses/types";
 import { Suspense } from "react";
 import { CourseCurriculum } from "./components/CourseCurriculum";
 import { CourseDetailsHero } from "./components/CourseDetailsHero";
+import { CourseCommunityTabs } from "./components/CourseCommunityTabs";
 import { CourseInstructor } from "./components/CourseInstructor";
 import { CourseLearningOutcomes } from "./components/CourseLearningOutcomes";
 import { CourseMobileBar } from "./components/CourseMobileBar";
@@ -14,6 +15,8 @@ import { RelatedCoursesSkeleton } from "./components/skeleton";
 import { CourseDetails } from "./types";
 import { CourseReviewsSection } from "@/features/reviews/components/CourseReviewsSection";
 import { CourseReviewsSkeleton } from "@/features/reviews/components/skeleton";
+import { CourseQuestionsSection } from "@/features/questions/components/CourseQuestionsSection";
+import { CourseQuestionsSkeleton } from "@/features/questions/components/skeleton";
 
 type CourseDetailsPageProps = {
     course: CourseDetails;
@@ -68,10 +71,20 @@ export function CourseDetailsPage({ course, relatedCoursesPromise }: CourseDetai
                         <CourseTags tags={course.tags} />
                         <CourseInstructor instructor={course.instructor} />
 
-                        {/* Reviews: streamed, the page doesn't wait for them */}
-                        <Suspense fallback={<CourseReviewsSkeleton />}>
-                            <CourseReviewsSection courseId={course.id} />
-                        </Suspense>
+                        {/* Reviews | Questions (before buying: anyone logged in asks) as 2 tabs,
+                            both streamed: the page doesn't wait for them */}
+                        <CourseCommunityTabs
+                            reviews={
+                                <Suspense fallback={<CourseReviewsSkeleton />}>
+                                    <CourseReviewsSection courseId={course.id} />
+                                </Suspense>
+                            }
+                            questions={
+                                <Suspense fallback={<CourseQuestionsSkeleton />}>
+                                    <CourseQuestionsSection courseId={course.id} />
+                                </Suspense>
+                            }
+                        />
                     </div>
                 </div>
 

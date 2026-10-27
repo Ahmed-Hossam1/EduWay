@@ -1,37 +1,79 @@
 "use client";
 
 import { useState } from "react";
+import { useScrollToComment } from "@/features/comments/hooks/useScrollToComment";
 import { MessageSquareText } from "lucide-react";
+import { RatingStars } from "@/components/shared/RatingStars";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { reviewSortOptions } from "../data/reviewInputs";
+import { CommentItem } from "@/features/comments/components/CommentItem";
+import { CommentSortSelect } from "@/features/comments/components/CommentSortSelect";
+import { CommentsListSkeleton } from "@/features/comments/components/skeleton";
+import { CommentActions, CommentSort } from "@/features/comments/types";
 import { useCourseReviews } from "../hooks/useCourseReviews";
 import { useCreateReview } from "../hooks/useCreateReview";
-import { CourseReviewsPage, ReviewSort } from "../types";
+import { useDeleteReview } from "../hooks/useDeleteReview";
+import { useReplyToReview } from "../hooks/useReplyToReview";
+import { useUpdateReview } from "../hooks/useUpdateReview";
+import { CourseReviewsPage, ReviewNode } from "../types";
 import { RatingSummary } from "./RatingSummary";
 import { ReviewForm } from "./ReviewForm";
-import { ReviewItem } from "./ReviewItem";
-import { ReviewsListSkeleton } from "./skeleton";
 
 type CourseReviewsProps = {
     courseId: string;
     firstPage: CourseReviewsPage; // from the server (newest first)
-    isLoggedIn: boolean;
 };
 
 /**
  * The reviews section: the summary, "Rate this course" (enrolled students), the list (+ replies),
  * the sort (Newest / Oldest) and "Show more reviews".
+ * Only the buyers + the teacher reply (canReply); the others only read.
  */
-export function CourseReviews({ courseId, firstPage, isLoggedIn }: CourseReviewsProps) {
-    const [sort, setSort] = useState<ReviewSort>("newest");
+export function CourseReviews({ courseId, firstPage }: CourseReviewsProps) {
+    const [sort, setSort] = useState<CommentSort>("newest");
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useCourseReviews(courseId, sort, firstPage);
     const { mutate: createReview, isPending: isCreating } = useCreateReview();
+    const { mutate: replyToReview, isPending: isReplyPending } = useReplyToReview();
+    const { mutate: updateReview, isPending: isUpdatePending } = useUpdateReview();
+    const { mutate: deleteReview, isPending: isDeletePending } = useDeleteReview();
+
+    // a notification link: /courses/<slug>#review-<id> → that comment (or #reviews → the section)
+    const focusedId = useScrollToComment("review", "reviews");
 
     // the summary is the same on every page → the first one (the server one while another sort loads)
-    const { summary, canReview, myReview } = data?.pages[0] ?? firstPage;
+    const { summary, canReview, canReply, myReview } = data?.pages[0] ?? firstPage;
     const reviews = data?.pages.flatMap((page) => page.reviews) ?? [];
+
+    // what every review / reply can do (CommentItem calls them)
+    const actions: CommentActions = {
+        reply: (parentId, body, onDone) =>
+            replyToReview({ courseId, parentId, values: { body } }, { onSuccess: onDone }),
+        isReplyPending,
+        update: (reviewId, body, onDone) =>
+            updateReview({ courseId, reviewId, values: { body } }, { onSuccess: onDone }),
+        isUpdatePending,
+        remove: (reviewId, onDone) => deleteReview({ courseId, reviewId }, { onSuccess: onDone }),
+        isDeletePending,
+    };
+
+    // the stars under the name (a review only, a reply has none)
+    const renderStars = (review: ReviewNode) =>
+        review.rating && <RatingStars rating={review.rating} className="mt-1" />;
+
+    // a review edits its stars too (a reply → undefined → CommentItem shows the normal text form)
+    const renderEditForm = (review: ReviewNode, depth: number, close: () => void) => {
+        if (depth !== 1) return undefined;
+
+        return (
+            <ReviewForm
+                defaultValues={{ rating: review.rating ?? 0, body: review.body ?? "" }}
+                submitLabel="Save"
+                isPending={isUpdatePending}
+                onCancel={close}
+                onSubmit={(values) => updateReview({ courseId, reviewId: review.id, values }, { onSuccess: close })}
+            />
+        );
+    };
 
     return (
         <section aria-labelledby="reviews" className="space-y-8">
@@ -79,35 +121,23 @@ export function CourseReviews({ courseId, firstPage, isLoggedIn }: CourseReviews
 
             {(reviews.length > 0 || !data) && (
                 <div className="space-y-6">
-                    <div className="flex items-center justify-end gap-2">
-                        <span className="text-sm text-muted-foreground">Sort by</span>
-                        <Select
-                            value={sort}
-                            onValueChange={(value) => setSort(value as ReviewSort)}
-                            itemToStringLabel={(id) =>
-                                reviewSortOptions.find((option) => option.id === id)?.label ?? ""
-                            }
-                        >
-                            <SelectTrigger className="w-32" aria-label="Sort reviews">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {reviewSortOptions.map((option) => (
-                                    <SelectItem key={option.id} value={option.id}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <CommentSortSelect value={sort} onChange={setSort} label="Sort reviews" />
 
                     {/* another sort is loading for the first time */}
-                    {!data && <ReviewsListSkeleton />}
+                    {!data && <CommentsListSkeleton />}
 
                     <div className="divide-y divide-border">
                         {reviews.map((review) => (
                             <div key={review.id} className="py-6 first:pt-0">
-                                <ReviewItem node={review} courseId={courseId} isLoggedIn={isLoggedIn} />
+                                <CommentItem
+                                    node={review}
+                                    actions={actions}
+                                    canReply={canReply}
+                                    topName="review"
+                                    focusedId={focusedId}
+                                    renderUnderName={renderStars}
+                                    renderEditForm={renderEditForm}
+                                />
                             </div>
                         ))}
                     </div>

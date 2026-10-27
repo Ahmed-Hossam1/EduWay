@@ -41,3 +41,7 @@ export interface LessonPlayer {
 export type CompleteLessonResult = LessonProgress & {
     courseCompleted: boolean;
 };
+
+// The tabs under the video (?tab=qa opens the Q&A)
+export const LESSON_TABS = ["overview", "qa", "reviews"] as const;
+export type LessonTab = (typeof LESSON_TABS)[number];

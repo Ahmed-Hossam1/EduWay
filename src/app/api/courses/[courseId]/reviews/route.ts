@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
-import { REVIEWS_PAGE_SIZE } from "@/features/reviews/constants";
-import { createReplySchema, reviewSchema, reviewsQuerySchema } from "@/features/reviews/schemas/reviewSchemas";
+import { COMMENTS_PAGE_SIZE } from "@/features/comments/constants";
+import { commentsQuerySchema } from "@/features/comments/schemas/commentSchemas";
+import { createReplySchema, reviewSchema } from "@/features/reviews/schemas/reviewSchemas";
 
 type Params = {
     params: Promise<{ courseId: string }>;
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest, { params }: Params) {
             return NextResponse.json({ message: "A valid courseId is required" }, { status: 400 });
         }
 
-        const { sort, offset } = reviewsQuerySchema.parse({
+        const { sort, offset } = commentsQuerySchema.parse({
             sort: request.nextUrl.searchParams.get("sort"),
             offset: request.nextUrl.searchParams.get("offset"),
         });
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest, { params }: Params) {
         const { data, error } = await supabase.rpc("get_course_reviews", {
             p_course_id: courseId,
             p_sort: sort,
-            p_limit: REVIEWS_PAGE_SIZE,
+            p_limit: COMMENTS_PAGE_SIZE,
             p_offset: offset,
         });
 
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest, { params }: Params) {
 /**
  * POST /api/courses/:courseId/reviews
  *   { rating, body }     → a review (enrolled students only, one per course)
- *   { parentId, body }   → a reply to that comment (anyone logged in)
+ *   { parentId, body }   → a reply to that comment (the buyers + the teacher)
  * The database (RLS) decides who can write; the triggers update the rating + send the notifications.
  */
 export async function POST(request: NextRequest, { params }: Params) {
@@ -82,7 +83,7 @@ export async function POST(request: NextRequest, { params }: Params) {
             // 42501 = the RLS policy said no
             if (error.code === "42501") {
                 const message = isReply
-                    ? "You can't reply to this comment"
+                    ? "Only students enrolled in this course can reply"
                     : "Only students enrolled in this course can review it";
                 return NextResponse.json({ message }, { status: 403 });
             }

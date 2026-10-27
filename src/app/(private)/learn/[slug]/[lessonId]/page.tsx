@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LessonPlayerPage } from "@/features/learn/LessonPlayerPage";
 import { getLessonPlayer } from "@/features/learn/server/getLessonPlayer";
+import { LESSON_TABS } from "@/features/learn/types";
 
 type Params = {
     params: Promise<{ slug: string; lessonId: string }>;
+};
+
+type PageSearchParams = {
+    searchParams: Promise<{ tab?: string }>;
 };
 
 // "What is React? · React for Beginners"
@@ -21,12 +26,16 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 // /learn/[slug]/[lessonId] → the lesson player (proxy.ts: /learn needs a login)
-export default async function LessonPlayer({ params }: Params) {
+export default async function LessonPlayer({ params, searchParams }: Params & PageSearchParams) {
     const { slug, lessonId } = await params;
+    const { tab } = await searchParams;
+
+    // ?tab=qa → the Q&A tab opens first (a notification "replied to your question" links here)
+    const defaultTab = LESSON_TABS.find((name) => name === tab);
 
     // the database decides what you can see (enrolled / teacher / free preview)
     const player = await getLessonPlayer(slug, lessonId);
     if (!player) notFound();
 
-    return <LessonPlayerPage player={player} />;
+    return <LessonPlayerPage player={player} defaultTab={defaultTab} />;
 }

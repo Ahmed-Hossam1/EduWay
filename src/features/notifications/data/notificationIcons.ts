@@ -1,4 +1,17 @@
-import { BadgeCheck, BadgeX, BookPlus, LucideIcon, Megaphone, MessageCircle, Reply, Rocket, Star, UserPlus } from "lucide-react";
+import {
+    Award,
+    BadgeCheck,
+    BadgeX,
+    BookPlus,
+    LucideIcon,
+    Megaphone,
+    MessageCircle,
+    MessageCircleQuestion,
+    Reply,
+    Rocket,
+    Star,
+    UserPlus,
+} from "lucide-react";
 import { NotificationType } from "../types";
 
 // The icon of each notification kind
@@ -12,4 +25,6 @@ export const notificationIcons: Record<NotificationType, LucideIcon> = {
     announcement: Megaphone,
     new_comment: MessageCircle,
     comment_reply: Reply,
+    new_question: MessageCircleQuestion,
+    best_answer: Award,
 };

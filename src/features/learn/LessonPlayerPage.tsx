@@ -2,17 +2,18 @@ import { LessonInfo } from "./components/LessonInfo";
 import { LessonTabs } from "./components/LessonTabs";
 import { LessonVideoPlayer } from "./components/LessonVideoPlayer";
 import { PlayerCurriculum } from "./components/PlayerCurriculum";
-import { LessonPlayer } from "./types";
+import { LessonPlayer, LessonTab } from "./types";
 
 type LessonPlayerPageProps = {
     player: LessonPlayer;
+    defaultTab?: LessonTab; // the tab open under the video (?tab=qa)
 };
 
 /**
  * /learn/[slug]/[lessonId]: the video + the lesson info on the left, the curriculum on the right
  * (on a phone the curriculum goes under the lesson).
  */
-export function LessonPlayerPage({ player }: LessonPlayerPageProps) {
+export function LessonPlayerPage({ player, defaultTab }: LessonPlayerPageProps) {
     const { course, lesson, sections, progress, isEnrolled, previousLessonId, nextLessonId } = player;
 
     return (
@@ -33,7 +34,7 @@ export function LessonPlayerPage({ player }: LessonPlayerPageProps) {
                         nextLessonId={nextLessonId}
                         canSaveProgress={isEnrolled}
                     />
-                    <LessonTabs player={player} />
+                    <LessonTabs player={player} defaultTab={defaultTab} />
                 </div>
 
                 <aside>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Bell, BellOff, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { cn, timeAgo } from "@/lib/utils";
 import { MyNotifications } from "../types";
 import { notificationIcons } from "../data/notificationIcons";
 import { useMarkAllRead } from "../hooks/useMarkAllRead";
+import { useMarkRead } from "../hooks/useMarkRead";
 
 type NotificationsBellProps = {
     notifications: MyNotifications;
@@ -17,9 +19,11 @@ type NotificationsBellProps = {
 export function NotificationsBell({ notifications }: NotificationsBellProps) {
     const { items, unreadCount } = notifications;
     const { mutate: markAllRead, isPending } = useMarkAllRead();
+    const { mutate: markRead } = useMarkRead();
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <Popover>
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger
                 render={
                     <Button
@@ -51,7 +55,9 @@ export function NotificationsBell({ notifications }: NotificationsBellProps) {
                             isLoading={isPending}
                             onClick={() => markAllRead()}
                         >
-                            {isPending ? "Saving..." : (
+                            {isPending ? (
+                                "Saving..."
+                            ) : (
                                 <>
                                     <CheckCheck className="size-3.5" />
                                     Mark all read
@@ -76,6 +82,12 @@ export function NotificationsBell({ notifications }: NotificationsBellProps) {
                             const Icon = notificationIcons[item.type];
                             const isUnread = item.readAt === null;
 
+                            // a click → the notification becomes read + the bell closes (the link opens its page)
+                            const openNotification = () => {
+                                if (isUnread) markRead(item.id);
+                                setIsOpen(false);
+                            };
+
                             const row = (
                                 <div className="flex gap-3 px-4 py-3 transition-colors hover:bg-muted/60">
                                     <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -90,7 +102,9 @@ export function NotificationsBell({ notifications }: NotificationsBellProps) {
                                         >
                                             {item.title}
                                         </p>
-                                        <p className="mt-0.5 text-xs text-muted-foreground">{timeAgo(item.createdAt)}</p>
+                                        <p className="mt-0.5 text-xs text-muted-foreground">
+                                            {timeAgo(item.createdAt)}
+                                        </p>
                                     </div>
                                     {isUnread && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />}
                                 </div>
@@ -98,7 +112,15 @@ export function NotificationsBell({ notifications }: NotificationsBellProps) {
 
                             return (
                                 <li key={item.id} className="border-b border-border last:border-0">
-                                    {item.link ? <Link href={item.link}>{row}</Link> : row}
+                                    {item.link ? (
+                                        <Link href={item.link} onClick={openNotification}>
+                                            {row}
+                                        </Link>
+                                    ) : (
+                                        <button type="button" className="w-full text-left" onClick={openNotification}>
+                                            {row}
+                                        </button>
+                                    )}
                                 </li>
                             );
                         })}

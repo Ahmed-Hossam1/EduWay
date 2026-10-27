@@ -8,7 +8,9 @@ export type NotificationType =
     | "new_review"
     | "announcement"
     | "new_comment" // someone commented on the teacher's course
-    | "comment_reply"; // someone replied to your comment
+    | "comment_reply" // someone replied to your comment (a review or a question)
+    | "new_question" // someone asked a question on the teacher's course
+    | "best_answer"; // your answer was marked as the best answer
 
 // One notification in the bell
 export interface NotificationItem {

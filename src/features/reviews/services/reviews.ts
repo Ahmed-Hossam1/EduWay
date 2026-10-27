@@ -1,6 +1,8 @@
 import { apiClient } from "@/lib/axios/apiClient";
-import { ReplyValues, ReviewValues, UpdateReviewValues } from "../schemas/reviewSchemas";
-import { CourseReviewsPage, ReviewSort } from "../types";
+import { CommentTextValues } from "@/features/comments/schemas/commentSchemas";
+import { CommentSort } from "@/features/comments/types";
+import { ReviewValues, UpdateReviewValues } from "../schemas/reviewSchemas";
+import { CourseReviewsPage } from "../types";
 
 // GET /api/courses/:courseId/reviews?sort&offset → one page of reviews
 export const getCourseReviewsService = async ({
@@ -9,7 +11,7 @@ export const getCourseReviewsService = async ({
     offset,
 }: {
     courseId: string;
-    sort: ReviewSort;
+    sort: CommentSort;
     offset: number;
 }) => {
     return await apiClient.get<CourseReviewsPage>(`/courses/${courseId}/reviews`, { sort, offset });
@@ -28,7 +30,7 @@ export const createReplyService = async ({
 }: {
     courseId: string;
     parentId: string;
-    values: ReplyValues;
+    values: CommentTextValues;
 }) => {
     return await apiClient.post<{ id: string }>(`/courses/${courseId}/reviews`, { ...values, parentId });
 };

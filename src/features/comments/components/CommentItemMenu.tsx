@@ -10,21 +10,17 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useDeleteReview } from "../hooks/useDeleteReview";
 
-type ReviewItemMenuProps = {
-    courseId: string;
-    reviewId: string;
-    isReview: boolean; // a review (with stars) or a reply → the words in the menu
+type CommentItemMenuProps = {
+    name: string; // "review", "question", "reply" → the words in the menu
     onEdit: () => void;
+    onDelete: (onDone: () => void) => void;
+    isDeleting: boolean;
 };
 
 // The "..." menu of YOUR comment: Edit / Delete (Delete asks first)
-export function ReviewItemMenu({ courseId, reviewId, isReview, onEdit }: ReviewItemMenuProps) {
+export function CommentItemMenu({ name, onEdit, onDelete, isDeleting }: CommentItemMenuProps) {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const { mutate: deleteReview, isPending } = useDeleteReview();
-
-    const name = isReview ? "review" : "reply";
 
     return (
         <>
@@ -62,8 +58,8 @@ export function ReviewItemMenu({ courseId, reviewId, isReview, onEdit }: ReviewI
                 description="This can't be undone. Replies under it stay."
                 confirmLabel={`Delete ${name}`}
                 destructive
-                isPending={isPending}
-                onConfirm={() => deleteReview({ courseId, reviewId }, { onSuccess: () => setIsConfirmOpen(false) })}
+                isPending={isDeleting}
+                onConfirm={() => onDelete(() => setIsConfirmOpen(false))}
             />
         </>
     );

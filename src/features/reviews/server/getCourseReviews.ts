@@ -1,6 +1,6 @@
 import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { REVIEWS_PAGE_SIZE } from "../constants";
+import { COMMENTS_PAGE_SIZE } from "@/features/comments/constants";
 import { CourseReviewsPage } from "../types";
 
 /**
@@ -14,7 +14,7 @@ export const getCourseReviews = async (courseId: string): Promise<CourseReviewsP
     const { data, error } = await supabase.rpc("get_course_reviews", {
         p_course_id: courseId,
         p_sort: "newest",
-        p_limit: REVIEWS_PAGE_SIZE,
+        p_limit: COMMENTS_PAGE_SIZE,
         p_offset: 0,
     });
 

@@ -1,5 +1,4 @@
-import { Profile } from "@/features/profile/types";
-import { REVIEW_SORTS } from "../constants";
+import { CommentNode } from "@/features/comments/types";
 
 // One row of the reviews table: a review (parent_id null, with stars) or a reply (parent_id set, no stars)
 export interface Review {
@@ -14,21 +13,10 @@ export interface Review {
     deleted_at: string | null;
 }
 
-export type ReviewSort = (typeof REVIEW_SORTS)[number]; // "newest" | "oldest"
-
-// The person who wrote a comment (only the name + photo come out of the private profile)
-export type ReviewAuthor = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url">;
-
-// One comment in the list + every reply under it (the database builds the tree)
-export type ReviewNode = Pick<Review, "id" | "rating" | "body" | "created_at"> & {
-    isDeleted: boolean; // "This comment was deleted" (it stays because it has replies)
-    isEdited: boolean;
-    isMine: boolean;
-    isInstructor: boolean; // the teacher of the course → "Instructor" badge
-    author: ReviewAuthor | null; // null when deleted
+// One review / reply in the list = a comment + its stars (null on a reply)
+export interface ReviewNode extends CommentNode, Pick<Review, "rating"> {
     replies: ReviewNode[];
-    repliesCount?: number; // top level only: every reply under it (all levels) → "View 3 replies"
-};
+}
 
 // How many reviews gave N stars (5 → 1)
 export interface StarsCount {
@@ -44,6 +32,7 @@ export interface CourseReviewsPage {
         stars: StarsCount[];
     };
     canReview: boolean; // enrolled and not the teacher
+    canReply: boolean; // enrolled or the teacher (the others only read)
     myReview: Pick<Review, "id" | "rating" | "body"> | null;
     reviews: ReviewNode[];
     hasMore: boolean;

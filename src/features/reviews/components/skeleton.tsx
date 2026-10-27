@@ -1,27 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { CommentsListSkeleton } from "@/features/comments/components/skeleton";
 
-// The skeletons of the reviews section
-
-// 3 comments: avatar + name + stars + 2 lines of text
-export function ReviewsListSkeleton() {
-    return (
-        <div className="space-y-6">
-            {[1, 2, 3].map((item) => (
-                <div key={item} className="flex gap-3">
-                    <Skeleton className="size-10 shrink-0 rounded-full" />
-                    <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-40" />
-                        <Skeleton className="h-3 w-24" />
-                        <Skeleton className="h-3 w-full" />
-                        <Skeleton className="h-3 w-3/4" />
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-
-// The whole section: title + the average and the 5 star bars + the list
+// The whole reviews section while it loads: title + the average and the 5 star bars + the list
 export function CourseReviewsSkeleton() {
     return (
         <div className="space-y-8">
@@ -38,7 +18,7 @@ export function CourseReviewsSkeleton() {
                     ))}
                 </div>
             </div>
-            <ReviewsListSkeleton />
+            <CommentsListSkeleton />
         </div>
     );
 }
