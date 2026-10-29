@@ -75,7 +75,7 @@ export function LessonVideoPlayer({ lesson, courseSlug, canSaveProgress }: Lesso
     return (
         <MediaPlayer
             title={lesson.title}
-            src={getVideoUrl(lesson.video.public_id, lesson.video.version)}
+            src={"https://files.vidstack.io/sprite-fight/hls/stream.m3u8"}
             playsInline
             load="play"
         >
