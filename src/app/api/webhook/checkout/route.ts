@@ -4,7 +4,7 @@ import { stripe } from "@/lib/stripe/stripe";
 import { fulfillOrder } from "@/features/checkout/server/fulfillOrder";
 import { failOrder } from "@/features/checkout/server/failOrder";
 
-// POST /api/checkout/webhook  ← Stripe calls this, NOT the browser
+// POST /api/webhook/checkout  ← Stripe calls this, NOT the browser (every webhook lives in /api/webhook/<service>)
 export async function POST(request: NextRequest) {
     // 1- The raw text body (the signature check needs it exactly as Stripe sent it)
     const body = await request.text();

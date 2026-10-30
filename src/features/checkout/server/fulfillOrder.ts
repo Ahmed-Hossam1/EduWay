@@ -6,7 +6,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
  * Server only: after a Stripe payment => enroll the user in the courses of the order.
  *
  * Called from 2 places with the same Stripe session id:
- *   - the webhook  (/api/checkout/webhook)       => Stripe calls us
+ *   - the webhook  (/api/webhook/checkout)       => Stripe calls us
  *   - the success page (/student/checkout/success) => in case the webhook is late
  *
  * Safe to call many times: fulfill_order() skips a paid order and never adds the same enrollment twice.
