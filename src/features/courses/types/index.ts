@@ -69,6 +69,22 @@ export interface Lesson {
     updated_at: string;
 }
 
+// processing = Cloudinary is making the HLS copy | ready = it has its .m3u8 link | failed = making it failed
+export type VideoStatus = "processing" | "ready" | "failed";
+
+// One row of lesson_videos: the video of a lesson (private: only its teacher reads the table)
+export interface LessonVideo {
+    lesson_id: string;
+    public_id: string; // the uploaded file on Cloudinary ("eduway/lessons/<lesson id>")
+    hls_url: string | null; // the .m3u8 the player uses (null until "ready")
+    status: VideoStatus;
+    poster_url: string | null; // the picture before playing (null → a frame of the video)
+    poster_public_id: string | null;
+    duration_seconds: number;
+    created_at: string;
+    updated_at: string;
+}
+
 // The teacher of a course (on the cards and the course page)
 export type CourseInstructor = Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url">;
 

@@ -44,14 +44,11 @@ export const moveItem = <T,>(list: T[], fromIndex: number, toIndex: number): T[]
 //   getLessonVideoPublicId("abc") → "eduway/lessons/abc"
 export const getLessonVideoPublicId = (lessonId: string) => `${LESSON_VIDEO_FOLDER}/${lessonId}`;
 
-// The Cloudinary address of a lesson video and of a picture from it (for the video preview).
-// version (video_version) changes with every upload → the browser never shows an old video after "Replace".
-//   getLessonVideoUrl("abc", 1792908224512)       → "https://res.cloudinary.com/<cloud>/video/upload/v1792908224512/eduway/lessons/abc.mp4"
-//   getLessonVideoThumbnailUrl("abc", 1792908224512) → the same video, the picture at second 1, as a .jpg
+// A picture from a lesson video (the preview, when the teacher has no poster). The video itself is played
+// ONLY from its HLS link (hls_url), never from the uploaded MP4.
+// version (video_version) changes with every upload → the browser never shows an old picture after "Replace".
+//   getLessonVideoThumbnailUrl("abc", 1792908224512) → the picture at second 1 of the video, as a .jpg
 const CLOUDINARY_VIDEO_BASE = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload`;
-
-export const getLessonVideoUrl = (lessonId: string, version: number | null) =>
-    `${CLOUDINARY_VIDEO_BASE}/v${version ?? 1}/${getLessonVideoPublicId(lessonId)}.mp4`;
 
 export const getLessonVideoThumbnailUrl = (lessonId: string, version: number | null) =>
     `${CLOUDINARY_VIDEO_BASE}/so_1/v${version ?? 1}/${getLessonVideoPublicId(lessonId)}.jpg`;

@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/axios/apiClient";
 import { LessonValues } from "../schemas/curriculumSchemas";
+import { VideoStatus } from "@/features/courses/types";
 import { CurriculumLesson, CurriculumSection } from "../types";
 
 // The browser talks to /api/courses/:courseId/sections, /api/sections/..., /api/lessons/...
@@ -55,6 +56,16 @@ export const saveLessonVideoService = async ({ lessonId, publicId }: { lessonId:
     return await apiClient.put<{ message: string; durationSeconds: number }>(`/lessons/${lessonId}/video`, {
         publicId,
     });
+};
+
+// POST /api/lessons/:lessonId/video/hls → "Retry": make the HLS copy again (no new upload)
+export const retryLessonVideoHlsService = async (lessonId: string) => {
+    return await apiClient.post<{ message: string; status: VideoStatus }>(`/lessons/${lessonId}/video/hls`);
+};
+
+// GET /api/lessons/:lessonId/video/hls → is the HLS ready? (the backup of the webhook, asked every few seconds)
+export const getLessonVideoHlsStatusService = async (lessonId: string) => {
+    return await apiClient.get<{ status: VideoStatus }>(`/lessons/${lessonId}/video/hls`);
 };
 
 // DELETE /api/lessons/:lessonId/video
