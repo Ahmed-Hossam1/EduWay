@@ -60,7 +60,7 @@ export const metadata: Metadata = {
         description: "Learn new skills, track your progress, and build your path toward your goals with EduWay.",
         images: [
             {
-                url: "/og-image.png",
+                url: "/favicon.ico",
                 width: 1200,
                 height: 630,
                 alt: "EduWay — Your Way to Learn, Grow, and Succeed",
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "EduWay — Your Way to Learn, Grow, and Succeed",
         description: "Learn new skills, track your progress, and build your path toward your goals with EduWay.",
-        images: ["/og-image.png"],
+        images: ["/favicon.ico"],
     },
 
     icons: {
