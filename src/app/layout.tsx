@@ -17,8 +17,10 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
+const domain = process.env.NEXT_PUBLIC_APP_URL
+const url = String(domain)
 export const metadata: Metadata = {
-    metadataBase: new URL("https://your-domain.com"),
+    metadataBase: new URL(url),
 
     title: {
         default: "EduWay",
@@ -52,7 +54,7 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         locale: "en_US",
-        url: "https://your-domain.com",
+        url: url,
         siteName: "EduWay",
         title: "EduWay — Your Way to Learn, Grow, and Succeed",
         description: "Learn new skills, track your progress, and build your path toward your goals with EduWay.",
