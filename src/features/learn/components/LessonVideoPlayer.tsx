@@ -2,15 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { getVideoThumbnailUrl, getVideoUrl } from "@/lib/cloudinary/urls";
+import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
+import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
+import '@vidstack/react/player/styles/default/layouts/video.css';
+import '@vidstack/react/player/styles/default/theme.css';
 import { Lock, VideoOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useCompleteLesson } from "../hooks/useCompleteLesson";
 import { CurrentLesson } from "../types";
-import '@vidstack/react/player/styles/default/theme.css';
-import '@vidstack/react/player/styles/default/layouts/video.css';
-import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
-import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
 
 type LessonVideoPlayerProps = {
     lesson: CurrentLesson;
@@ -75,12 +75,12 @@ export function LessonVideoPlayer({ lesson, courseSlug, canSaveProgress }: Lesso
     return (
         <MediaPlayer
             title={lesson.title}
-            src={"https://files.vidstack.io/sprite-fight/hls/stream.m3u8"}
+            src={getVideoUrl(video.public_id, video.version)}
             playsInline
             load="play"
         >
             <MediaProvider>
-                <Poster src={"https://www.moonbox.ae/wp-content/uploads/2024/04/Poster-design-ideas-2.png"} className='vds-poster' />
+                <Poster src={getVideoThumbnailUrl(video.public_id, video.version)} className='vds-poster' />
             </MediaProvider>
             <DefaultVideoLayout icons={defaultLayoutIcons} />
         </MediaPlayer>
