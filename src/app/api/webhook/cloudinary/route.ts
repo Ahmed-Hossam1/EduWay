@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cloudinary } from "@/lib/cloudinary/cloudinary";
+import { cloudinary, isMainHlsUrl } from "@/lib/cloudinary/cloudinary";
 import { finishVideoHls } from "@/features/course-builder/server/finishVideoHls";
 
-// One item of "eager" in Cloudinary's notification = one copy it made (we ask for one: the HLS .m3u8)
+// One item of "eager" in Cloudinary's notification = one copy it made (the main .m3u8 + one .m3u8 per quality)
 type EagerItem = {
     format?: string;
     secure_url?: string;
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
             // the background copies (our HLS) are done
             case "eager": {
                 const eager: EagerItem[] = data.eager ?? [];
-                const hls = eager.find((item) => item.format === "m3u8" && item.secure_url);
+                const hls = eager.find((item) => isMainHlsUrl(item.secure_url));
 
                 // no .m3u8 in the result → the conversion failed (the teacher can "Retry")
                 const result = await finishVideoHls(data.public_id, hls?.secure_url ?? null);

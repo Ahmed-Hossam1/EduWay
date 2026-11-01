@@ -1,4 +1,4 @@
-import { Course, Lesson, Section } from "@/features/courses/types";
+import { Course, Lesson, LessonVideo, Section } from "@/features/courses/types";
 
 // How far the student is in the course
 export interface LessonProgress {
@@ -22,7 +22,8 @@ export type PlayerSection = Pick<Section, "id" | "title" | "position"> & {
 export type CurrentLesson = Pick<Lesson, "id" | "title" | "description" | "duration_seconds" | "is_preview"> & {
     is_completed: boolean;
     can_watch: boolean;
-    video: { public_id: string; version: number } | null; // null → no video yet, or not allowed to watch
+    // null → no video yet, or not allowed to watch. hls_url is null until the video is "ready"
+    video: Pick<LessonVideo, "public_id" | "status" | "hls_url" | "poster_url"> | null;
 };
 
 // What get_lesson_player() returns (database function): everything the player page needs

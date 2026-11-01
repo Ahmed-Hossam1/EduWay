@@ -1,14 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { getVideoThumbnailUrl, getVideoUrl } from "@/lib/cloudinary/urls";
-import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
-import { defaultLayoutIcons, DefaultVideoLayout } from '@vidstack/react/player/layouts/default';
-import '@vidstack/react/player/styles/default/layouts/video.css';
-import '@vidstack/react/player/styles/default/theme.css';
-import { Lock, VideoOff } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "next/link";
+import { type MediaTimeUpdateEvent, type MediaTimeUpdateEventDetail } from "@vidstack/react";
+import { Loader2, Lock, VideoOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { VideoPlayer } from "@/components/shared/VideoPlayer";
 import { useCompleteLesson } from "../hooks/useCompleteLesson";
 import { CurrentLesson } from "../types";
 
@@ -22,27 +19,29 @@ type LessonVideoPlayerProps = {
  * The video of the open lesson (the browser player: play, seek, volume, full screen...).
  *   not allowed → a locked box + a link to the course page
  *   no video    → an empty box
- *   a video     → the player; at 90% of the video the lesson is marked as done
+ *   not ready   → "being prepared" (the teacher just uploaded it, the HLS copy isn't made yet)
+ *   a video     → the HLS player; at 95% of the video the lesson is marked as done
  */
 export function LessonVideoPlayer({ lesson, courseSlug, canSaveProgress }: LessonVideoPlayerProps) {
     const { mutate: completeLesson } = useCompleteLesson();
     // true after we asked the server once (timeupdate fires many times a second)
     const [videoCompleted, setVideoCompleted] = useState<boolean>(false);
 
-    // check progress of the video if it reached the 90% mark then mark the lesson as completed
-    // event.currentTarget = the <video> itself, read NOW (a ref read during render would still be null)
-    // const checkProgress = (event: SyntheticEvent<HTMLVideoElement>) => {
-    //     if (!canSaveProgress || lesson.is_completed || videoCompleted) return;
+    // check progress of the video: at 95% the lesson is marked as completed
+    // detail = { currentTime }, nativeEvent.target = the player (it knows the duration)
+    const checkProgress = (detail: MediaTimeUpdateEventDetail, nativeEvent: MediaTimeUpdateEvent) => {
+        if (!canSaveProgress || lesson.is_completed || videoCompleted) return;
 
-    //     const video = event.currentTarget;
-    //     const isCompleted = (video.currentTime / video.duration) * 100 >= 90;
+        const duration = nativeEvent.target.state.duration;
+        if (!duration) return; // not loaded yet → 0 → don't divide by 0
 
-    //     if (isCompleted) {
-    //         setVideoCompleted(true);
-    //         completeLesson({ lessonId: lesson.id, completed: true });
-    //     }
-    // };
+        const isCompleted = (detail.currentTime / duration) * 100 >= 95;
 
+        if (isCompleted) {
+            setVideoCompleted(true);
+            completeLesson({ lessonId: lesson.id, completed: true });
+        }
+    };
 
     // 1- not enrolled and not a free preview
     if (!lesson.can_watch) {
@@ -70,19 +69,23 @@ export function LessonVideoPlayer({ lesson, courseSlug, canSaveProgress }: Lesso
         );
     }
 
-    const { title, video, id, description, can_watch, duration_seconds, is_preview, is_completed } = lesson;
-    // 3- the video (the page gives this component key = the lesson → a new lesson = a new player from 0:00)
+    // 3- uploaded, but the HLS copy is not ready yet (or it failed: the teacher has to retry)
+    if (!lesson.video.hls_url) {
+        return (
+            <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-xl bg-muted text-muted-foreground">
+                <Loader2 className="size-8 animate-spin" />
+                <p className="text-sm">This video is being prepared. Come back in a few minutes.</p>
+            </div>
+        );
+    }
+
+    // 4- the video (the page gives this component key = the lesson → a new lesson = a new player from 0:00)
     return (
-        <MediaPlayer
+        <VideoPlayer
+            src={lesson.video.hls_url}
             title={lesson.title}
-            src={getVideoUrl(video.public_id, video.version)}
-            playsInline
-            load="play"
-        >
-            <MediaProvider>
-                <Poster src={getVideoThumbnailUrl(video.public_id, video.version)} className='vds-poster' />
-            </MediaProvider>
-            <DefaultVideoLayout icons={defaultLayoutIcons} />
-        </MediaPlayer>
+            poster={lesson.video.poster_url}
+            onTimeUpdate={checkProgress}
+        />
     );
 }

@@ -23,6 +23,14 @@ export { cloudinary };
 const HLS_EAGER = [{ streaming_profile: "full_hd", format: "m3u8" }];
 
 /**
+ * Is this the MAIN .m3u8 (the list of every quality)?
+ * Cloudinary also makes one .m3u8 per quality (".../br_hd720/....m3u8"): saving one of them
+ * → the player gets ONE quality → no "Quality" in its settings.
+ * The main one has the profile name in its link: ".../sp_full_hd/v123/eduway/lessons/<id>.m3u8"
+ */
+export const isMainHlsUrl = (url?: string) => !!url && url.includes("/sp_full_hd/") && url.endsWith(".m3u8");
+
+/**
  * Ask Cloudinary to make the HLS (.m3u8) copy of an uploaded video, IN THE BACKGROUND.
  * explicit = "do something on a file that is already on Cloudinary" (no new upload).
  * eager_async: true → this call returns right away; a long video can take minutes.
@@ -50,7 +58,7 @@ export async function findVideoHlsUrl(publicId: string): Promise<string | null> 
     const derived: { secure_url?: string }[] = video.derived ?? [];
 
     const hls = derived.find(
-        (copy) => copy.secure_url?.endsWith(".m3u8") && copy.secure_url.includes(`/v${video.version}/`),
+        (copy) => isMainHlsUrl(copy.secure_url) && copy.secure_url?.includes(`/v${video.version}/`),
     );
     return hls?.secure_url ?? null;
 }

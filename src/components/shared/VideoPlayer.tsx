@@ -2,7 +2,7 @@
 
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
-import { MediaPlayer, MediaProvider, Poster } from "@vidstack/react";
+import { MediaPlayer, MediaProvider, Poster, type MediaPlayerProps } from "@vidstack/react";
 import { defaultLayoutIcons, DefaultVideoLayout } from "@vidstack/react/player/layouts/default";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,7 @@ type VideoPlayerProps = {
     title: string;
     poster?: string | null; // the picture before playing
     className?: string;
+    onTimeUpdate?: MediaPlayerProps["onTimeUpdate"]; // fires many times a second while playing
 };
 
 /**
@@ -20,12 +21,13 @@ type VideoPlayerProps = {
  *
  *   <VideoPlayer src={lesson.hls_url} title={lesson.title} poster={lesson.poster_url} />
  */
-export function VideoPlayer({ src, title, poster, className }: VideoPlayerProps) {
+export function VideoPlayer({ src, title, poster, className, onTimeUpdate }: VideoPlayerProps) {
     return (
         <MediaPlayer
             title={title}
             src={src}
             playsInline
+            onTimeUpdate={onTimeUpdate}
             className={cn("aspect-video w-full overflow-hidden rounded-xl bg-black", className)}
         >
             <MediaProvider>{poster && <Poster src={poster} alt={title} className="vds-poster" />}</MediaProvider>
