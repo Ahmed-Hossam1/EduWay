@@ -1,4 +1,4 @@
-import { COURSE_LANGUAGES, LESSON_VIDEO_FOLDER } from "../constants";
+import { COURSE_LANGUAGES, LESSON_POSTER_FOLDER, LESSON_VIDEO_FOLDER } from "../constants";
 import { EDIT_TABS, EditTab } from "../data/editTabs";
 import { CourseDetailsValues } from "../schemas/courseDetailsSchema";
 import { CourseForEdit } from "../types";
@@ -43,6 +43,10 @@ export const moveItem = <T,>(list: T[], fromIndex: number, toIndex: number): T[]
 // The Cloudinary public_id of a lesson video: one fixed name per lesson
 //   getLessonVideoPublicId("abc") → "eduway/lessons/abc"
 export const getLessonVideoPublicId = (lessonId: string) => `${LESSON_VIDEO_FOLDER}/${lessonId}`;
+
+// The Cloudinary public_id of a lesson poster: one fixed name per lesson too
+//   getLessonPosterPublicId("abc") → "eduway/lesson-posters/abc"
+export const getLessonPosterPublicId = (lessonId: string) => `${LESSON_POSTER_FOLDER}/${lessonId}`;
 
 // A picture from a lesson video (the preview, when the teacher has no poster). The video itself is played
 // ONLY from its HLS link (hls_url), never from the uploaded MP4.

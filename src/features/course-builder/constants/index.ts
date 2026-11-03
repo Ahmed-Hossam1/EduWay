@@ -17,3 +17,8 @@ export const MAX_PRICE = 999.99;
 export const LESSON_VIDEO_FOLDER = "eduway/lessons";
 export const LESSON_VIDEO_FORMATS = ["mp4", "mov", "webm", "mkv"];
 export const MAX_VIDEO_SIZE = 100_000_000; // 100 MB (the Cloudinary free plan limit)
+
+// Lesson posters (the picture before the video plays): "eduway/lesson-posters/<lesson id>" (Replace writes over it)
+export const LESSON_POSTER_FOLDER = "eduway/lesson-posters";
+export const LESSON_POSTER_FORMATS = ["jpg", "jpeg", "png", "webp"];
+export const MAX_POSTER_SIZE = 5_000_000; // 5 MB

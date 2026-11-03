@@ -29,7 +29,7 @@ type LessonVideoProps = {
  *   ready      → the preview (click → the HLS video in a window) + its length + "Replace" / "Remove"
  *
  * The file goes from the browser STRAIGHT to Cloudinary (not through our server):
- *   1- the widget asks our API to sign the upload (/api/cloudinary/sign-video checks it's HIS lesson)
+ *   1- the widget asks our API to sign the upload (/api/cloudinary/sign-lesson-upload checks it's HIS lesson)
  *   2- the widget uploads the file (it shows the progress bar)
  *   3- right after, we tell our API "uploaded" → it saves the video and starts its HLS copy (by itself)
  */
@@ -111,7 +111,7 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                     )}
 
                     <CldUploadWidget
-                        signatureEndpoint="/api/cloudinary/sign-video"
+                        signatureEndpoint="/api/cloudinary/sign-lesson-upload"
                         options={uploadOptions}
                         onSuccess={(result) => {
                             // uploaded → send its real name to our API right away (it starts the HLS copy)
