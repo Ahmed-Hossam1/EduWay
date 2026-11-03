@@ -72,3 +72,17 @@ export const getLessonVideoHlsStatusService = async (lessonId: string) => {
 export const removeLessonVideoService = async (lessonId: string) => {
     return await apiClient.delete<{ message: string }>(`/lessons/${lessonId}/video`);
 };
+
+// ---------- lesson posters ----------
+
+// PUT /api/lessons/:lessonId/poster  { publicId } → the picture is on Cloudinary: save it as the poster
+export const saveLessonPosterService = async ({ lessonId, publicId }: { lessonId: string; publicId: string }) => {
+    return await apiClient.put<{ message: string; posterUrl: string }>(`/lessons/${lessonId}/poster`, {
+        publicId,
+    });
+};
+
+// DELETE /api/lessons/:lessonId/poster
+export const removeLessonPosterService = async (lessonId: string) => {
+    return await apiClient.delete<{ message: string }>(`/lessons/${lessonId}/poster`);
+};
