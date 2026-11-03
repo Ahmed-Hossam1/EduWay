@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/stripe";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { CreatedOrder } from "@/features/checkout/types";
+import { APP_URL } from "@/constants/api";
 
 // create_order() errors → what the user reads
 const ORDER_ERRORS: Record<string, string> = {
@@ -50,8 +51,8 @@ export async function POST() {
             })),
             // fulfillOrder() reads it to know which order was paid
             metadata: { orderId },
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/student/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart?checkout=cancelled`,
+            success_url: `${APP_URL}/student/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${APP_URL}/cart?checkout=cancelled`,
         });
 
         // 4- Save the session id on HIS order (the webhook "expired" event and the success page use it)

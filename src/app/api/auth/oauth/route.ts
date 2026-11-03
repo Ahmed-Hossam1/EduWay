@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { APP_URL } from "@/constants/api";
 
 const oauthSchema = z.object({
     provider: z.enum(["google", "github"]),
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: result.data.provider,
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback`,
+                redirectTo: `${APP_URL}/api/auth/callback`,
             },
         });
 

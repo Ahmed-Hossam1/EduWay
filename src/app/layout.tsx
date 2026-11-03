@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { CircleAlert, CircleCheck, CircleX, Loader } from "lucide-react";
 import { QueryClientProviders } from "@/providers/QueryClientProvider";
 import { OAuthErrorRedirect } from "@/features/auth/oauth/components/OAuthErrorRedirect";
+import { APP_URL } from "@/constants/api";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -17,10 +18,8 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
-const domain = process.env.NEXT_PUBLIC_APP_URL
-const url = String(domain)
 export const metadata: Metadata = {
-    metadataBase: new URL(url),
+    metadataBase: new URL(APP_URL),
 
     title: {
         default: "EduWay",
@@ -54,7 +53,7 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         locale: "en_US",
-        url: url,
+        url: APP_URL,
         siteName: "EduWay",
         title: "EduWay — Your Way to Learn, Grow, and Succeed",
         description: "Learn new skills, track your progress, and build your path toward your goals with EduWay.",
