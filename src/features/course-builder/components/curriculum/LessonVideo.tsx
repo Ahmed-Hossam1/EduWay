@@ -15,6 +15,7 @@ import { useRemoveLessonVideo } from "../../hooks/useRemoveLessonVideo";
 import { useRetryLessonVideoHls } from "../../hooks/useRetryLessonVideoHls";
 import { useSaveLessonVideo } from "../../hooks/useSaveLessonVideo";
 import { CurriculumLesson } from "../../types";
+import { LessonPoster } from "./LessonPoster";
 import { getLessonVideoPublicId, getLessonVideoThumbnailUrl } from "../../utils";
 
 type LessonVideoProps = {
@@ -152,6 +153,9 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                         </Button>
                     )}
                 </div>
+
+                {/* the poster belongs to the video → only when there is a video */}
+                {status && <LessonPoster lesson={lesson} />}
             </div>
 
             {/* the preview: the same HLS player as the students */}
