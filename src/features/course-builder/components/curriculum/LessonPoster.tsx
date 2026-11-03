@@ -15,8 +15,9 @@ type LessonPosterProps = {
 
 /**
  * The poster buttons under the video buttons (only when the lesson has a video):
- *   no poster → "Upload poster" (the student sees a frame of the video before playing)
- *   a poster  → "Replace poster" + "Remove poster"
+ *   video processing → the buttons are disabled: "Waiting for the stream..."
+ *   no poster        → "Upload poster" (the student sees a frame of the video before playing)
+ *   a poster         → "Replace poster" + "Remove poster"
  *
  * Same steps as the video: the widget asks our API to sign the upload (/api/cloudinary/sign-lesson-upload),
  * uploads the picture straight to Cloudinary, then we tell our API "uploaded" → it saves it as the poster.
@@ -26,6 +27,7 @@ export function LessonPoster({ lesson }: LessonPosterProps) {
     const { mutate: removeLessonPoster, isPending: isRemoving } = useRemoveLessonPoster();
 
     const hasPoster = !!lesson.poster_url;
+    const isProcessing = lesson.video_status === "processing"; // wait until the stream is ready
 
     // one fixed name per lesson → "Replace" writes over the same picture on Cloudinary
     const uploadOptions = {
@@ -38,6 +40,11 @@ export function LessonPoster({ lesson }: LessonPosterProps) {
         maxFileSize: MAX_POSTER_SIZE,
         singleUploadAutoClose: true,
     };
+
+    // the words on the upload button
+    let uploadLabel = hasPoster ? "Replace poster" : "Upload poster";
+    if (isProcessing) uploadLabel = "Waiting for the stream...";
+    if (isSaving) uploadLabel = "Saving...";
 
     return (
         <div className="flex flex-wrap items-center gap-2">
@@ -58,17 +65,12 @@ export function LessonPoster({ lesson }: LessonPosterProps) {
                         type="button"
                         variant="outline"
                         size="sm"
+                        disabled={isProcessing}
                         isLoading={isLoading || isSaving}
                         onClick={() => open()}
                     >
-                        {isSaving ? (
-                            "Saving..."
-                        ) : (
-                            <>
-                                <ImagePlus />
-                                {hasPoster ? "Replace poster" : "Upload poster"}
-                            </>
-                        )}
+                        {!isSaving && <ImagePlus />}
+                        {uploadLabel}
                     </Button>
                 )}
             </CldUploadWidget>
@@ -76,8 +78,9 @@ export function LessonPoster({ lesson }: LessonPosterProps) {
             {hasPoster && (
                 <Button
                     type="button"
-                    variant="ghost"
+                    variant="destructive"
                     size="sm"
+                    disabled={isProcessing}
                     isLoading={isRemoving}
                     onClick={() => removeLessonPoster(lesson.id)}
                 >

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUser } from "@/lib/supabase/requireUser";
-import { deleteCloudinaryVideos } from "@/lib/cloudinary/cloudinary";
+import { deleteCloudinaryImages, deleteCloudinaryVideos } from "@/lib/cloudinary/cloudinary";
 import { titleSchema } from "@/features/course-builder/schemas/curriculumSchemas";
 
 type Params = {
@@ -43,7 +43,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
 }
 
-// DELETE /api/sections/:sectionId → deletes the section, its lessons and their videos (the course numbers update by trigger)
+// DELETE /api/sections/:sectionId → deletes the section, its lessons, their videos and posters (the course numbers update by trigger)
 export async function DELETE(_request: Request, { params }: Params) {
     try {
         const { sectionId } = await params;
@@ -55,10 +55,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         if (!auth.ok) return auth.response;
         const { supabase } = auth;
 
-        // 1- the videos of its lessons (read them BEFORE the delete)
+        // 1- the videos + posters of its lessons (read them BEFORE the delete)
         const { data: videos } = await supabase
             .from("lesson_videos")
-            .select("public_id, lessons!inner(section_id)")
+            .select("public_id, poster_public_id, lessons!inner(section_id)")
             .eq("lessons.section_id", sectionId);
 
         // 2- RLS: only a section of HIS course can be deleted
@@ -67,8 +67,11 @@ export async function DELETE(_request: Request, { params }: Params) {
         if (error) throw error;
         if (deleted.length === 0) return NextResponse.json({ message: "Section not found" }, { status: 404 });
 
-        // 3- the video files on Cloudinary
+        // 3- the video + poster files on Cloudinary (a lesson without a poster → null → skipped)
         await deleteCloudinaryVideos((videos ?? []).map((video) => video.public_id));
+        await deleteCloudinaryImages(
+            (videos ?? []).map((video) => video.poster_public_id).filter((posterId) => posterId !== null),
+        );
 
         return NextResponse.json({ message: "Section deleted" }, { status: 200 });
     } catch (error) {

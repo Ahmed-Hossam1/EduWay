@@ -45,6 +45,7 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
     useLessonVideoHlsStatus(lesson.id, lesson.video_status);
 
     const status = lesson.video_status; // null = no video
+    const isProcessing = status === "processing"; // Cloudinary is making the stream → Replace / Remove wait
     const thumbnail = lesson.poster_url ?? getLessonVideoThumbnailUrl(lesson.id, lesson.video_version);
 
     // one fixed name per lesson → "Replace" writes over the same file on Cloudinary
@@ -83,7 +84,18 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                         </span>
                     </button>
                 )}
-                {status === "processing" && <Loader2 className="size-6 animate-spin" />}
+                {status === "processing" && (
+                    <>
+                        {/* a blurred frame of the uploaded video behind (Cloudinary makes it from the MP4) */}
+                        <Image src={thumbnail} alt="" fill sizes="224px" className="scale-110 object-cover blur-sm" />
+                        <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/60 px-3 text-center text-white">
+                            <Loader2 className="size-6 animate-spin" />
+                            <span className="text-xs font-medium">Preparing the stream...</span>
+                        </span>
+                        {/* a moving bar at the bottom → "still working" */}
+                        <span className="absolute inset-x-0 bottom-0 h-1 animate-pulse bg-primary" />
+                    </>
+                )}
                 {status === "failed" && <AlertTriangle className="size-6 text-destructive" />}
                 {!status && <Video className="size-6" />}
             </div>
@@ -126,6 +138,7 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                                 type="button"
                                 variant={status ? "outline" : "default"}
                                 size="sm"
+                                disabled={isProcessing}
                                 isLoading={isLoading || isSaving}
                                 onClick={() => open()}
                             >
@@ -147,15 +160,21 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                     </CldUploadWidget>
 
                     {status && (
-                        <Button type="button" variant="destructive" size="sm" onClick={() => setConfirmOpen(true)}>
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            disabled={isProcessing}
+                            onClick={() => setConfirmOpen(true)}
+                        >
                             <Trash2 />
                             Remove video
                         </Button>
                     )}
                 </div>
 
-                {/* the poster belongs to the video → only when there is a video */}
-                {status && <LessonPoster lesson={lesson} />}
+                {/* the poster belongs to the video → only when there is a video (it waits while "processing") */}
+                {(status === "processing" || status === "ready") && <LessonPoster lesson={lesson} />}
             </div>
 
             {/* the preview: the same HLS player as the students */}

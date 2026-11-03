@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { deleteCloudinaryVideos } from "@/lib/cloudinary/cloudinary";
+import { deleteCloudinaryImages, deleteCloudinaryVideos } from "@/lib/cloudinary/cloudinary";
 import { checkCourseAccess } from "@/features/teacher-courses/server/checkCourseAccess";
 
 type Params = {
@@ -23,10 +23,10 @@ export async function DELETE(_request: Request, { params }: Params) {
 
         const supabase = await createSupabaseServerClient();
 
-        // the videos of all its lessons (read them BEFORE the delete)
+        // the videos + posters of all its lessons (read them BEFORE the delete)
         const { data: videos } = await supabase
             .from("lesson_videos")
-            .select("public_id, lessons!inner(sections!inner(course_id))")
+            .select("public_id, poster_public_id, lessons!inner(sections!inner(course_id))")
             .eq("lessons.sections.course_id", courseId);
 
         // RLS: a teacher can delete only HIS draft courses that nobody enrolled in / bought
@@ -47,8 +47,11 @@ export async function DELETE(_request: Request, { params }: Params) {
             );
         }
 
-        // the video files on Cloudinary
+        // the video + poster files on Cloudinary (a lesson without a poster → null → skipped)
         await deleteCloudinaryVideos((videos ?? []).map((video) => video.public_id));
+        await deleteCloudinaryImages(
+            (videos ?? []).map((video) => video.poster_public_id).filter((posterId) => posterId !== null),
+        );
 
         return NextResponse.json({ message: "Draft deleted" }, { status: 200 });
     } catch (error) {
