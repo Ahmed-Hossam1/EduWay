@@ -1,4 +1,5 @@
 import { ForgotPasswordForm } from "@/features/auth/forgot-password/components/ForgotPasswordForm";
+import { AuthHeader } from "@/features/auth/shared/components/AuthHeader";
 
 export const metadata = {
     title: "Forgot Password",
@@ -21,9 +22,12 @@ export default async function ForgotPasswordPage({ searchParams }: Params) {
                 <div className="absolute inset-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[22px_22px] opacity-50 mask-[radial-gradient(ellipse_at_center,black_20%,transparent_65%)]" />
             </div>
 
-            {/* the card has its own logo + "Back to sign in" → no AuthHeader here */}
-            <div className="relative flex min-h-screen items-center justify-center px-4 py-8 sm:px-10">
-                <ForgotPasswordForm linkExpired={error === "link_expired"} />
+            <div className="relative flex min-h-screen flex-col">
+                <AuthHeader />
+
+                <div className="my-auto flex w-full justify-center px-6 py-10 sm:px-10">
+                    <ForgotPasswordForm linkExpired={error === "link_expired"} />
+                </div>
             </div>
         </main>
     );
