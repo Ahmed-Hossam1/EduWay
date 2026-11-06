@@ -1,4 +1,10 @@
-import { COURSE_LANGUAGES, LESSON_POSTER_FOLDER, LESSON_VIDEO_FOLDER } from "../constants";
+import {
+    COURSE_LANGUAGES,
+    COURSE_PREVIEW_FOLDER,
+    COURSE_THUMBNAIL_FOLDER,
+    LESSON_POSTER_FOLDER,
+    LESSON_VIDEO_FOLDER,
+} from "../constants";
 import { EDIT_TABS, EditTab } from "../data/editTabs";
 import { CourseDetailsValues } from "../schemas/courseDetailsSchema";
 import { CourseForEdit } from "../types";
@@ -47,6 +53,14 @@ export const getLessonVideoPublicId = (lessonId: string) => `${LESSON_VIDEO_FOLD
 // The Cloudinary public_id of a lesson poster: one fixed name per lesson too
 //   getLessonPosterPublicId("abc") → "eduway/lesson-posters/abc"
 export const getLessonPosterPublicId = (lessonId: string) => `${LESSON_POSTER_FOLDER}/${lessonId}`;
+
+// The Cloudinary public_id of a NEW course image (a new name every upload, see COURSE_THUMBNAIL_FOLDER)
+//   getCourseThumbnailPublicId("abc") → "eduway/course-thumbnails/abc-1793468535123"
+export const getCourseThumbnailPublicId = (courseId: string) => `${COURSE_THUMBNAIL_FOLDER}/${courseId}-${Date.now()}`;
+
+// The Cloudinary public_id of a course preview video: one fixed name per course
+//   getCoursePreviewPublicId("abc") → "eduway/course-previews/abc"
+export const getCoursePreviewPublicId = (courseId: string) => `${COURSE_PREVIEW_FOLDER}/${courseId}`;
 
 // A picture from a lesson video (the preview, when the teacher has no poster). The video itself is played
 // ONLY from its HLS link (hls_url), never from the uploaded MP4.

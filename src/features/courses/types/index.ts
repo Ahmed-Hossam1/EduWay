@@ -28,6 +28,10 @@ export interface Course {
     short_description: string | null;
     description: string | null;
     thumbnail_url: string | null;
+    thumbnail_public_id: string | null; // the image on Cloudinary (→ the old one is deleted when it changes)
+    preview_video_public_id: string | null; // the preview video on Cloudinary ("eduway/course-previews/<id>")
+    preview_video_hls_url: string | null; // the .m3u8 the player uses (null until "ready")
+    preview_video_status: VideoStatus | null; // null = no preview video
     language: string;
     level: CourseLevel;
     price: number;

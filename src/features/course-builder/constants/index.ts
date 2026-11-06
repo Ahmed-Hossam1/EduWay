@@ -22,3 +22,10 @@ export const MAX_VIDEO_SIZE = 100_000_000; // 100 MB (the Cloudinary free plan l
 export const LESSON_POSTER_FOLDER = "eduway/lesson-posters";
 export const LESSON_POSTER_FORMATS = ["jpg", "jpeg", "png", "webp"];
 export const MAX_POSTER_SIZE = 5_000_000; // 5 MB
+
+// Course images: a NEW name every upload ("eduway/course-thumbnails/<course id>-<time>"),
+// so the live image changes only after "Save" (then the old one is deleted)
+export const COURSE_THUMBNAIL_FOLDER = "eduway/course-thumbnails";
+
+// Course preview videos: one fixed name per course ("eduway/course-previews/<course id>"), like the lessons
+export const COURSE_PREVIEW_FOLDER = "eduway/course-previews";

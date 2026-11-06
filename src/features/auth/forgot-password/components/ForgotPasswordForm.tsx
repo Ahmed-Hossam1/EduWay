@@ -1,14 +1,17 @@
 "use client";
 import Link from "next/link";
-import { ArrowLeft, KeyRound, Mail, Send } from "lucide-react";
+import { ArrowLeft, ArrowRight, Info, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Logo } from "@/components/layout/Logo";
 import { forgotPasswordSchema, ForgotPasswordSchemaType } from "../schemas/forgotPasswordSchema";
 import { useForgotPassword } from "../hooks/useForgotPassword";
 import { CheckInboxCard } from "../../shared/components/CheckInboxCard";
+import { ForgotPasswordIllustration } from "./ForgotPasswordIllustration";
+import { ForgotPasswordWaves } from "./ForgotPasswordWaves";
 
 type ForgotPasswordFormProps = {
     linkExpired?: boolean; // came back from an old / used reset link (/api/auth/confirm)
@@ -57,41 +60,52 @@ export function ForgotPasswordForm({ linkExpired = false }: ForgotPasswordFormPr
 
     // ── The form ──
     return (
-        <Card className="block w-full max-w-sm rounded-2xl p-7 shadow-lg sm:max-w-md sm:p-9">
-            {/* Icon */}
-            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-8 ring-primary/5">
-                <KeyRound className="size-6" />
+        <Card className="relative block w-full max-w-md overflow-hidden rounded-3xl px-6 pt-6 pb-48 shadow-xl sm:px-9">
+            {/* 1- top bar: logo + back to sign in */}
+            <div className="flex items-center justify-between">
+                <Logo />
+                <Link
+                    href="/auth/login"
+                    className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <ArrowLeft className="size-4" />
+                    Back to sign in
+                </Link>
             </div>
 
-            {/* Header */}
+            {/* 2- the picture */}
+            <div className="mt-8">
+                <ForgotPasswordIllustration />
+            </div>
+
+            {/* 3- header */}
             <div className="mt-6 text-center">
-                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-[1.75rem]">
-                    Forgot your password?
+                <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                    Forgot Your <span className="text-primary">Password?</span>
                 </h1>
                 <p className="mt-2 text-sm text-muted-foreground">
-                    No worries! Enter the email you signed up with and we&apos;ll send you a link to reset your
-                    password.
+                    No worries! Enter your email address and we&apos;ll send you a link to reset your password.
                 </p>
             </div>
 
-            {/* Came back from an expired / used link */}
+            {/* came back from an expired / used link */}
             {linkExpired && (
                 <p className="mt-5 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-center text-sm text-destructive">
                     Your reset link expired or was already used. Enter your email to get a new one.
                 </p>
             )}
 
-            {/* Form */}
+            {/* 4- the form */}
             <form onSubmit={handleSubmit((data) => sendResetLink(data))} className="mt-7 space-y-4" noValidate>
                 <Input
                     id="forgot-password-email"
                     {...register("email")}
                     type="email"
-                    label="Email"
-                    placeholder="you@example.com"
+                    aria-label="Email address"
+                    placeholder="Email address"
                     leftIcon={<Mail className="size-4" />}
                     variant="outline"
-                    Size="md"
+                    Size="lg"
                     rounded="lg"
                     fullWidth
                     autoComplete="email"
@@ -102,28 +116,44 @@ export function ForgotPasswordForm({ linkExpired = false }: ForgotPasswordFormPr
                     type="submit"
                     size="lg"
                     rounded="xl"
-                    className="mt-2 h-11 w-full font-semibold"
+                    className="h-12 w-full font-semibold"
                     isLoading={isPending}
                 >
                     {isPending ? (
                         "Sending..."
                     ) : (
                         <>
-                            Send reset link
-                            <Send className="size-4" />
+                            Send Reset Link
+                            <ArrowRight className="size-4" />
                         </>
                     )}
                 </Button>
             </form>
 
-            {/* Back to login */}
-            <Link
-                href="/auth/login"
-                className="mt-6 flex items-center justify-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
-            >
-                <ArrowLeft className="size-4" />
-                Back to sign in
-            </Link>
+            {/* 5- what happens next */}
+            <div className="mt-5 flex gap-3 rounded-xl border border-border bg-muted/40 p-4">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    <Info className="size-4" />
+                </span>
+                <div>
+                    <p className="text-sm font-semibold text-foreground">Check your inbox</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                        We&apos;ll send you a secure link to reset your password. If you don&apos;t see it, check your
+                        spam folder.
+                    </p>
+                </div>
+            </div>
+
+            {/* 6- back to login */}
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+                Remember your password?{" "}
+                <Link href="/auth/login" className="font-semibold text-primary underline-offset-4 hover:underline">
+                    Sign in
+                </Link>
+            </p>
+
+            {/* 7- the waves + quote at the bottom */}
+            <ForgotPasswordWaves />
         </Card>
     );
 }
