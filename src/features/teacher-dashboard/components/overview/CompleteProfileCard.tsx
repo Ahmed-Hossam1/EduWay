@@ -1,4 +1,5 @@
 import { ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardCard } from "./DashboardCard";
@@ -16,9 +17,8 @@ export function CompleteProfileCard() {
                 <CardDescription className="text-xs">Add your LinkedIn link so students trust you more.</CardDescription>
             </CardHeader>
             <CardContent>
-                {/* TODO: link to /teacher/profile when the page exists */}
-                <Button size="sm" rounded="lg" disabled>
-                    Update profile
+                <Button size="sm" rounded="lg" asChild>
+                    <Link href="/teacher/profile">Update profile</Link>
                 </Button>
             </CardContent>
         </DashboardCard>
