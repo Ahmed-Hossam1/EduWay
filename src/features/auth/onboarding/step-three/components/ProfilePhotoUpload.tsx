@@ -60,8 +60,9 @@ export function ProfilePhotoUpload({ className }: ProfilePhotoUploadProps) {
                     <div className="flex flex-wrap items-center gap-2 pt-1">
                         {/* Cloudinary upload window: our button opens it, the image link goes to the form */}
                         <CldUploadWidget
-                            uploadPreset="EduWay"
+                            signatureEndpoint="/api/cloudinary/sign-avatar-upload"
                             options={{
+                                folder: "eduway/avatars",
                                 sources: ["local", "google_drive", "dropbox", "url"], // local = computer or phone
                                 multiple: false,
                                 maxFiles: 1,

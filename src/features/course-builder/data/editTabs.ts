@@ -1,11 +1,11 @@
 import { PublishMissingKey } from "../types";
 
-export type EditTab = "details" | "curriculum" | "pricing" | "publish";
+export type EditTab = "details" | "lessons" | "pricing" | "publish";
 
 // The tabs of /teacher/courses/[courseId]/edit (each tab is its own page)
 export const EDIT_TABS: { tab: EditTab; label: string; path: string }[] = [
     { tab: "details", label: "Details", path: "" },
-    { tab: "curriculum", label: "Curriculum", path: "/curriculum" },
+    { tab: "lessons", label: "Lessons", path: "/curriculum" },
     { tab: "pricing", label: "Pricing", path: "/pricing" },
     { tab: "publish", label: "Publish", path: "/publish" },
 ];
@@ -17,6 +17,6 @@ export const PUBLISH_CHECKLIST: { key: PublishMissingKey; label: string; tab: Ed
     { key: "thumbnail", label: "Upload a course image", tab: "details" },
     { key: "category", label: "Choose a category", tab: "details" },
     { key: "learning_outcomes", label: "Add what students will learn", tab: "details" },
-    { key: "lesson_videos", label: "Upload a video for every lesson", tab: "curriculum" },
+    { key: "lesson_videos", label: "Upload a video for every lesson", tab: "lessons" },
 ];
 

@@ -53,7 +53,6 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
     const uploadOptions = {
         resourceType: "video",
         publicId: getLessonVideoPublicId(lesson.id),
-        sources: ["local" as const],
         multiple: false,
         maxFiles: 1,
         clientAllowedFormats: LESSON_VIDEO_FORMATS,
@@ -125,7 +124,7 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
 
                     <CldUploadWidget
                         signatureEndpoint="/api/cloudinary/sign-lesson-upload"
-                        options={uploadOptions}
+                        options={{ ...uploadOptions, sources: ["local", "google_drive", "dropbox", "url"] }}
                         onSuccess={(result) => {
                             // uploaded → send its real name to our API right away (it starts the HLS copy)
                             if (result.info && typeof result.info !== "string") {
@@ -178,14 +177,16 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
             </div>
 
             {/* the preview: the same HLS player as the students */}
-            {lesson.hls_url && (
-                <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-                    <DialogContent className="p-0 sm:max-w-3xl">
-                        <DialogTitle className="sr-only">{lesson.title}</DialogTitle>
-                        {previewOpen && <VideoPlayer src={lesson.hls_url} title={lesson.title} poster={thumbnail} />}
-                    </DialogContent>
-                </Dialog>
-            )}
+            {
+                lesson.hls_url && (
+                    <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+                        <DialogContent className="p-0 sm:max-w-3xl">
+                            <DialogTitle className="sr-only">{lesson.title}</DialogTitle>
+                            {previewOpen && <VideoPlayer src={lesson.hls_url} title={lesson.title} poster={thumbnail} />}
+                        </DialogContent>
+                    </Dialog>
+                )
+            }
 
             <ConfirmDialog
                 open={confirmOpen}
@@ -197,6 +198,6 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                 isPending={isRemoving}
                 onConfirm={() => removeLessonVideo(lesson.id, { onSuccess: () => setConfirmOpen(false) })}
             />
-        </div>
+        </div >
     );
 }

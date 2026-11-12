@@ -84,7 +84,7 @@ export function CourseDetailsForm({ course, categories, prerequisiteOptions }: C
                                 />
                             ),
                         )}
-                        <ThumbnailField />
+                        <ThumbnailField courseId={course.id} />
                     </CardContent>
                 </Card>
 

@@ -52,8 +52,9 @@ export function ProfileAvatarField() {
 
                     <div className="flex flex-wrap items-center gap-2 pt-1">
                         <CldUploadWidget
-                            uploadPreset="EduWay"
+                            signatureEndpoint="/api/cloudinary/sign-avatar-upload"
                             options={{
+                                folder: "eduway/avatars",
                                 sources: ["local", "google_drive", "dropbox", "url"],
                                 multiple: false,
                                 maxFiles: 1,

@@ -7,9 +7,14 @@ import { Button } from "@/components/ui/button";
 import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
 import { CourseDetailsValues } from "../../schemas/courseDetailsSchema";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import { getCourseThumbnailPublicId } from "../../utils";
 
-// The course image: uploaded to Cloudinary (same preset as the profile photo), its link goes to the form
-export function ThumbnailField() {
+type ThumbnailFieldProps = {
+    courseId: string;
+};
+
+// The course image: uploaded to Cloudinary via signed endpoint, its link goes to the form
+export function ThumbnailField({ courseId }: ThumbnailFieldProps) {
     const { field, fieldState } = useController<CourseDetailsValues, "thumbnailUrl">({ name: "thumbnailUrl" });
     const imageUrl = field.value;
 
@@ -26,9 +31,10 @@ export function ThumbnailField() {
 
                 <div className="flex flex-wrap items-center gap-2">
                     <CldUploadWidget
-                        uploadPreset="EduWay"
+                        signatureEndpoint="/api/cloudinary/sign-course-upload"
                         options={{
                             sources: ["local", "url"],
+                            publicId: getCourseThumbnailPublicId(courseId),
                             multiple: false,
                             maxFiles: 1,
                             clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
