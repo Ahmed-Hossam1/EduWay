@@ -1,8 +1,8 @@
 "use client";
 
-import { CldUploadWidget } from "next-cloudinary";
 import { ImageMinus, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CloudinaryUpload } from "@/components/shared/CloudinaryUpload";
 import { LESSON_POSTER_FORMATS, MAX_POSTER_SIZE } from "../../constants";
 import { useRemoveLessonPoster } from "../../hooks/useRemoveLessonPoster";
 import { useSaveLessonPoster } from "../../hooks/useSaveLessonPoster";
@@ -29,18 +29,6 @@ export function LessonPoster({ lesson }: LessonPosterProps) {
     const hasPoster = !!lesson.poster_url;
     const isProcessing = lesson.video_status === "processing"; // wait until the stream is ready
 
-    // one fixed name per lesson → "Replace" writes over the same picture on Cloudinary
-    const uploadOptions = {
-        resourceType: "image",
-        publicId: getLessonPosterPublicId(lesson.id),
-        sources: ["local" as const],
-        multiple: false,
-        maxFiles: 1,
-        clientAllowedFormats: LESSON_POSTER_FORMATS,
-        maxFileSize: MAX_POSTER_SIZE,
-        singleUploadAutoClose: true,
-    };
-
     // the words on the upload button
     let uploadLabel = hasPoster ? "Replace poster" : "Upload poster";
     if (isProcessing) uploadLabel = "Waiting for the stream...";
@@ -50,9 +38,14 @@ export function LessonPoster({ lesson }: LessonPosterProps) {
         <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs text-muted-foreground">Poster:</span>
 
-            <CldUploadWidget
+            <CloudinaryUpload
                 signatureEndpoint="/api/cloudinary/sign-lesson-upload"
-                options={uploadOptions}
+                options={{
+                    publicId: getLessonPosterPublicId(lesson.id),
+                    sources: ["local"],
+                    clientAllowedFormats: LESSON_POSTER_FORMATS,
+                    maxFileSize: MAX_POSTER_SIZE,
+                }}
                 onSuccess={(result) => {
                     // uploaded → send its real name to our API right away (it saves it as the poster)
                     if (result.info && typeof result.info !== "string") {
@@ -73,7 +66,7 @@ export function LessonPoster({ lesson }: LessonPosterProps) {
                         {uploadLabel}
                     </Button>
                 )}
-            </CldUploadWidget>
+            </CloudinaryUpload>
 
             {hasPoster && (
                 <Button

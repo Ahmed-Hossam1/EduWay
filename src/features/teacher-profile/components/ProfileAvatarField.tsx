@@ -2,8 +2,8 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Camera, ImagePlus, User, X } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary";
+import { Camera, User, X } from "lucide-react";
+import { CloudinaryUpload } from "@/components/shared/CloudinaryUpload";
 import { useController } from "react-hook-form";
 import { TeacherProfileValues } from "../schemas/teacherProfileSchema";
 
@@ -51,41 +51,12 @@ export function ProfileAvatarField() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 pt-1">
-                        <CldUploadWidget
+                        <CloudinaryUpload
                             signatureEndpoint="/api/cloudinary/sign-avatar-upload"
-                            options={{
-                                folder: "eduway/avatars",
-                                sources: ["local", "google_drive", "dropbox", "url"],
-                                multiple: false,
-                                maxFiles: 1,
-                                clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
-                                maxFileSize: 5_000_000,
-                                cropping: true,
-                                croppingAspectRatio: 1,
-                                showSkipCropButton: false,
-                                singleUploadAutoClose: true,
-                            }}
-                            onSuccess={(result) => {
-                                if (result.info && typeof result.info !== "string") {
-                                    field.onChange(result.info.secure_url);
-                                }
-                            }}
-                        >
-                            {({ open, isLoading }) => (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    rounded="lg"
-                                    isLoading={isLoading}
-                                    onClick={() => open()}
-                                    className="gap-1.5 border-border hover:border-primary/50 hover:bg-accent/50 text-xs font-medium"
-                                >
-                                    <ImagePlus className="size-3.5" />
-                                    {photoUrl ? "Change Image" : "Upload Image"}
-                                </Button>
-                            )}
-                        </CldUploadWidget>
+                            options={{ folder: "eduway/avatars", cropping: true, croppingAspectRatio: 1 }}
+                            isUploaded={Boolean(photoUrl)}
+                            onUploadSuccess={(url) => field.onChange(url)}
+                        />
 
                         {photoUrl && (
                             <Button

@@ -1,9 +1,9 @@
 "use client";
 
-import { CldUploadWidget } from "next-cloudinary";
 import { useController } from "react-hook-form";
-import { ImagePlus, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CloudinaryUpload } from "@/components/shared/CloudinaryUpload";
 import { CourseThumbnail } from "@/features/courses/components/CourseThumbnail";
 import { CourseDetailsValues } from "../../schemas/courseDetailsSchema";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
@@ -30,34 +30,19 @@ export function ThumbnailField({ courseId }: ThumbnailFieldProps) {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <CldUploadWidget
+                    <CloudinaryUpload
                         signatureEndpoint="/api/cloudinary/sign-course-upload"
                         options={{
-                            sources: ["local", "url"],
                             publicId: getCourseThumbnailPublicId(courseId),
-                            multiple: false,
-                            maxFiles: 1,
-                            clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
-                            maxFileSize: 5_000_000, // 5 MB
+                            sources: ["local", "url"],
                             cropping: true,
-                            croppingAspectRatio: 16 / 10, // the same shape as the course cards
-                            showSkipCropButton: false,
-                            singleUploadAutoClose: true,
+                            croppingAspectRatio: 16 / 10,
                         }}
-                        onSuccess={(result) => {
-                            // result.info is an object on success → save the image link in the form
-                            if (result.info && typeof result.info !== "string") {
-                                field.onChange(result.info.secure_url);
-                            }
-                        }}
-                    >
-                        {({ open, isLoading }) => (
-                            <Button type="button" variant="outline" isLoading={isLoading} onClick={() => open()}>
-                                <ImagePlus />
-                                {imageUrl ? "Change image" : "Upload image"}
-                            </Button>
-                        )}
-                    </CldUploadWidget>
+                        isUploaded={Boolean(imageUrl)}
+                        label="Upload image"
+                        changeLabel="Change image"
+                        onUploadSuccess={(url) => field.onChange(url)}
+                    />
 
                     {imageUrl && (
                         <Button

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
-import { CldUploadWidget } from "next-cloudinary";
-import { AlertTriangle, Loader2, Play, RefreshCw, RotateCcw, Trash2, Upload, Video } from "lucide-react";
+import axios from "axios";
+import { toast } from "sonner";
+import { AlertTriangle, Loader2, Play, RefreshCw, RotateCcw, Trash2, Upload, Video, X } from "lucide-react";
+import { apiClient } from "@/lib/axios/apiClient";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { VideoPlayer } from "@/components/shared/VideoPlayer";
@@ -23,54 +25,194 @@ type LessonVideoProps = {
 };
 
 /**
- * The video box under a lesson (its own box → its buttons can't be mixed up with the lesson ones):
+ * The video box under a lesson:
  *   no video   → an empty box + "Upload video"
+ *   uploading  → dark overlay fades out based on real upload progress + percentage label
  *   processing → "Preparing for streaming..." (Cloudinary makes the HLS copy; we check every 5 seconds)
  *   failed     → "Preparing failed" + "Retry" (no new upload)
  *   ready      → the preview (click → the HLS video in a window) + its length + "Replace" / "Remove"
- *
- * The file goes from the browser STRAIGHT to Cloudinary (not through our server):
- *   1- the widget asks our API to sign the upload (/api/cloudinary/sign-lesson-upload checks it's HIS lesson)
- *   2- the widget uploads the file (it shows the progress bar)
- *   3- right after, we tell our API "uploaded" → it saves the video and starts its HLS copy (by itself)
  */
 export function LessonVideo({ lesson }: LessonVideoProps) {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
-    const { mutate: saveLessonVideo, isPending: isSaving } = useSaveLessonVideo();
+    const { mutateAsync: saveLessonVideo, isPending: isSaving } = useSaveLessonVideo();
     const { mutate: removeLessonVideo, isPending: isRemoving } = useRemoveLessonVideo();
     const { mutate: retryHls, isPending: isRetrying } = useRetryLessonVideoHls();
 
-    // while "processing": asks the server every 5 seconds, the page reloads when it is ready / failed
-    useLessonVideoHlsStatus(lesson.id, lesson.video_status);
+    // Real-time upload progress tracking
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
+    const [uploadPreviewUrl, setUploadPreviewUrl] = useState<string | null>(null);
 
-    const status = lesson.video_status; // null = no video
-    const isProcessing = status === "processing"; // Cloudinary is making the stream → Replace / Remove wait
-    const thumbnail = lesson.poster_url ?? getLessonVideoThumbnailUrl(lesson.id, lesson.video_version);
+    // Cancel ongoing upload only if the component unmounts
+    useEffect(() => {
+        return () => {
+            abortControllerRef.current?.abort();
+        };
+}, []);
 
-    // one fixed name per lesson → "Replace" writes over the same file on Cloudinary
-    // (no "folder" option: the name already has the folder, and our account is in "dynamic folder" mode)
-    const uploadOptions = {
-        resourceType: "video",
-        publicId: getLessonVideoPublicId(lesson.id),
-        multiple: false,
-        maxFiles: 1,
-        clientAllowedFormats: LESSON_VIDEO_FORMATS,
-        maxFileSize: MAX_VIDEO_SIZE,
-        singleUploadAutoClose: true,
+// while "processing": asks the server every 5 seconds, the page reloads when it is ready / failed
+useLessonVideoHlsStatus(lesson.id, lesson.video_status);
+
+const status = lesson.video_status; // null = no video
+const isProcessing = status === "processing"; // Cloudinary is making the stream → Replace / Remove wait
+const thumbnail = lesson.poster_url ?? getLessonVideoThumbnailUrl(lesson.id, lesson.video_version);
+
+// the words under "Lesson video"
+let subtitle = `${LESSON_VIDEO_FORMATS.join(", ").toUpperCase()} — up to ${MAX_VIDEO_SIZE / 1_000_000} MB`;
+if (isUploading) subtitle = `Uploading: ${uploadProgress}%`;
+else if (status === "ready") subtitle = `Length: ${formatVideoDuration(lesson.duration_seconds)}`;
+else if (status === "processing") subtitle = "Preparing for streaming... This can take a few minutes.";
+else if (status === "failed") subtitle = "Preparing the video failed. Retry, or upload it again.";
+
+// Real-time direct upload to Cloudinary with byte-level progress
+const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset input value so the same file can be selected again if needed
+    e.target.value = "";
+
+    // 1- Validate format
+    const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+    if (!LESSON_VIDEO_FORMATS.includes(extension)) {
+        toast.error(`Please select a supported video format: ${LESSON_VIDEO_FORMATS.join(", ").toUpperCase()}`);
+        return;
+    }
+
+    // 2- Validate size
+    if (file.size > MAX_VIDEO_SIZE) {
+        toast.error(`Video size exceeds ${MAX_VIDEO_SIZE / 1_000_000} MB limit`);
+        return;
+    }
+
+    // 3- Reset progress and create local preview
+    setUploadProgress(0);
+    setIsUploading(true);
+    const objectUrl = URL.createObjectURL(file);
+    setUploadPreviewUrl(objectUrl);
+
+    // 4- Setup abort controller for cancellation
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    try {
+        // 5- Request signature from backend
+        const timestamp = Math.round(Date.now() / 1000);
+        const publicId = getLessonVideoPublicId(lesson.id);
+
+        const { signature } = await apiClient.post<{ signature: string }>(
+            "/cloudinary/sign-lesson-upload",
+            {
+                paramsToSign: {
+                    public_id: publicId,
+                    timestamp,
+                },
+            },
+        );
+
+        // 6- Build FormData for Cloudinary signed upload
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!);
+        formData.append("timestamp", String(timestamp));
+        formData.append("public_id", publicId);
+        formData.append("signature", signature);
+
+        // 7- Upload with byte-level progress tracking
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+        const response = await axios.post<{ public_id: string }>(
+            `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
+            formData,
+            {
+                signal: controller.signal,
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.total) {
+                        const percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                        setUploadProgress(percent);
+                    }
+                },
+            },
+        );
+
+        // 8- Upload completed: transition from uploading to processing/saving
+        setIsUploading(false);
+        await saveLessonVideo({ lessonId: lesson.id, publicId: response.data.public_id });
+    } catch (err: unknown) {
+            if (axios.isCancel(err) || (err instanceof Error && (err.name === "CanceledError" || err.name === "AbortError"))) {
+                toast.info("Upload cancelled");
+            } else {
+                console.error("Upload error:", err);
+                let message = "Video upload failed. Please try again.";
+                if (axios.isAxiosError(err)) {
+                    message =
+                        err.response?.data?.error?.message ||
+                        err.response?.data?.message ||
+                        err.message ||
+                        message;
+                } else if (err instanceof Error) {
+                    message = err.message;
+                }
+                toast.error(message);
+            }
+        } finally {
+            setIsUploading(false);
+            setUploadProgress(0);
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
+            setUploadPreviewUrl(null);
+            abortControllerRef.current = null;
+        }
     };
 
-    // the words under "Lesson video"
-    let subtitle = `${LESSON_VIDEO_FORMATS.join(", ").toUpperCase()} — up to ${MAX_VIDEO_SIZE / 1_000_000} MB`;
-    if (status === "ready") subtitle = `Length: ${formatVideoDuration(lesson.duration_seconds)}`;
-    if (status === "processing") subtitle = "Preparing for streaming... This can take a few minutes.";
-    if (status === "failed") subtitle = "Preparing the video failed. Retry, or upload it again.";
+    const handleCancelUpload = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+    };
 
     return (
         <div className="mt-2 flex flex-col gap-3 rounded-lg border border-border bg-muted/40 p-3 sm:ml-9 sm:flex-row sm:items-center">
-            {/* 1- the box: the preview / preparing / failed / empty */}
+            {/* 1- the box: preview / uploading / preparing / failed / empty */}
             <div className="relative flex aspect-video w-full shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-muted text-muted-foreground sm:w-56">
-                {status === "ready" && lesson.hls_url && (
+                {isUploading ? (
+                    <>
+                        {/* Video preview underneath the overlay */}
+                        {uploadPreviewUrl ? (
+                            <video
+                                src={uploadPreviewUrl}
+                                className="size-full object-cover"
+                                muted
+                                playsInline
+                            />
+                        ) : thumbnail ? (
+                            <Image src={thumbnail} alt="" fill sizes="224px" className="object-cover" />
+                        ) : (
+                            <Video className="size-8 text-muted-foreground/40" />
+                        )}
+
+                        {/* Dark overlay: dynamically fades out as progress increases: opacity = 0.8 * (1 - progress / 100) */}
+                        <div
+                            style={{ opacity: 0.8 * (1 - uploadProgress / 100) }}
+                            className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black px-3 text-center text-white transition-opacity duration-200 ease-out pointer-events-none"
+                        >
+                            <Loader2 className="size-5 animate-spin" />
+                            <span className="text-sm font-bold tracking-tight">{uploadProgress}%</span>
+                            <span className="text-[11px] font-medium text-white/90">
+                                {uploadProgress === 100 ? "Finalizing upload..." : "Uploading video..."}
+                            </span>
+                        </div>
+
+                        {/* Bottom progress track */}
+                        <div className="absolute inset-x-0 bottom-0 h-1 bg-white/20">
+                            <div
+                                className="h-full bg-primary transition-all duration-150 ease-out"
+                                style={{ width: `${uploadProgress}%` }}
+                            />
+                        </div>
+                    </>
+                ) : status === "ready" && lesson.hls_url ? (
                     <button
                         type="button"
                         className="group absolute inset-0 cursor-pointer"
@@ -82,8 +224,7 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                             <Play className="size-8 fill-white text-white" />
                         </span>
                     </button>
-                )}
-                {status === "processing" && (
+                ) : status === "processing" ? (
                     <>
                         {/* a blurred frame of the uploaded video behind (Cloudinary makes it from the MP4) */}
                         <Image src={thumbnail} alt="" fill sizes="224px" className="scale-110 object-cover blur-sm" />
@@ -94,12 +235,14 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                         {/* a moving bar at the bottom → "still working" */}
                         <span className="absolute inset-x-0 bottom-0 h-1 animate-pulse bg-primary" />
                     </>
+                ) : status === "failed" ? (
+                    <AlertTriangle className="size-6 text-destructive" />
+                ) : (
+                    <Video className="size-6" />
                 )}
-                {status === "failed" && <AlertTriangle className="size-6 text-destructive" />}
-                {!status && <Video className="size-6" />}
             </div>
 
-            {/* 2- what it is + its buttons (with words) */}
+            {/* 2- what it is + its buttons */}
             <div className="min-w-0 flex-1 space-y-2">
                 <div>
                     <p className="text-sm font-semibold">{status ? "Lesson video" : "No video yet"}</p>
@@ -108,8 +251,8 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                     </p>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                    {status === "failed" && (
+                <div className="flex flex-wrap items-center gap-2">
+                    {status === "failed" && !isUploading && (
                         <Button type="button" size="sm" isLoading={isRetrying} onClick={() => retryHls(lesson.id)}>
                             {isRetrying ? (
                                 "Retrying..."
@@ -122,43 +265,54 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                         </Button>
                     )}
 
-                    <CldUploadWidget
-                        signatureEndpoint="/api/cloudinary/sign-lesson-upload"
-                        options={{ ...uploadOptions, sources: ["local", "google_drive", "dropbox", "url"] }}
-                        onSuccess={(result) => {
-                            // uploaded → send its real name to our API right away (it starts the HLS copy)
-                            if (result.info && typeof result.info !== "string") {
-                                saveLessonVideo({ lessonId: lesson.id, publicId: result.info.public_id });
-                            }
-                        }}
-                    >
-                        {({ open, isLoading }) => (
-                            <Button
-                                type="button"
-                                variant={status ? "outline" : "default"}
-                                size="sm"
-                                disabled={isProcessing}
-                                isLoading={isLoading || isSaving}
-                                onClick={() => open()}
-                            >
-                                {isSaving ? (
-                                    "Saving..."
-                                ) : status ? (
-                                    <>
-                                        <RefreshCw />
-                                        Replace video
-                                    </>
-                                ) : (
-                                    <>
-                                        <Upload />
-                                        Upload video
-                                    </>
-                                )}
-                            </Button>
-                        )}
-                    </CldUploadWidget>
+                    {/* Hidden file input triggered by the button */}
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept={LESSON_VIDEO_FORMATS.map((format) => `.${format}`).join(",")}
+                        className="hidden"
+                        onChange={handleFileSelect}
+                    />
 
-                    {status && (
+                    <Button
+                        type="button"
+                        variant={status ? "outline" : "default"}
+                        size="sm"
+                        disabled={isProcessing || isSaving}
+                        isLoading={isUploading || isSaving}
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        {isUploading ? (
+                            `Uploading (${uploadProgress}%)`
+                        ) : isSaving ? (
+                            "Saving..."
+                        ) : status ? (
+                            <>
+                                <RefreshCw />
+                                Replace video
+                            </>
+                        ) : (
+                            <>
+                                <Upload />
+                                Upload video
+                            </>
+                        )}
+                    </Button>
+
+                    {isUploading && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleCancelUpload}
+                            className="gap-1 text-xs text-muted-foreground hover:text-destructive"
+                        >
+                            <X className="size-3.5" />
+                            Cancel
+                        </Button>
+                    )}
+
+                    {status && !isUploading && (
                         <Button
                             type="button"
                             variant="destructive"
@@ -177,16 +331,14 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
             </div>
 
             {/* the preview: the same HLS player as the students */}
-            {
-                lesson.hls_url && (
-                    <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-                        <DialogContent className="p-0 sm:max-w-3xl">
-                            <DialogTitle className="sr-only">{lesson.title}</DialogTitle>
-                            {previewOpen && <VideoPlayer src={lesson.hls_url} title={lesson.title} poster={thumbnail} />}
-                        </DialogContent>
-                    </Dialog>
-                )
-            }
+            {lesson.hls_url && (
+                <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+                    <DialogContent className="p-0 sm:max-w-3xl">
+                        <DialogTitle className="sr-only">{lesson.title}</DialogTitle>
+                        {previewOpen && <VideoPlayer src={lesson.hls_url} title={lesson.title} poster={thumbnail} />}
+                    </DialogContent>
+                </Dialog>
+            )}
 
             <ConfirmDialog
                 open={confirmOpen}
@@ -198,6 +350,6 @@ export function LessonVideo({ lesson }: LessonVideoProps) {
                 isPending={isRemoving}
                 onConfirm={() => removeLessonVideo(lesson.id, { onSuccess: () => setConfirmOpen(false) })}
             />
-        </div >
+        </div>
     );
 }
