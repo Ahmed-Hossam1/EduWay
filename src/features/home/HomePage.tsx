@@ -1,6 +1,6 @@
 import { TrustedCompaniesSection } from "./sections/trusted-companies/TrustedCompaniesSection";
 import { HeroSection } from "./sections/hero/HeroSection";
-import { LearningPathSection } from "./sections/learning-path/LearningPathSection";
+import { CategoryPlanetsSection } from "./sections/category-planets/CategoryPlanetsSection";
 import { FeaturedCoursesSection } from "./sections/featured-courses/FeaturedCoursesSection";
 import { CareerBannerSection } from "./sections/career-banner/CareerBannerSection";
 import { StatisticsSection } from "./sections/statistics/StatisticsSection";
@@ -18,7 +18,7 @@ export function HomePage({ featuredCoursesPromise }: HomePageProps) {
         <div className="bg-background text-foreground selection:bg-primary/20 selection:text-primary">
             <HeroSection />
             <TrustedCompaniesSection />
-            <LearningPathSection />
+            <CategoryPlanetsSection />
             <FeaturedCoursesSection coursesPromise={featuredCoursesPromise} />
             <CareerBannerSection />
             <StatisticsSection />
